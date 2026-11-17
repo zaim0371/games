@@ -1453,6 +1453,12 @@ body,button,input{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF
 .zcn.in{transform:none;opacity:1}.zcn b{display:block;font-size:13px;opacity:.7;margin-bottom:2px;font-weight:600}
 .zcn div{font-size:15px;line-height:1.4;white-space:pre-wrap;word-break:break-word}.zcn img{height:44px;width:44px;object-fit:cover;border-radius:8px;vertical-align:middle;margin-right:8px}
 .sdcg small{display:block;font-size:11px;font-weight:600;opacity:.6;margin:0 4px 2px}
+.bbvs{display:flex;flex-direction:column;align-items:flex-start;color:#fff;font-weight:800;font-size:19px;line-height:1.05;font-variant-numeric:tabular-nums;text-shadow:0 1px 3px rgba(40,70,100,.75),0 0 1px rgba(40,70,100,.9)}
+.bbvs i{font-style:normal;opacity:.7;font-size:.65em;margin:0 6px;font-weight:600}.bbvs small{font-size:10px;opacity:.75;font-weight:600;margin-top:2px}
+.bbhr{display:flex;gap:8px}.bbhr .bbun{background:rgba(50,85,120,.5)}
+.o6s.n3{display:flex!important}.o6s.n3>button{flex:1 1 0!important}
+.bbpkl{display:none;position:absolute;top:-12px;left:50%;transform:translateX(-50%);z-index:6;padding:3px 12px;border-radius:999px;background:rgba(0,0,0,.65);color:#fff;font:600 12px system-ui,sans-serif;pointer-events:none;white-space:nowrap}
+#brb.bbpk .bbpkl{display:block}#brb.bbpk .bbt{opacity:.6;pointer-events:none}#brb.bbpk #bbpk{background:rgba(255,255,255,.7);color:#333}
 .sdcv{position:fixed;inset:0;z-index:9100;background:rgba(0,0,0,.92);display:grid;place-items:center}.sdcv img{max-width:96vw;max-height:92vh;object-fit:contain}
 </style>
 </head>
@@ -2843,7 +2849,7 @@ function cfgOnline(){netLeave();stop();B={...blank(),onl:1};onlDraw()}
 function cbox(v,big){let r="";for(let i=0;i<5;i++)r+="<span"+(big?"":v[i]?' class="f"':"")+">"+(v[i]?esc(v[i]):"")+"</span>";return r}
 function onlDraw(){if(!B.onl)return;const h=OL.role==="host",bz=!!OL.busy;let s='<div class="o6"><div class="o6h"><i>▦</i><div><b>Sudoku online</b><small>'+(OL.role?(h?"Kamu host":"Tersambung"):"Lewat internet, beda perangkat")+'</small></div></div>';
  if(!OL.role){const t=OL.tab;s+='<div class="o6l">Namamu</div><div class="o6g"><input class="o6i" id="sdonm" maxlength="12" autocomplete="off" placeholder="Nama" value="'+esc(OL.name)+'"></div><div class="o6s"><button type="button" data-tab="host" class="'+(t==="host"?"on":"")+'">Buat room</button><button type="button" data-tab="join" class="'+(t==="join"?"on":"")+'">Gabung</button></div>';
-  if(t==="host")s+='<div class="o6l">Tingkat puzzle</div><div class="o6s">'+["mudah","sedang","sulit"].map(l=>'<button type="button" data-lv="'+l+'" class="'+(OL.lv===l?"on":"")+'">'+LN[l]+'</button>').join("")+'</div><p class="o6m">Kamu jadi host, lalu bagikan kode 5 huruf ke teman. Puzzle sama untuk kalian berdua. Yang lebih dulu mencapai 100 poin (papan terisi penuh) menang.</p><button type="button" class="o6b" id="sdoh"'+(bz?" disabled":"")+'>'+(bz?"Menghubungkan…":"Buat room")+'</button>';
+  if(t==="host")s+='<div class="o6l">Tingkat puzzle</div><div class="o6s n3">'+["mudah","sedang","sulit"].map(l=>'<button type="button" data-lv="'+l+'" class="'+(OL.lv===l?"on":"")+'">'+LN[l]+'</button>').join("")+'</div><p class="o6m">Kamu jadi host, lalu bagikan kode 5 huruf ke teman. Puzzle sama untuk kalian berdua. Yang lebih dulu mencapai 100 poin (papan terisi penuh) menang.</p><button type="button" class="o6b" id="sdoh"'+(bz?" disabled":"")+'>'+(bz?"Menghubungkan…":"Buat room")+'</button>';
   else s+='<div class="o6l">Kode room</div><div class="o6c" id="sdobx">'+cbox((OL.code||"").slice(0,5))+'<input id="sdocd" maxlength="5" autocomplete="off" autocapitalize="characters" spellcheck="false" value="'+esc(OL.code||"")+'"></div><button type="button" class="o6b" id="sdoj"'+(bz?" disabled":"")+'>'+(bz?"Menghubungkan…":"Gabung")+'</button>';
   s+='<button type="button" class="o6b g" id="sdobk">Kembali</button>'}
  else{if(h)s+='<div class="o6l">Kode room · bagikan ke teman</div><div class="o6c big">'+cbox(OL.code.split(""),1)+'</div><button type="button" class="o6b" id="sdosh">Bagikan kode</button><p class="o6m">Menunggu teman masuk… Game mulai otomatis.</p>';else s+='<p class="o6m">Terhubung ke room <b>'+esc(OL.code)+'</b>. Menunggu host memulai…</p>';s+='<button type="button" class="o6b g" id="sdolv">Keluar room</button>'}
@@ -3274,7 +3280,7 @@ const CATS={
   {n:"Sudoku",s:"Solo atau online",c:["#7db4ff","#2f66ee"],g:G.sdk,pick:1,pd:()=>[["bebas","Bebas","Tanpa batas","#7b61ff"],["mudah","Mudah","40 petunjuk","#0f9a4c"],["sedang","Sedang","32 petunjuk","#ee8f06"],["sulit","Sulit","26 petunjuk","#d9283a"],["online","Main online","Beda device · 2 pemain","#1479c4"]]},
   {n:"Catur",s:"Lawan AI atau teman",c:["#ffd866","#ee8f06"],g:G.chs,pick:1,sd:1,ti:"Pilih lawan",pd:()=>[["mudah","Mudah","AI pemula","#0f9a4c"],["sedang","Sedang","AI menengah","#ee8f06"],["sulit","Sulit","AI kuat","#d9283a"],["friend","1v1 Teman","Tanpa AI","#7b61ff"],["online","Main online","Beda device · 2 pemain","#1479c4"]],pf:(l,sd)=>{brPlay("brc");brC(l,sd)}},
   {n:"Nonogram",s:"Isi kotak dari angka",c:["#5fe0b0","#0f9c74"],g:G.nng,pick:1,pd:()=>[["mudah","Mudah","5×5","#0f9a4c"],["sedang","Sedang","8×8","#ee8f06"],["sulit","Sulit","10×10","#d9283a"]],pf:l=>{brPlay("brn");brN(l)}},
-  {n:"Block Blast",get s(){const b=bbBest();return b?"Rekor "+b:"Susun & hapus baris"},c:["#ff9a9a","#e5484d"],g:G.blk,f:()=>{brPlay("brb");brB()}},
+  {n:"Block Blast",get s(){const b=bbBest();return b?"Rekor "+b:"Susun & hapus baris"},c:["#ff9a9a","#e5484d"],g:G.blk,pick:1,ti:"Mode permainan",pd:()=>[["solo","Main sendiri","Kejar rekor tertinggi","#e5484d"],["online","Main online","Beda device · 2 pemain","#1479c4"]],pf:l=>{brPlay("brb");l==="online"?brBO():brB()}},
   {n:"UNO",get s(){let w=0,g=0;try{const o=JSON.parse(localStorage.getItem("zc-uno")||"{}");w=+o.wins||0;g=+o.games||0}catch(e){}return g?"Menang "+w+" dari "+g:"Lawan AI atau teman"},c:["#ff8a8a","#d9283a"],g:G.uno,pick:1,ti:"Pilih mode",pd:()=>[["1","1 Lawan AI","Duel 2 pemain","#0f9a4c"],["2","2 Lawan AI","3 pemain","#ee8f06"],["3","3 Lawan AI","4 pemain","#d9283a"],["friend","Main dengan teman","Offline · 2–5 pemain","#7b61ff"],["online","Main online","Beda device · 2–5 pemain","#1479c4"]],pf:l=>{brPlay("bru");brU(l)}}]}};
 CATS.logic.items=CATS.logic.items.filter(x=>x.n!=="Nonogram");CATS.reaction.items=CATS.reaction.items.filter(x=>x.n==="Pulse Tap");CATS.logic.t=CATS.reaction.t="Games";
 const CN=["br","brm","bri","brs","brr","brc","brn","brb","bru"];
@@ -3883,17 +3889,17 @@ const blocks=(p,w,h)=>{const on=new Set(p.map(q=>q[0]*w+q[1]));let s="";for(let 
 // tampilan
 let cells=[],unit=40,tw=0,dg=null,tgt=null;
 function draw(){
- el.innerHTML='<div class="bbw" id="bbw"><div class="bbhd"><div class="bbbest">'+CROWN+'<b id="bbr">'+S.best+'</b></div><button type="button" class="bbun" id="bbun" aria-label="Undo">'+UNDO+'<i id="bbui">2</i></button></div>'
+ el.innerHTML='<div class="bbw" id="bbw"><div class="bbhd">'+(B.net?bbHead():'<div class="bbbest">'+CROWN+'<b id="bbr">'+S.best+'</b></div><button type="button" class="bbun" id="bbun" aria-label="Undo">'+UNDO+'<i id="bbui">2</i></button>')+'</div>'
   +'<div class="bbscore" id="bbs">0</div>'
   +'<div class="bblv"><span>Kesulitan</span><em id="bblt"></em><i><u id="bblb"></u></i><span class="bbcb" id="bbcb"></span></div>'
-  +'<div class="bbb" id="bbb"><div class="bbg" id="bbg">'+'<div class="bbc"></div>'.repeat(NN)+'</div><div class="bbfx" id="bbfx"></div></div>'
+  +'<div class="bbb" id="bbb"><div class="bbg" id="bbg">'+'<div class="bbc"></div>'.repeat(NN)+'</div><div class="bbfx" id="bbfx"></div>'+(B.net?'<div class="bbpkl" id="bbpkl"></div>':'')+'</div>'
   +'<div class="bbt" id="bbt"></div>'
   +'</div>';
  cells=[...el.querySelectorAll(".bbc")];fit();paintAll();paintTray(true);paintLv();paintUn();paintCb()}
 function fit(){const g=$("bbg"),w=$("bbw");if(!g||!w)return;unit=g.clientWidth/N;w.style.setProperty("--u",unit+"px")}
 addEventListener("resize",()=>{if(B.ph==="play")fit()});
 function paintAll(){
- for(let i=0;i<NN;i++){const b=cells[i],v=B.g[i],p=B.pv&&B.pv.get(i),cl=B.cl&&B.cl.get(i);
+ for(let i=0;i<NN;i++){const b=cells[i],v=(B.pk?B.og:B.g)[i],p=!B.pk&&B.pv&&B.pv.get(i),cl=!B.pk&&B.cl&&B.cl.get(i);
   let k="bbc";
   if(v){k+=" f bc"+(v-1);if(B.pl&&B.pl.has(i))k+=" pl"}else if(p)k+=" pv bc"+(p-1);
   if(B.hl&&B.hl.has(i))k+=" hl";
@@ -3901,7 +3907,7 @@ function paintAll(){
   if(b.className!==k)b.className=k}}
 function paintTray(anim){
  const t=$("bbt");if(!t)return;
- t.innerHTML=B.tray.map((p,i)=>{const [w,h]=shape(p.s),dead=!p.u&&!anyFit(B.g,p.s);
+ const TR=B.pk?B.ot:B.tray,GG=B.pk?B.og:B.g;t.innerHTML=TR.map((p,i)=>{const [w,h]=shape(p.s),dead=!p.u&&!anyFit(GG,p.s);
   return'<div class="bbs'+(p.u?" used":"")+(dead?" dead":"")+'" data-i="'+i+'"><div class="bbp bc'+p.c+(anim?" in":"")+'" style="--k:'+i+';--w:'+w+';--h:'+h+'">'+blocks(p.s,w,h)+'</div></div>'}).join("")}
 function paintLv(){const d=diff(),a=$("bblt"),b=$("bblb");if(a)a.textContent=lvName(d);if(b)b.style.width=(100-d*100)+"%"}
 function paintUn(){const b=$("bbun"),i=$("bbui");if(!b)return;i.textContent=B.undo;b.disabled=!(B.snap&&B.undo>0&&!B.lock&&!B.over)}
@@ -3913,7 +3919,7 @@ const pulse=(e,s)=>{try{e.animate([{transform:"scale(1)"},{transform:"scale("+(s
 function tween(){
  cancelAnimationFrame(tw);const e=$("bbs");if(!e)return;const a=B.shown,b=B.sc,t0=performance.now(),DUR=Math.min(1700,520+Math.max(0,b-a)*.8);
  const f=t=>{const k=Math.min(1,(t-t0)/DUR),q=1-Math.pow(1-k,3);B.shown=Math.round(a+(b-a)*q);e.textContent=B.shown;if(k<1)tw=requestAnimationFrame(f)};
- tw=requestAnimationFrame(f);pulse(e,1.12);
+ tw=requestAnimationFrame(f);pulse(e,1.12);paintVs();
  const r=$("bbr"),nb=Math.max(S.best,b);if(r&&String(nb)!==r.textContent){r.textContent=nb;pulse(r,1.2)}}
 const WORDS=["","Good!","Great!","Excellent!","Amazing!","Unreal!"],WC=["","#7dea6a","#ffd84a","#ff9f43","#ff6b9a","#c69cff"];
 const COL=["#de5f5f","#cdb55a","#58b07a","#4b9ccb","#8c72cc"],RB=["#58b6f0","#8c72cc","#58b07a","#de5f5f","#e8c53a"],HP="M23 40C2 26 0 14 6 8C12 2 20 4 23 11C26 4 34 2 40 8C46 14 44 26 23 40Z";
@@ -3954,7 +3960,7 @@ function fxLine(kind,idx){
   const ang=Math.random()*Math.PI*2,dist=u*(.6+Math.random()*1.5);
   s.animate([{transform:"translate(0,0) rotate(0deg) scale(1)",opacity:1},{transform:"translate("+Math.cos(ang)*dist+"px,"+(Math.sin(ang)*dist+u*.6)+"px) rotate("+Math.round(Math.random()*360)+"deg) scale(0)",opacity:0}],{duration:520+Math.random()*420,delay:Math.random()*140,easing:"cubic-bezier(.2,.7,.4,1)",fill:"both"}).onfinish=()=>s.remove()}}
 function shake(a){const b=$("bbb");if(!b)return;try{b.animate([{transform:"translate(0,0)"},{transform:"translate("+-a+"px,"+a/2+"px)"},{transform:"translate("+a+"px,"+-a/2+"px)"},{transform:"translate("+-a/2+"px,"+a/3+"px)"},{transform:"translate(0,0)"}],{duration:320,easing:"ease-out"})}catch(_){}}
-const commit=()=>{if(B.ph==="play"&&B.sc>S.best){S.best=B.sc;save()}};
+const commit=()=>{if(B.ph==="play"&&!B.net&&B.sc>S.best){S.best=B.sc;save()}};
 // alur game
 function start(){
  B={ph:"play",gen:false,g:new Array(NN).fill(0),tray:[],sc:0,shown:0,cb:0,gr:0,lines:0,mc:0,moves:0,undo:2,snap:null,lock:false,over:false,rec:false,pb:S.best,pv:null,hl:null,cl:null,pl:null,lb:"Easy",px:0};
@@ -4001,8 +4007,10 @@ function after(){
  if(B.tray.every(p=>p.u)){B.tray=mkTray(B.g);paintTray(true)}else paintTray()
  const nm=lvName(diff());if(nm!==B.lb){B.lb=nm;toast("Kesulitan naik: "+nm,1800)}
  paintLv();paintUn();
+ if(B.net){bSync();if(B.sc>=B.tg&&B.ph==="play"&&!B.over){netWin();return}}
  if(!B.tray.some(p=>!p.u&&anyFit(B.g,p.s)))over()}
 function over(){
+ if(B.net){netDead();return}
  B.over=true;B.lock=true;paintUn();sfx("no");vib([60,40,60]);
  const b=$("bbb");if(b)b.classList.add("over");shake(6);pop("Tidak ada ruang","");
  const me=B;setTimeout(()=>{if(B!==me)return;
@@ -4047,7 +4055,7 @@ function drop(ok){
   g.d.animate([{transform:"translate3d("+g.x+"px,"+g.y+"px,0)"},{transform:"translate3d("+tx+"px,"+ty+"px,0)"}],{duration:220,easing:ez,fill:"forwards"});
   g.gi.animate([{transform:"scale(1)"},{transform:"scale(.52)"}],{duration:220,easing:ez,fill:"forwards"}).onfinish=()=>{g.d.remove();g.s.classList.remove("drag")}}}
 el.addEventListener("pointerdown",e=>{
- const s=e.target.closest(".bbs");if(!s||B.ph!=="play"||B.lock||B.over||dg)return;
+ const s=e.target.closest(".bbs");if(!s||B.ph!=="play"||B.lock||B.over||dg||B.pk)return;
  const si=+s.dataset.i,t=B.tray[si];if(!t||t.u)return;e.preventDefault();
  const [w,h]=shape(t.s),d=document.createElement("div"),gi=document.createElement("div");
  d.className="bbgh";gi.className="bbgi bc"+t.c;
@@ -4061,13 +4069,101 @@ el.addEventListener("pointermove",e=>{if(dg)mv(e.clientX,e.clientY)});
 el.addEventListener("pointerup",()=>drop(true));
 el.addEventListener("pointercancel",()=>drop(false));
 el.addEventListener("click",e=>{
+ if(bClick(e))return;
  if(B.ph==="res"){if(e.target.closest("#bbgo"))start();else if(e.target.closest("#bbmenu"))setup();return}
  if(B.ph==="play"&&e.target.closest("#bbun"))undo()});
 document.addEventListener("visibilitychange",()=>{if(document.hidden)commit()});
 addEventListener("pagehide",commit);
+
+// ===== Block Blast online (PeerJS) =====
+const PCFG={config:{iceServers:[{urls:"stun:stun.l.google.com:19302"},{urls:"stun:stun1.l.google.com:19302"},{urls:"stun:global.stun.twilio.com:3478"},{urls:"stun:stun.cloudflare.com:3478"},{urls:["turn:openrelay.metered.ca:80","turn:openrelay.metered.ca:443","turn:openrelay.metered.ca:80?transport=tcp","turn:openrelay.metered.ca:443?transport=tcp","turns:openrelay.metered.ca:443?transport=tcp"],username:"openrelayproject",credential:"openrelayproject"}],iceCandidatePoolSize:4}};
+function loadPeer(){if(window.Peer)return Promise.resolve();const U=["https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js","https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"];
+ const one=u=>new Promise((ok,no)=>{const s=document.createElement("script"),t=setTimeout(()=>{s.remove();no(1)},6000);s.src=u;s.onload=()=>{clearTimeout(t);window.Peer?ok():no(1)};s.onerror=()=>{clearTimeout(t);no(1)};document.head.appendChild(s)});
+ return one(U[0]).catch(()=>one(U[1]))}
+const CHRc="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",OL={role:"",peer:null,conn:null,code:"",name:"",tab:"host",err:"",st:"",busy:0,tg:2000,opp:""};
+try{OL.name=localStorage.getItem("zc-chname")||""}catch(e){}
+const BCHI='<svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path style="fill:none" d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.6-.8L3 21l1.9-5.3A8.4 8.4 0 1 1 21 11.5z"/></svg>';
+const BEYE='<svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path style="fill:none" d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/><circle style="fill:none" cx="12" cy="12" r="3"/></svg>';
+const fmtN=n=>(n|0).toLocaleString("id-ID");
+const vsHtml=()=>'<span><b>'+fmtN(B.sc||0)+'</b><i>vs</i><b>'+fmtN(B.os||0)+'</b></span><small>Target '+fmtN(B.tg||0)+'</small>';
+const bbHead=()=>'<div class="bbvs" id="bbvs">'+vsHtml()+'</div><div class="bbhr"><button type="button" class="bbun" id="bbch" aria-label="Chat">'+BCHI+'</button><button type="button" class="bbun" id="bbpk" aria-label="Intip papan lawan">'+BEYE+'</button></div>';
+const paintVs=()=>{const e=$("bbvs");if(e)e.innerHTML=vsHtml()};
+function chatBadge(){const b=$("bbch");if(!b)return;let e=b.querySelector(".sdbd");const u=ZC.unread();if(u){if(!e){e=document.createElement("em");e.className="sdbd";b.appendChild(e)}e.textContent=u>9?"9+":u}else if(e)e.remove()}
+document.addEventListener("zc-badge",chatBadge);
+function netSend(o){try{OL.conn&&OL.conn.open&&OL.conn.send(o)}catch(e){}}
+function netLeave(){const p=OL.peer;try{OL.conn&&OL.conn.close()}catch(e){}try{p&&p.destroy()}catch(e){}OL.peer=null;OL.conn=null;OL.role="";OL.code="";OL.busy=0;OL.st="";OL.err="";OL.opp="";ZC.unbind()}
+function exitNet(){netLeave();if(dg){dg.d.remove();dg=null}cancelAnimationFrame(tw);el.classList.remove("bbpk");setup()}
+function bSync(){if(!B.net||B.ph!=="play")return;netSend({t:"st",g:B.g.join(""),tr:B.tray.map(p=>({s:p.s,c:p.c,u:p.u?1:0})),s:B.sc})}
+function startNet(gs,tr,tg){
+ cancelAnimationFrame(tw);if(dg){dg.d.remove();dg=null}tgt=null;el.classList.remove("bpk","bbpk");
+ const g=gs.split("").map(c=>+c||0);
+ B={ph:"play",gen:false,g,tray:tr.map(p=>({s:p.s,c:p.c,u:false})),sc:0,shown:0,cb:0,gr:0,lines:0,mc:0,moves:0,undo:0,snap:null,lock:false,over:false,rec:true,pb:0,pv:null,hl:null,cl:null,pl:null,lb:"Easy",px:0,net:1,tg,os:0,og:g.slice(),ot:tr.map(p=>({s:p.s,c:p.c,u:false})),pk:0};
+ HIST.length=0;draw();chatBadge();bSync()}
+function netGo(){const g=new Array(NN).fill(0);HIST.length=0;seedBoard(g);const tray=mkTray(g),tr=tray.map(p=>({s:p.s,c:p.c}));
+ netSend({t:"go",g:g.join(""),tr,tg:OL.tg,hn:OL.name||"Host"});startNet(g.join(""),tr,OL.tg)}
+function bFin(win,why){
+ B.ph="res";B.pk=0;el.classList.remove("bbpk");cancelAnimationFrame(tw);if(dg){dg.d.remove();dg=null}sfx(win?"win":"no");
+ el.innerHTML='<div class="q glass bbres"><h3 style="text-align:center">'+(win?"Kamu menang!":"Kamu kalah")+'</h3><div class="brbig" style="font-size:40px">'+fmtN(B.sc)+' vs '+fmtN(B.os)+'</div><div class="brmsg">'+esc(why||(win?"Kamu lebih dulu mencapai target.":(OL.opp||"Lawan")+" lebih dulu mencapai target."))+'</div><div class="brbtns"><button type="button" class="chip" id="bbolc">Chat</button><button type="button" class="chip" id="bbolx">Keluar</button><button type="button" class="chip on" id="bbolr">Main lagi</button></div></div>'}
+function netWin(){B.lock=true;netSend({t:"win",s:B.sc});bFin(true)}
+function netDead(){B.over=true;B.lock=true;paintUn();sfx("no");vib([60,40,60]);const bd=$("bbb");if(bd)bd.classList.add("over");shake(6);pop("Tidak ada ruang","");netSend({t:"dead",s:B.sc});const me=B;setTimeout(()=>{if(B===me&&B.ph==="play")bFin(false,"Papanmu kehabisan ruang.")},1100)}
+function paintPk(){const l=$("bbpkl");if(l)l.textContent="Papan "+(OL.opp||"lawan");const e=$("bbs");if(e&&B.pk)e.textContent=fmtN(B.os).replace(/\./g,"");paintAll();paintTray()}
+function onMsg(m){if(!m||typeof m!=="object")return;
+ if(m.t==="hello"&&OL.role==="host"){OL.opp=String(m.name||"Tamu").slice(0,12);netGo()}
+ else if(m.t==="go"&&OL.role==="client"){OL.opp=String(m.hn||"Host").slice(0,12);
+  if(typeof m.g==="string"&&m.g.length===NN&&Array.isArray(m.tr)&&m.tr.length&&m.tr.length<=3){const tr=m.tr.map(p=>({s:(Array.isArray(p.s)?p.s:[]).slice(0,12).map(q=>[(q[0]|0)&7,(q[1]|0)&7]),c:Math.abs(p.c|0)%CC}));startNet(m.g,tr,Math.max(100,Math.min(20000,m.tg|0)))}}
+ else if(m.t==="st"&&B.net&&typeof m.g==="string"&&m.g.length===NN&&Array.isArray(m.tr)){
+  B.og=m.g.split("").map(c=>Math.min(CC,+c||0));B.ot=m.tr.slice(0,3).map(p=>({s:(Array.isArray(p.s)?p.s:[]).slice(0,12).map(q=>[(q[0]|0)&7,(q[1]|0)&7]),c:Math.abs(p.c|0)%CC,u:!!p.u}));B.os=Math.max(0,m.s|0);
+  if(B.ph==="play"){paintVs();if(B.pk)paintPk()}}
+ else if(m.t==="win"&&B.net&&B.ph==="play"&&!B.over){B.os=Math.max(B.os,m.s|0);bFin(false)}
+ else if(m.t==="dead"&&B.net&&B.ph==="play"&&!B.over){B.os=Math.max(B.os,m.s|0);bFin(true,"Papan lawan kehabisan ruang.")}
+ else if(m.t==="chat"&&(B.net||B.onl))ZC.recv(m)
+ else if(m.t==="rq"&&OL.role==="host")netGo()}
+function wire(c){OL.conn=c;ZC.bind({el,fab:false,title:()=>OL.opp||"Lawan",name:()=>OL.opp||"Lawan",send:o=>netSend(o),ok:()=>!!(OL.conn&&OL.conn.open)});c.on("data",onMsg);c.on("close",()=>{if(OL.conn!==c)return;OL.conn=null;if(B.net&&B.ph==="play")bFin(true,"Lawan keluar dari room.");else if(B.onl&&OL.role){OL.err="Teman keluar dari room.";onlDraw()}})}
+function cfgOnline(){netLeave();cancelAnimationFrame(tw);if(dg){dg.d.remove();dg=null}el.classList.remove("bbpk");B={ph:"setup",gen:false,onl:1};onlDraw()}
+function cbox(v,big){let r="";for(let i=0;i<5;i++)r+="<span"+(big?"":v[i]?' class="f"':"")+">"+(v[i]?esc(v[i]):"")+"</span>";return r}
+function onlDraw(){if(!B.onl)return;const h=OL.role==="host",bz=!!OL.busy;let s='<div class="o6"><div class="o6h"><i>▦</i><div><b>Block Blast online</b><small>'+(OL.role?(h?"Kamu host":"Tersambung"):"Lewat internet, beda perangkat")+'</small></div></div>';
+ if(!OL.role){const t=OL.tab;s+='<div class="o6l">Namamu</div><div class="o6g"><input class="o6i" id="bonm" maxlength="12" autocomplete="off" placeholder="Nama" value="'+esc(OL.name)+'"></div><div class="o6s"><button type="button" data-tab="host" class="'+(t==="host"?"on":"")+'">Buat room</button><button type="button" data-tab="join" class="'+(t==="join"?"on":"")+'">Gabung</button></div>';
+  if(t==="host")s+='<div class="o6l">Target skor</div><div class="o6s n3">'+[1000,2000,4000].map(v=>'<button type="button" data-tg="'+v+'" class="'+(OL.tg===v?"on":"")+'">'+fmtN(v)+'</button>').join("")+'</div><p class="o6m">Kamu jadi host, lalu bagikan kode 5 huruf ke teman. Kalian main di papan masing-masing. Yang lebih dulu mencapai target skor menang, tapi kalau papanmu kehabisan ruang kamu langsung kalah.</p><button type="button" class="o6b" id="bohost"'+(bz?" disabled":"")+'>'+(bz?"Menghubungkan…":"Buat room")+'</button>';
+  else s+='<div class="o6l">Kode room</div><div class="o6c" id="bobx">'+cbox((OL.code||"").slice(0,5))+'<input id="bocd" maxlength="5" autocomplete="off" autocapitalize="characters" spellcheck="false" value="'+esc(OL.code||"")+'"></div><button type="button" class="o6b" id="bojoin"'+(bz?" disabled":"")+'>'+(bz?"Menghubungkan…":"Gabung")+'</button>';
+  s+='<button type="button" class="o6b g" id="bobk">Kembali</button>'}
+ else{if(h)s+='<div class="o6l">Kode room · bagikan ke teman</div><div class="o6c big">'+cbox(OL.code.split(""),1)+'</div><button type="button" class="o6b" id="bosh">Bagikan kode</button><p class="o6m">Menunggu teman masuk… Game mulai otomatis.</p>';else s+='<p class="o6m">Terhubung ke room <b>'+esc(OL.code)+'</b>. Menunggu host memulai…</p>';s+='<button type="button" class="o6b g" id="bolv">Keluar room</button>'}
+ s+=(OL.err?'<p class="o6m er">'+esc(OL.err)+"</p>":"")+(OL.st&&!OL.role?'<p class="o6m">'+esc(OL.st)+"</p>":"")+'<p class="o6m sm">Tips: tetap buka halaman ini selama main. Butuh internet, buka di Chrome.</p></div>';el.innerHTML=s}
+async function ohost(){if(OL.busy)return;OL.busy=1;OL.err="";OL.st="Menghubungkan…";onlDraw();
+ try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Kalau dibuka lewat preview di aplikasi Claude, koneksi diblokir: buka di Chrome.";onlDraw();return}
+ const mk=n=>{const code=Array.from({length:5},()=>CHRc[Math.random()*CHRc.length|0]).join(""),p=new Peer("zcbb-"+code.toLowerCase(),PCFG);
+  const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}OL.busy=0;OL.st="";OL.err="Server PeerJS tidak merespons. Coba buka di Chrome.";onlDraw()},10000);
+  p.on("open",()=>{clearTimeout(to);OL.busy=0;OL.role="host";OL.peer=p;OL.code=code;OL.st="";onlDraw()});
+  p.on("connection",c=>{if(OL.conn&&OL.conn.open){try{c.close()}catch(e){}return}wire(c)});
+  p.on("error",er=>{if(er.type==="unavailable-id"&&n<4){try{p.destroy()}catch(e){}mk(n+1);return}if(OL.role)return;OL.busy=0;OL.st="";OL.err="Gagal: "+(er.type||"koneksi");onlDraw()})};mk(0)}
+async function ojoin(){const code=(OL.code||"").toUpperCase();if(OL.busy)return;if(code.length<4){OL.err="Masukkan kode room.";onlDraw();return}
+ OL.busy=1;OL.err="";OL.st="Menghubungkan…";onlDraw();
+ try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Buka di Chrome.";onlDraw();return}
+ let tries=0,ok_=0;const p=new Peer(PCFG);OL.peer=p;
+ const fail=t=>{OL.busy=0;OL.st="";OL.err=t;try{p.destroy()}catch(e){}OL.peer=null;onlDraw()};
+ const att=()=>{tries++;const c=p.connect("zcbb-"+code.toLowerCase(),{reliable:true});
+  const to=setTimeout(()=>{if(ok_)return;try{c.close()}catch(e){}if(tries<6)att();else fail("Tidak bisa terhubung ke room. Pastikan host masih membuka halaman game.")},6000);
+  c.on("open",()=>{ok_=1;clearTimeout(to);OL.busy=0;OL.role="client";OL.code=code;OL.st="";wire(c);c.send({t:"hello",name:OL.name||"Tamu"});onlDraw()})};
+ p.on("open",att);p.on("error",er=>{if(ok_)return;if(er.type==="peer-unavailable"){if(tries<6)setTimeout(att,1200);else fail("Room tidak ditemukan.")}else fail("Gagal: "+(er.type||"koneksi"))})}
+function rematch(){if(!OL.conn||!OL.conn.open){toast("Lawan sudah keluar",1600);return}if(OL.role==="host")netGo();else{netSend({t:"rq"});toast("Meminta host mulai ulang…",1800)}}
+el.addEventListener("input",e=>{if(!B.onl)return;const t=e.target;if(t.id==="bonm"){OL.name=t.value;try{localStorage.setItem("zc-chname",t.value)}catch(_){}}else if(t.id==="bocd"){t.value=t.value.replace(/[^A-Za-z0-9]/g,"").toUpperCase().slice(0,5);OL.code=t.value;const b=el.querySelector("#bobx");if(b)b.querySelectorAll("span").forEach((x,i)=>{x.textContent=t.value[i]||"";x.className=t.value[i]?"f":""})}});
+function bClick(e){const g=q=>e.target.closest(q);
+ if(B.onl){const tb=g("[data-tab]"),tg=g("[data-tg]");
+  if(tb){OL.tab=tb.dataset.tab;OL.err="";onlDraw()}else if(tg){OL.tg=+tg.dataset.tg;onlDraw()}
+  else if(g("#bohost"))ohost();else if(g("#bojoin"))ojoin();else if(g("#bolv")){netLeave();onlDraw()}else if(g("#bobk"))exitNet();
+  else if(g("#bosh")){const t="Ayo main Block Blast online bareng! Kode room: "+OL.code;try{if(navigator.share)navigator.share({text:t}).catch(()=>{});else navigator.clipboard.writeText(t).then(()=>toast("Kode disalin",1500))}catch(_){}}
+  return true}
+ if(!B.net)return false;
+ if(B.ph==="res"){if(g("#bbolc")){ZC.open();return true}if(g("#bbolx")){exitNet();return true}if(g("#bbolr")){rematch();return true}return false}
+ if(B.ph==="play"){
+  if(g("#bbch")){ZC.open();return true}
+  if(g("#bbpk")){B.pk=!B.pk;el.classList.toggle("bbpk",!!B.pk);sfx("click");
+   if(B.pk){toast("Mengintip papan "+(OL.opp||"lawan"),1400);paintPk()}else{const q=$("bbs");if(q)q.textContent=B.shown;paintAll();paintTray()}
+   return true}}
+ return false}
 window.brB=()=>start();
+window.brBO=()=>cfgOnline();
 //TESTHOOK
-zGame.reg("b",el,()=>B,()=>setup());
+zGame.reg("b",el,()=>B,()=>{netLeave();setup()});
 })();
 // ---------- Logic: UNO (v2) ----------
 (()=>{
