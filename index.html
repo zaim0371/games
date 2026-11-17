@@ -1650,10 +1650,45 @@ html:not(:has(#bru.gfs:has(.un))):not(:has(#bru.gfs:has(.ures))) #gbar[data-g="u
 .zfb1 svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .zfb1.on{background:#007aff;color:#fff}.zfb1.on svg{fill:currentColor;stroke-width:1.2}
 .zfb1:active{transform:scale(.96)}
+
+/* ===== panggilan suara (gaya WhatsApp iOS) ===== */
+.zfcl{color:#34c759!important;padding:8px}.zfcl[hidden]{display:none}
+.zfbs{flex:none;display:flex;align-items:center;gap:6px}.zfb1.ic{width:32px;height:32px;padding:0;justify-content:center}.zfb1.zfph{background:#e6f8ec;color:#1fa850}.zfb1.zfph svg{width:15px;height:15px}
+#zvl{position:fixed;inset:0;z-index:9600;display:none;flex-direction:column;align-items:center;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",Inter,system-ui,sans-serif;background:radial-gradient(130% 75% at 50% 0%,#2f5a52 0%,#173331 42%,#0a1618 100%);padding-top:calc(10px + env(safe-area-inset-top,0px))}
+#zvl.show{display:flex;animation:zvIn .28s ease-out}
+@keyframes zvIn{from{opacity:0;transform:scale(1.03)}to{opacity:1;transform:none}}
+#zvl .zvt{width:100%;display:flex;align-items:center;justify-content:space-between;padding:6px 14px}
+#zvl .zvl2{font-size:13px;font-weight:500;color:rgba(255,255,255,.6)}
+#zvl .zvb0{width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;display:grid;place-items:center}
+#zvl .zvb0 svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+#zvl .zvn{font-size:32px;font-weight:600;margin-top:22px;padding:0 28px;max-width:100%;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:.2px}
+#zvl .zvs{font-size:17px;margin-top:6px;color:rgba(255,255,255,.72);font-variant-numeric:tabular-nums}
+#zvl .zvav{position:relative;margin:auto;width:148px;height:148px;border-radius:50%;display:grid;place-items:center;font-size:62px;font-weight:600;color:#fff;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+#zvl .zvav.rg::before,#zvl .zvav.rg::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid rgba(255,255,255,.35);animation:zvRg 2.2s ease-out infinite}
+#zvl .zvav.rg::after{animation-delay:1.1s}
+@keyframes zvRg{from{transform:scale(1);opacity:.8}to{transform:scale(1.75);opacity:0}}
+#zvl .zvbt{width:100%;max-width:560px;display:flex;justify-content:center;gap:30px;padding:24px 20px calc(26px + env(safe-area-inset-bottom,0px));border-radius:30px 30px 0 0;background:rgba(255,255,255,.12);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px)}
+#zvl .zvr{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,.8)}
+#zvl .zvr button{width:64px;height:64px;border:0;border-radius:50%;background:rgba(255,255,255,.18);color:#fff;display:grid;place-items:center;transition:transform .12s,background .2s}
+#zvl .zvr button:active{transform:scale(.93)}
+#zvl .zvr button.on{background:#fff;color:#111}
+#zvl .zvr button.end{background:#ff3b30}
+#zvl .zvr svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+#zvp{position:fixed;left:0;right:0;top:0;height:calc(30px + env(safe-area-inset-top,0px));padding-top:env(safe-area-inset-top,0px);z-index:9550;display:none;align-items:center;justify-content:center;gap:7px;border:0;background:#34c759;color:#fff;font:600 14px/1 -apple-system,BlinkMacSystemFont,Inter,system-ui,sans-serif}
+#zvp svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+body.zin .app{top:calc(30px + env(safe-area-inset-top,0px))}body.zin .view{padding-top:18px}
+#zvb{position:fixed;left:10px;right:10px;top:calc(8px + env(safe-area-inset-top,0px));z-index:9650;display:flex;align-items:center;gap:12px;padding:12px;border-radius:22px;background:rgba(28,28,30,.94);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);color:#fff;box-shadow:0 14px 34px -8px rgba(0,0,0,.5);transform:translateY(-140%);transition:transform .4s cubic-bezier(.2,.9,.3,1.15);max-width:540px;margin:0 auto}
+#zvb.in{transform:none}
+#zvb .zfa{width:44px;height:44px;font-size:19px}
+#zvb .zvbx{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.25}
+#zvb .zvbx b{font-size:17px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#zvb .zvbx small{font-size:13px;color:rgba(255,255,255,.6)}
+#zvb .zvq{flex:none;width:46px;height:46px;border:0;border-radius:50%;display:grid;place-items:center;color:#fff}
+#zvb .zvq.no{background:#ff3b30}#zvb .zvq.ok{background:#34c759}
+#zvb .zvq svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .zfq .zfb1{position:relative}
 .zi{position:relative}.zst{position:absolute;top:-6px;right:-6px;width:17px;height:17px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 1px 3px rgba(0,0,0,.28)}
 .zst svg{width:12px;height:12px;fill:#FFC400;stroke:#E39A00;stroke-width:1.2;stroke-linejoin:round}
-.zfub{min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:#ff3b30;color:#fff;font:700 11px/16px Inter,system-ui,sans-serif;text-align:center;box-sizing:border-box;margin-left:-1px}
+.zfub{position:absolute;top:-5px;right:-5px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:#ff3b30;color:#fff;font:700 11px/16px Inter,system-ui,sans-serif;text-align:center;box-sizing:border-box;}
 .zfq.zfe0{min-height:60px}
 .zfq.zfe0 .zt em{white-space:normal}
 </style>
@@ -4976,8 +5011,8 @@ const PCF={config:{iceServers:[{urls:"stun:stun.l.google.com:19302"},{urls:"stun
 const lp=()=>window.Peer?Promise.resolve():new Promise((res,rej)=>{const u=["https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js","https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"];let i=0;const t=()=>{if(i>=u.length)return rej();const s=document.createElement("script");s.src=u[i++];s.onload=res;s.onerror=t;document.head.appendChild(s)};t()});
 function hook(c){const f=String(c.peer).slice(4).toUpperCase();CN[f]=c;c.on("data",d=>onData(f,d));c.on("close",()=>{if(CN[f]===c)delete CN[f]})}
 function peerUp(){if(PR||!ME||!window.Peer)return;const p=PR=new Peer("zcf-"+ME.code.toLowerCase(),PCF);
-  p.on("connection",hook);p.on("disconnected",()=>{try{p.reconnect()}catch(e){}});
-  p.on("error",e=>{if(e.type==="unavailable-id"||e.type==="network"||e.type==="server-error"){try{p.destroy()}catch(_){}if(PR===p)PR=null;setTimeout(peerUp,6000)}})}
+  p.on("connection",hook);p.on("call",onCall);p.on("disconnected",()=>{try{p.reconnect()}catch(e){}});
+  p.on("error",e=>{if(e.type==="peer-unavailable"&&CALL&&CALL.dir==="out"&&CALL.st==="ring"&&String(e.message||"").toLowerCase().includes("zcf-"+CALL.f.toLowerCase()))endCall("miss");if(e.type==="unavailable-id"||e.type==="network"||e.type==="server-error"){try{p.destroy()}catch(_){}if(PR===p)PR=null;setTimeout(peerUp,6000)}})}
 const conn1=(f,ms)=>new Promise((res,rej)=>{const o=CN[f];if(o&&o.open)return res(o);if(!PR||PR.destroyed)return rej();
   if(PR.disconnected){try{PR.reconnect()}catch(e){}}
   const c=PR.connect("zcf-"+f.toLowerCase(),{reliable:true,serialization:"json"}),to=setTimeout(()=>{try{c.close()}catch(e){}rej()},ms);
@@ -5004,6 +5039,7 @@ function onData(f,d){if(!d||typeof d!=="object"||!isFr(f))return;
     if(opn()&&CH===f)drawChat();else{UN[f]=(UN[f]||0)+1;saveUN();dot();toast((DATA.names[f]||f)+": "+x.slice(0,40),2200);if(opn()&&!CH&&!INV&&!ZN)draw(true)}}
   else if(d.t==="inv"&&GM[d.g]&&/^[A-Z0-9]{5}$/.test(d.c))banner(f,d.g,d.c)
   else if(d.t==="invr"&&OUT&&OUT.c===d.c&&OUT.f===f){if(!d.ok){OUT=null;window.zfAbort&&zfAbort(d.c,(DATA.names[f]||f)+" menolak ajakan.")}}
+  else if(d.t==="cx")onCx(f,d)
   else if(d.t==="invx"&&BN&&BN.c===d.c&&BN.f===f){bannerOff();toast((DATA.names[f]||f)+" membatalkan ajakan",2200)}}
 function bannerOff(){const o=$("zfn");BN=null;if(!o)return;o.classList.add("out");setTimeout(()=>o.remove(),320)}
 function banner(f,g,c){const o=$("zfn");if(o)o.remove();const G=GM[g],n=DATA.names[f]||f;BN={f,g,c};
@@ -5070,7 +5106,7 @@ const ZC=["#e5252c","#f08a24","#1ea04b","#1479c4","#8e44ad","#16a085","#d6336c"]
   zav=c=>{const n=DATA.names[c]||c,h=[...c].reduce((a,ch)=>a+ch.charCodeAt(0),0);return '<i class="zfav" style="background:'+ZC[h%ZC.length]+'">'+esc(Array.from(n.trim())[0]||"?")+(DATA.on[c]?"<u></u>":"")+'</i>'},
   zfrs=()=>[...new Set(DATA.rel.filter(r=>r.status==="accepted").map(r=>r.from_code===ME.code?r.to_code:r.from_code))],
   zcl=()=>zfrs().map(c=>{const h=hist(c),l=h[h.length-1];return{c,l,t:l&&l.t||0,u:UN[c]||0}}).filter(o=>o.l||o.u).sort((a,b)=>b.t-a.t);
-function zhead(){const t=$("zft"),n=$("zfnw");if(!t||!n)return;
+function zhead(){const t=$("zft"),n=$("zfnw");if(!t||!n)return;const kc=$("zfcall");if(kc)kc.hidden=!CH;
   if(CH){t.innerHTML=zav(CH)+'<div class="zfth"><b>'+esc(DATA.names[CH]||CH)+'</b><small>'+(DATA.on[CH]?"online":"offline")+'</small></div>';n.hidden=true}
   else if(ZN){t.innerHTML='<b>Chat baru</b>';n.hidden=true}
   else if(INV){t.innerHTML='<b>Ajak main</b>';n.hidden=true}
@@ -5181,6 +5217,7 @@ async function act(a,id,x,bt){
       if(ok){sfx("ok");toast("Kode tersalin!!!",1800)}else toast("Kodemu: "+ME.code,2600);return}
     if(a==="edit"){const n=await dlg({title:"Ubah nama",input:ME.name,ok:"Simpan"});const t=QT(n,16);if(!t||t===ME.name)return;
       ME.name=t;LS("zf-me",JSON.stringify(ME));await beat();draw(true);toast("Nama diubah",1600);return}
+    if(a==="call"){if(CH)startCall(CH);return}
     if(a==="pick"){const e=$("zff1");if(e)e.click();return}
     if(a==="cam"){const e=$("zff2");if(e)e.click();return}
     if(a==="mic"){recStart();return}
@@ -5219,7 +5256,7 @@ async function open(m,t){
   if(busy)return;busy=1;sfx("click");
   try{if(!(await setup()))return;boot();if(!PR||PR.destroyed){PR=null;lp().then(peerUp).catch(()=>{})}ZM=m||"fr";CH=null;INV=null;SEL=null;OPT={};INVP=0;ZN=0;
     if(t&&t.f&&isFr(t.f)){if(t.a==="chat"){CH=t.f;delete UN[t.f];saveUN();dot()}else if(t.a==="inv"){INV=t.f}}
-    if(!P){P=document.createElement("div");P.id="zfp";P.innerHTML='<div class="zfh"><button type="button" class="hb sm" data-a="x" aria-label="Tutup"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><div class="zft" id="zft"><b>Teman</b></div><button type="button" class="zfpen zfnw" data-a="new" id="zfnw" aria-label="Chat baru" hidden><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div><div class="zfb"></div><input type="file" id="zff1" accept="image/*" hidden><input type="file" id="zff2" accept="image/*" capture="environment" hidden>';document.body.appendChild(P);
+    if(!P){P=document.createElement("div");P.id="zfp";P.innerHTML='<div class="zfh"><button type="button" class="hb sm" data-a="x" aria-label="Tutup"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><div class="zft" id="zft"><b>Teman</b></div><button type="button" class="zfpen zfnw" data-a="new" id="zfnw" aria-label="Chat baru" hidden><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button type="button" class="zfpen zfcl" data-a="call" id="zfcall" aria-label="Telepon" hidden><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></button></div><div class="zfb"></div><input type="file" id="zff1" accept="image/*" hidden><input type="file" id="zff2" accept="image/*" capture="environment" hidden>';document.body.appendChild(P);
       P.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;if(b.dataset.a==="x"){if(CH||INV||ZN)act("back");else close()}else act(b.dataset.a,b.dataset.id,b.dataset.f||b.dataset.g||b.dataset.u,b)});
       P.addEventListener("change",e=>{const t=e.target;if(t.id!=="zff1"&&t.id!=="zff2")return;const fl=t.files&&t.files[0];t.value="";if(fl)zsendImg(fl)});
       P.addEventListener("keydown",e=>{if(e.key!=="Enter")return;if(e.target.id==="zfin")act("add");else if(e.target.id==="zfmi")act("send");else if(e.target.classList&&e.target.classList.contains("zfc"))e.target.click()});
@@ -5241,13 +5278,136 @@ function renderHome(){const el=$("zhfr");if(!el)return;
     else h=fr.map(c=>{const n=DATA.names[c]||c,on=!!DATA.on[c],u=UN[c]||0,i=[...c].reduce((a,ch)=>a+ch.charCodeAt(0),0);
       return '<div class="zfq"><span class="zfa" style="background:'+ZC[i%ZC.length]+'">'+esc(Array.from(n.trim())[0]||"?").toUpperCase()+'<i class="zfo'+(on?" on":"")+'"></i></span>'
         +'<span class="zt"><b>'+esc(n)+'</b><em>'+(on?"Online":"Offline")+'</em></span>'
-        +'<button type="button" class="zfb1" data-hf="chat" data-f="'+ea(c)+'" aria-label="Chat '+ea(n)+'">'+HCH+'<span>Chat</span>'+(u?'<i class="zfub">'+(u>9?"9+":u)+'</i>':'')+'</button>'
-        +'<button type="button" class="zfb1 on" data-hf="inv" data-f="'+ea(c)+'" aria-label="Ajak '+ea(n)+' main">'+HPL+'<span>Ajak main</span></button></div>'}).join("")}
+        +'<span class="zfbs"><button type="button" class="zfb1 ic" data-hf="chat" data-f="'+ea(c)+'" aria-label="Chat '+ea(n)+'">'+HCH+(u?'<i class="zfub">'+(u>9?"9+":u)+'</i>':'')+'</button>'
+        +'<button type="button" class="zfb1 on" data-hf="inv" data-f="'+ea(c)+'" aria-label="Ajak '+ea(n)+' main">'+HPL+'<span>Ajak main</span></button>'
+        +'<button type="button" class="zfb1 ic zfph" data-hf="call" data-f="'+ea(c)+'" aria-label="Telepon '+ea(n)+'">'+CIC.ph+'</button></span></div>'}).join("")}
   if(sig===HSIG)return;HSIG=sig;el.innerHTML=h}
 (()=>{const el=$("zhfr");if(!el)return;
   el.addEventListener("click",e=>{const b=e.target.closest("[data-hf]");if(!b)return;
     const k=b.dataset.hf,f=b.dataset.f;
-    if(k==="open")open("fr");else open("fr",{a:k,f})})})();
+    if(k==="open")open("fr");else if(k==="call")startCall(f);else open("fr",{a:k,f})})})();
+// ----- panggilan suara (WebRTC lewat PeerJS) -----
+let CALL=null,ACX=null,RTM=0,VTM=0,WL=null;
+const CIC={
+ ph:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+ end:'<svg viewBox="0 0 24 24" aria-hidden="true" style="transform:rotate(135deg)"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+ mic:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg>',
+ moff:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M2 2l20 20"/></svg>',
+ dn:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>'};
+const fmtD=ms=>{const t=Math.max(0,Math.round(ms/1000)),m=Math.floor(t/60);return z2(m)+":"+z2(t%60)};
+const cName=f=>DATA.names[f]||f;
+function addH(f,x,me){const a=hist(f);a.push({me:me?1:0,x,t:Date.now()});saveH(f,a);
+  if(!me){UN[f]=(UN[f]||0)+1;saveUN();dot()}
+  if(opn()&&CH===f)drawChat()}
+// nada dering (WebAudio, tanpa file)
+function ring(kind){stopRing();try{ACX=ACX||new(window.AudioContext||window.webkitAudioContext)();if(ACX.state==="suspended")ACX.resume().catch(()=>{});
+  const play=()=>{if(!ACX)return;const t0=ACX.currentTime;(kind==="in"?[0,.5]:[0]).forEach(o=>[440,480].forEach(fr=>{const os=ACX.createOscillator(),g=ACX.createGain();os.frequency.value=fr;os.type="sine";g.gain.setValueAtTime(0,t0+o);g.gain.linearRampToValueAtTime(kind==="in"?.18:.1,t0+o+.03);g.gain.setValueAtTime(kind==="in"?.18:.1,t0+o+.38);g.gain.linearRampToValueAtTime(0,t0+o+.42);os.connect(g);g.connect(ACX.destination);os.start(t0+o);os.stop(t0+o+.45)}))};
+  play();RTM=setInterval(play,kind==="in"?2400:3500);
+  if(kind==="in"&&navigator.vibrate){const v=()=>{try{navigator.vibrate([420,160,420])}catch(e){}};v();VTM=setInterval(v,2400)}}catch(e){}}
+function stopRing(){clearInterval(RTM);clearInterval(VTM);RTM=VTM=0;try{navigator.vibrate&&navigator.vibrate(0)}catch(e){}}
+async function wake(on){try{if(on){if(!WL&&navigator.wakeLock)WL=await navigator.wakeLock.request("screen")}else if(WL){await WL.release();WL=null}}catch(e){WL=null}}
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&CALL&&CALL.st==="live")wake(true)});
+// ----- UI -----
+function cAvatar(f){const h=[...f].reduce((a,ch)=>a+ch.charCodeAt(0),0);return'<div class="zvav'+(CALL&&CALL.st!=="live"?" rg":"")+'" style="background:'+ZC[h%ZC.length]+'">'+esc(Array.from(cName(f).trim())[0]||"?").toUpperCase()+'</div>'}
+function cStatus(){const C=CALL;if(!C)return"";return C.st==="live"?(C.rc?"Menyambungkan ulang…":fmtD(Date.now()-C.t0)):C.st==="conn"?"Menyambungkan…":C.dir==="out"?"Berdering…":"Panggilan suara masuk"}
+function cRender(){const o=$("zvl"),C=CALL;if(!o)return;
+  if(!C){o.classList.remove("show");return}
+  o.innerHTML='<div class="zvt"><button type="button" class="zvb0" data-c="min" aria-label="Kecilkan">'+CIC.dn+'</button><span class="zvl2">Zaim’s Games · Suara</span><span style="width:40px"></span></div>'
+   +'<div class="zvn">'+esc(cName(C.f))+'</div><div class="zvs" id="zvs">'+cStatus()+'</div>'+cAvatar(C.f)
+   +'<div class="zvbt"><div class="zvr"><button type="button" data-c="chat" aria-label="Pesan">'+HCH+'</button><span>Pesan</span></div>'
+   +'<div class="zvr"><button type="button" data-c="mute" class="'+(C.mute?"on":"")+'" aria-label="Bisukan">'+(C.mute?CIC.moff:CIC.mic)+'</button><span>'+(C.mute?"Bisu":"Bisukan")+'</span></div>'
+   +'<div class="zvr"><button type="button" class="end" data-c="end" aria-label="Akhiri">'+CIC.end+'</button><span>'+(C.st==="ring"&&C.dir==="out"?"Batal":"Akhiri")+'</span></div></div>';
+  o.classList.toggle("show",!C.min)}
+function cEnsure(){let o=$("zvl");if(o)return;
+  o=document.createElement("div");o.id="zvl";document.body.appendChild(o);
+  o.addEventListener("click",e=>{const b=e.target.closest("[data-c]");if(!b||!CALL)return;const k=b.dataset.c;
+    if(k==="min")cMin(1);else if(k==="mute")cMute();else if(k==="end")endCall(CALL.st==="ring"&&CALL.dir==="out"?"cancel":CALL.st==="ring"?"no":"end");
+    else if(k==="chat"){const f=CALL.f;cMin(1);open("fr",{a:"chat",f})}});
+  const p=document.createElement("button");p.id="zvp";p.type="button";p.onclick=()=>cMin(0);document.body.appendChild(p)}
+function cMin(m){if(!CALL)return;CALL.min=!!m;cPill();cRender()}
+function cPill(){const p=$("zvp");if(!p)return;const on=!!(CALL&&CALL.min);document.body.classList.toggle("zin",on);p.style.display=on?"flex":"none";
+  if(on)p.innerHTML=CIC.ph+'<span id="zvpt">'+(CALL.st==="live"?"Ketuk untuk kembali ke panggilan · "+cStatus():"Panggilan · "+cStatus())+'</span>'}
+function cTick(){const s=$("zvs"),t=$("zvpt");if(!CALL)return;const x=cStatus();if(s)s.textContent=x;if(t)t.textContent=(CALL.st==="live"?"Ketuk untuk kembali ke panggilan · ":"Panggilan · ")+x}
+function cMute(){const C=CALL;if(!C||!C.stream)return;C.mute=!C.mute;C.stream.getAudioTracks().forEach(t=>t.enabled=!C.mute);cRender()}
+function bannerC(on){let b=$("zvb");
+  if(!on){if(b){b.classList.remove("in");setTimeout(()=>{if(b&&!b.classList.contains("in"))b.remove()},400)}return}
+  if(b)b.remove();const C=CALL;b=document.createElement("div");b.id="zvb";
+  const h=[...C.f].reduce((a,ch)=>a+ch.charCodeAt(0),0);
+  b.innerHTML='<span class="zfa" style="background:'+ZC[h%ZC.length]+'">'+esc(Array.from(cName(C.f).trim())[0]||"?").toUpperCase()+'</span><div class="zvbx"><b>'+esc(cName(C.f))+'</b><small>Panggilan suara masuk</small></div><button type="button" class="zvq no" data-k="no" aria-label="Tolak">'+CIC.end+'</button><button type="button" class="zvq ok" data-k="ok" aria-label="Terima">'+CIC.ph+'</button>';
+  b.addEventListener("click",e=>{const k=e.target.closest("[data-k]");if(!k)return;if(k.dataset.k==="ok")acceptCall();else endCall("no")});
+  document.body.appendChild(b);requestAnimationFrame(()=>requestAnimationFrame(()=>b.classList.add("in")))}
+// ----- alur panggilan -----
+const MICO={audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}};
+function askNotif(){try{if(window.Notification&&Notification.permission==="default")Notification.requestPermission()}catch(e){}}
+function playRemote(rs){let a=$("zva");if(!a){a=document.createElement("audio");a.id="zva";a.autoplay=true;a.setAttribute("playsinline","");document.body.appendChild(a)}try{a.srcObject=rs;a.play().catch(()=>{})}catch(e){}}
+function wireCall(call){const C=CALL;
+  call.on("stream",rs=>{if(CALL!==C)return;playRemote(rs);goLive()});
+  call.on("close",()=>{if(CALL===C)endCall(C.st==="ring"&&C.dir==="in"?"cancel":"end",1)});
+  call.on("error",()=>{if(CALL===C)endCall("err",1)});
+  try{const pc=call.peerConnection;if(pc)pc.addEventListener("iceconnectionstatechange",()=>{if(CALL!==C)return;const s=pc.iceConnectionState;
+    if(s==="disconnected"){C.rc=1;cTick();clearTimeout(C.rct);C.rct=setTimeout(()=>{if(CALL===C&&C.rc)endCall("err",1)},15000)}
+    else if(s==="connected"||s==="completed"){C.rc=0;clearTimeout(C.rct);cTick()}
+    else if(s==="failed"||s==="closed")endCall("err",1)})}catch(e){}}
+function goLive(){const C=CALL;if(!C||C.st==="live")return;C.st="live";C.t0=Date.now();stopRing();clearTimeout(C.to);
+  clearInterval(C.tm);C.tm=setInterval(cTick,1000);wake(true);cRender();cPill();sfx("ok");
+  try{if(navigator.mediaSession){navigator.mediaSession.metadata=new MediaMetadata({title:cName(C.f),artist:"Panggilan suara · Zaim’s Games"});navigator.mediaSession.playbackState="playing";try{navigator.mediaSession.setActionHandler("hangup",()=>endCall("end"))}catch(e){}}}catch(e){}}
+async function startCall(f){
+  if(CALL){cMin(0);return toast("Kamu sedang dalam panggilan",1800)}
+  if(!ME||!isFr(f))return;
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)return toast("Browser ini tidak mendukung panggilan suara",3000);
+  if(!DATA.on[f]){addH(f,"📞 Panggilan tidak dijawab",1);deliver(f,{t:"m",x:"📞 Panggilan suara tidak terjawab"}).catch(()=>{});return toast(cName(f)+" sedang offline. Ia akan melihat panggilan tak terjawab",3000)}
+  askNotif();let st;
+  try{st=await navigator.mediaDevices.getUserMedia(MICO)}catch(e){return toast("Izinkan akses mikrofon untuk menelepon",3200)}
+  if(CALL){st.getTracks().forEach(t=>t.stop());return}
+  if(!PR||PR.destroyed){st.getTracks().forEach(t=>t.stop());lp().then(peerUp).catch(()=>{});return toast("Belum tersambung ke server, coba lagi sebentar",2600)}
+  if(PR.disconnected){try{PR.reconnect()}catch(e){}}
+  const id=mk(5);let call;
+  try{call=PR.call("zcf-"+f.toLowerCase(),st,{metadata:{n:ME.name,id}})}catch(e){}
+  if(!call){st.getTracks().forEach(t=>t.stop());return toast("Gagal memulai panggilan",2400)}
+  CALL={f,id,dir:"out",call,stream:st,st:"ring",t0:0,mute:0,min:0};
+  cEnsure();wireCall(call);cRender();cPill();ring("out");
+  CALL.to=setTimeout(()=>{if(CALL&&CALL.id===id&&CALL.st==="ring")endCall("miss")},45000)}
+function onCall(call){const f=String(call.peer).slice(4).toUpperCase(),id=String((call.metadata&&call.metadata.id)||"").slice(0,5);
+  if(!isFr(f)){try{call.close()}catch(e){}return}
+  if(CALL){try{call.close()}catch(e){}send(f,{t:"cx",id,r:"busy"}).catch(()=>{});return}
+  CALL={f,id,dir:"in",call,stream:null,st:"ring",t0:0,mute:0,min:0};cEnsure();
+  call.on("close",()=>{if(CALL&&CALL.call===call&&CALL.st==="ring")endCall("cancel",1)});
+  bannerC(1);ring("in");
+  if(document.hidden&&window.Notification&&Notification.permission==="granted"){try{const n=new Notification(cName(f),{body:"Panggilan suara masuk",tag:"zcall",requireInteraction:true});n.onclick=()=>{try{window.focus()}catch(e){}n.close()}}catch(e){}}
+  const C=CALL;C.to=setTimeout(()=>{if(CALL===C&&C.st==="ring")endCall("miss")},50000)}
+async function acceptCall(){const C=CALL;if(!C||C.dir!=="in"||C.st!=="ring")return;askNotif();let st;
+  try{st=await navigator.mediaDevices.getUserMedia(MICO)}catch(e){toast("Izinkan akses mikrofon untuk menjawab",3200);if(CALL===C)endCall("no");return}
+  if(CALL!==C){st.getTracks().forEach(t=>t.stop());return}
+  C.stream=st;C.st="conn";stopRing();clearTimeout(C.to);bannerC(0);wireCall(C.call);
+  try{C.call.answer(st)}catch(e){endCall("err");return}
+  C.to=setTimeout(()=>{if(CALL===C&&C.st!=="live")endCall("err")},20000);cRender();cPill()}
+function endCall(why,remote){const C=CALL;if(!C)return;CALL=null;
+  clearTimeout(C.to);clearTimeout(C.rct);clearInterval(C.tm);stopRing();bannerC(0);
+  try{C.call.close()}catch(e){}
+  try{C.stream&&C.stream.getTracks().forEach(t=>t.stop())}catch(e){}
+  const a=$("zva");if(a){a.pause();a.srcObject=null}
+  wake(false);try{if(navigator.mediaSession)navigator.mediaSession.playbackState="none"}catch(e){}
+  const f=C.f,live=!!C.t0,n=cName(f);
+  if(!remote)send(f,{t:"cx",id:C.id,r:why}).catch(()=>{if(!live&&C.dir==="out"&&(why==="miss"||why==="cancel"))deliver(f,{t:"m",x:"📞 Panggilan suara tidak terjawab"}).catch(()=>{})});
+  let msg="Panggilan berakhir";
+  if(live){addH(f,"📞 Panggilan suara · "+fmtD(Date.now()-C.t0),C.dir==="out")}
+  else if(C.dir==="out"){
+    if(why==="no"){addH(f,"📞 Panggilan ditolak",1);msg=n+" menolak panggilan"}
+    else if(why==="busy"){addH(f,"📞 Panggilan tidak dijawab",1);msg=n+" sedang dalam panggilan lain"}
+    else if(why==="miss"||why==="cancel"){addH(f,"📞 Panggilan tidak dijawab",1);msg=why==="miss"?n+" tidak menjawab":"Panggilan dibatalkan"}
+    else msg="Panggilan gagal tersambung"}
+  else{
+    if(why==="miss"||why==="cancel"){addH(f,"📞 Panggilan suara tidak terjawab",0);msg="Panggilan tak terjawab"}
+    else if(why==="err")msg="Panggilan gagal tersambung"}
+  const o=$("zvl");cPill();document.body.classList.remove("zin");
+  if(o&&!C.min){o.innerHTML='<div class="zvt"><span style="width:40px"></span></div><div class="zvn">'+esc(n)+'</div><div class="zvs">'+msg+'</div>'+'<div class="zvav" style="background:#555">'+esc(Array.from(n.trim())[0]||"?").toUpperCase()+'</div><div style="height:140px"></div>';o.classList.add("show");setTimeout(()=>{if(!CALL)o.classList.remove("show")},1400)}
+  else{o&&o.classList.remove("show");toast(msg,2200)}}
+function onCx(f,d){const C=CALL;if(!C||C.f!==f||(d.id&&C.id&&d.id!==C.id))return;
+  const r=String(d.r||"end");
+  if(C.st!=="live"&&C.dir==="out")endCall(r==="no"?"no":r==="busy"?"busy":"end",1);
+  else if(C.st!=="live"&&C.dir==="in")endCall("cancel",1);
+  else endCall("end",1)}
+window.addEventListener("pagehide",()=>{if(CALL)try{CALL.call.close()}catch(e){}});
 const hk=$("hkey"),w=document.createElement("div"),fb=document.createElement("button");
 w.className="zfw";fb.type="button";fb.className="hb";fb.id="zfbtn";fb.setAttribute("aria-label","Teman");
 fb.innerHTML='<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><i class="zfd" id="zfd"></i>';
