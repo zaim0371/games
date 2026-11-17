@@ -5086,7 +5086,7 @@ async function pushSync(ask){
   let step="izin notifikasi";
   try{
     if(Notification.permission==="default"&&ask)await Notification.requestPermission();
-    if(Notification.permission!=="granted")return{ok:0,why:"izin notifikasi belum diberikan"};
+    if(Notification.permission!=="granted")return{ok:0,why:"izin notifikasi belum diberikan (status Chrome: "+Notification.permission+")"};
     step="service worker (sw.js)";
     let reg=await navigator.serviceWorker.getRegistration();
     if(!reg)reg=await navigator.serviceWorker.register("sw.js");
