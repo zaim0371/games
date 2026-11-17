@@ -1464,6 +1464,20 @@ body,button,input{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF
 .bbpkl{display:none;position:absolute;top:-12px;left:50%;transform:translateX(-50%);z-index:6;padding:3px 12px;border-radius:999px;background:rgba(0,0,0,.65);color:#fff;font:600 12px system-ui,sans-serif;pointer-events:none;white-space:nowrap}
 #brb.bbpk .bbpkl{display:block}#brb.bbpk .bbt{opacity:.6;pointer-events:none}#brb.bbpk #bbpk{background:rgba(255,255,255,.7);color:#333}
 .sdcv{position:fixed;inset:0;z-index:9100;background:rgba(0,0,0,.92);display:grid;place-items:center}.sdcv img{max-width:96vw;max-height:92vh;object-fit:contain}
+.zfw{display:flex;gap:8px}.zfw .hb{position:relative}
+.zfd{position:absolute;top:7px;right:7px;width:11px;height:11px;border-radius:50%;background:var(--no);border:2px solid #e9e8e2;display:none}.zfd.on{display:block}
+#zfp{position:fixed;inset:0;z-index:9000;background:var(--bg1);display:none;flex-direction:column;padding:calc(14px + env(safe-area-inset-top,0px)) 16px calc(14px + env(safe-area-inset-bottom,0px))}#zfp.show{display:flex}
+.zfh{display:flex;align-items:center;gap:12px;padding-bottom:12px}.zfh b{font-size:20px}
+.zfb{flex:1;overflow:auto;display:flex;flex-direction:column;gap:10px}
+.zfme{padding:10px 12px 10px 16px;display:flex;align-items:center;gap:6px;flex:none}.zfs{font-size:12px;font-weight:700;opacity:.6;letter-spacing:.06em;text-transform:uppercase}.zfnm{font-size:18px;font-weight:800;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.zfpen{border:0;background:none;color:inherit;opacity:.6;padding:6px;display:grid;place-items:center;cursor:pointer;flex:none}.zfcd{margin-left:auto;letter-spacing:.12em;font-weight:800;flex:none}
+.zfadd{display:flex;gap:8px}.zfadd input{flex:1;min-width:0;padding:12px 14px;border-radius:14px;border:1.5px solid #e1dfd7;font:700 16px inherit;font-family:inherit;text-transform:uppercase;letter-spacing:.1em;background:#fff;color:var(--tx)}
+.zfr{display:flex;align-items:center;gap:8px;padding:10px 12px;background:#fff;border:1.5px solid #e6e4dc;border-radius:18px;flex:none}.zfr b{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden}.zfr small{font-weight:600;opacity:.5;letter-spacing:.08em}
+.zfe{text-align:center;opacity:.6;font-size:14px}.zfreset{align-self:center;margin-top:8px;opacity:.7;flex:none}
+.zfo{display:inline-block;width:9px;height:9px;border-radius:50%;background:#c9c7bf;margin-right:6px;vertical-align:middle}.zfo.on{background:var(--ok)}
+.zfm{flex:1;min-height:120px;overflow:auto;display:flex;flex-direction:column;gap:6px;padding:4px 0}
+.zfg{max-width:80%;padding:8px 12px;border-radius:16px;font-size:15px;word-break:break-word;background:#fff;border:1.5px solid #e6e4dc}.zfg.me{align-self:flex-end;background:var(--lime);border-color:var(--lime)}.zfg.op{align-self:flex-start}
+.zfgm{width:100%;padding:14px;font-size:16px;flex:none}
+.zfn{position:fixed;left:12px;right:12px;top:calc(12px + env(safe-area-inset-top,0px));z-index:9500;display:flex;align-items:center;gap:8px;padding:10px 12px;background:#fff;border:1.5px solid #e1dfd7;border-radius:18px;box-shadow:0 8px 24px rgba(0,0,0,.18)}.zfn span{flex:1;min-width:0}
 </style>
 </head>
 <body>
@@ -2860,7 +2874,7 @@ function onlDraw(){if(!B.onl)return;const h=OL.role==="host",bz=!!OL.busy;let s=
  s+=(OL.err?'<p class="o6m er">'+esc(OL.err)+"</p>":"")+(OL.st&&!OL.role?'<p class="o6m">'+esc(OL.st)+"</p>":"")+'<p class="o6m sm">Tips: tetap buka halaman ini selama main. Butuh internet, buka di Chrome.</p></div>';el.innerHTML=s}
 async function ohost(){if(OL.busy)return;OL.busy=1;OL.err="";OL.st="Menghubungkan…";onlDraw();
  try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Kalau dibuka lewat preview di aplikasi Claude, koneksi diblokir: buka di Chrome.";onlDraw();return}
- const mk=n=>{const code=Array.from({length:5},()=>CHRc[Math.random()*CHRc.length|0]).join(""),p=new Peer("zcsdk-"+code.toLowerCase(),PCFG);
+ const mk=n=>{const code=(window.zfTake&&zfTake("sdk"))||Array.from({length:5},()=>CHRc[Math.random()*CHRc.length|0]).join(""),p=new Peer("zcsdk-"+code.toLowerCase(),PCFG);
   const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}OL.busy=0;OL.st="";OL.err="Server PeerJS tidak merespons. Coba buka di Chrome.";onlDraw()},10000);
   p.on("open",()=>{clearTimeout(to);OL.busy=0;OL.role="host";OL.peer=p;OL.code=code;OL.st="";onlDraw()});
   p.on("connection",c=>{if(OL.conn&&OL.conn.open){try{c.close()}catch(e){}return}wire(c)});
@@ -3252,7 +3266,7 @@ function onlDraw(){if(!B.onl)return;const h=OL.role==="host",bz=!!OL.busy;let s=
  s+=(OL.err?'<p class="o6m er">'+esc(OL.err)+"</p>":"")+(OL.st&&!OL.role?'<p class="o6m">'+esc(OL.st)+"</p>":"")+'<p class="o6m sm">Tips: tetap buka halaman ini selama main. Butuh internet, buka di Chrome.</p></div>';el.innerHTML=s}
 async function ohost(){if(OL.busy)return;if(!(OL.tg>=50)){OL.err="Target skor minimal 50.";onlDraw();return}if(!(OL.tg>=100)){OL.err="Target skor minimal 100.";onlDraw();return}OL.busy=1;OL.err="";OL.st="Menghubungkan…";onlDraw();
  try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Kalau dibuka lewat preview di aplikasi Claude, koneksi diblokir: buka di Chrome.";onlDraw();return}
- const mk=n=>{const code=Array.from({length:5},()=>CHRc[Math.random()*CHRc.length|0]).join(""),p=new Peer("zcpt-"+code.toLowerCase(),PCFG);
+ const mk=n=>{const code=(window.zfTake&&zfTake("pt"))||Array.from({length:5},()=>CHRc[Math.random()*CHRc.length|0]).join(""),p=new Peer("zcpt-"+code.toLowerCase(),PCFG);
   const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}OL.busy=0;OL.st="";OL.err="Server PeerJS tidak merespons. Coba buka di Chrome.";onlDraw()},10000);
   p.on("open",()=>{clearTimeout(to);OL.busy=0;OL.role="host";OL.peer=p;OL.code=code;OL.st="";onlDraw()});
   p.on("connection",c=>{if(OL.conn&&OL.conn.open){try{c.close()}catch(e){}return}wire(c)});
@@ -3690,7 +3704,7 @@ function onlDraw(){if(!B.onl)return;const h=OL.role==="host",bz=!!OL.busy;let s=
  s+=(OL.err?'<p class="o6m er">'+esc(OL.err)+"</p>":"")+(OL.st&&!OL.role?'<p class="o6m">'+esc(OL.st)+"</p>":"")+'<p class="o6m sm">Tips: tetap buka halaman ini selama main. Butuh internet, buka di Chrome.</p></div>';el.innerHTML=s}
 async function chost(){if(OL.busy)return;OL.busy=1;OL.err="";OL.st="Menghubungkan…";onlDraw();
  try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Kalau dibuka lewat preview di aplikasi Claude, koneksi diblokir: buka di Chrome.";onlDraw();return}
- const mk=n=>{const code=Array.from({length:5},()=>CHRc[Math.random()*CHRc.length|0]).join(""),p=new Peer("zcchs-"+code.toLowerCase(),PCFG);
+ const mk=n=>{const code=(window.zfTake&&zfTake("chs"))||Array.from({length:5},()=>CHRc[Math.random()*CHRc.length|0]).join(""),p=new Peer("zcchs-"+code.toLowerCase(),PCFG);
   const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}OL.busy=0;OL.st="";OL.err="Server PeerJS tidak merespons. Coba buka di Chrome.";onlDraw()},10000);
   p.on("open",()=>{clearTimeout(to);OL.busy=0;OL.role="host";OL.peer=p;OL.code=code;OL.st="";onlDraw()});
   p.on("connection",c=>{if(OL.conn&&OL.conn.open){try{c.close()}catch(e){}return}wire(c)});
@@ -4207,7 +4221,7 @@ function onlDraw(){if(!B.onl)return;const h=OL.role==="host",bz=!!OL.busy;let s=
  s+=(OL.err?'<p class="o6m er">'+esc(OL.err)+"</p>":"")+(OL.st&&!OL.role?'<p class="o6m">'+esc(OL.st)+"</p>":"")+'<p class="o6m sm">Tips: tetap buka halaman ini selama main. Butuh internet, buka di Chrome.</p></div>';el.innerHTML=s}
 async function ohost(){if(OL.busy)return;if(!(OL.tg>=100)){OL.err="Target skor minimal 100.";onlDraw();return}OL.busy=1;OL.err="";OL.st="Menghubungkan…";onlDraw();
  try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Kalau dibuka lewat preview di aplikasi Claude, koneksi diblokir: buka di Chrome.";onlDraw();return}
- const mk=n=>{const code=Array.from({length:5},()=>CHRc[Math.random()*CHRc.length|0]).join(""),p=new Peer("zcbb-"+code.toLowerCase(),PCFG);
+ const mk=n=>{const code=(window.zfTake&&zfTake("bb"))||Array.from({length:5},()=>CHRc[Math.random()*CHRc.length|0]).join(""),p=new Peer("zcbb-"+code.toLowerCase(),PCFG);
   const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}OL.busy=0;OL.st="";OL.err="Server PeerJS tidak merespons. Coba buka di Chrome.";onlDraw()},10000);
   p.on("open",()=>{clearTimeout(to);OL.busy=0;OL.role="host";OL.peer=p;OL.code=code;OL.st="";onlDraw()});
   p.on("connection",c=>{if(OL.conn&&OL.conn.open){try{c.close()}catch(e){}return}wire(c)});
@@ -4558,7 +4572,7 @@ el.addEventListener("input",e=>{if(!B.onl)return;const t=e.target;if(t.id==="uon
 // --- host ---
 async function ohost(){if(OL.busy)return;OL.busy=1;OL.err="";OL.st="Menghubungkan…";onlDraw();
  try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Kalau kamu buka lewat preview di aplikasi Claude, koneksi internet diblokir: buka file ini di Chrome.";onlDraw();return}
- const mk=n=>{const code=Array.from({length:5},()=>CHR[zR(CHR.length)]).join(""),p=new Peer("zcuno-"+code.toLowerCase(),PCFG);
+ const mk=n=>{const code=(window.zfTake&&zfTake("uno"))||Array.from({length:5},()=>CHR[zR(CHR.length)]).join(""),p=new Peer("zcuno-"+code.toLowerCase(),PCFG);
   const to=setTimeout(()=>{if(OL.role==="host")return;try{p.destroy()}catch(e){}OL.busy=0;OL.st="";OL.err="Server PeerJS tidak merespons. Coba buka file ini di browser (Chrome) atau cek koneksi.";onlDraw()},10000);
   p.on("open",()=>{clearTimeout(to);OL.busy=0;OL.role="host";OL.peer=p;OL.code=code;OL.names=[OL.name];OL.conns=[null];OL.toks=[""];OL.seen=[0];OL.st="";ZC.bind({el,group:1,title:()=>"Chat room",name:()=>"",send:o=>sendAll({...o,from:OL.name}),ok:()=>OL.conns.length>1});hbStart();onlDraw()});
   hwire(p);
@@ -4796,6 +4810,113 @@ function homeData(){
 // ulangi animasi masuk tiap kembali ke beranda
 let hWas=true;new MutationObserver(()=>{const on=hVh.classList.contains("show");if(on&&!hWas){homeData();hVh.classList.remove("enter");void hVh.offsetWidth;hVh.classList.add("enter")}hWas=on}).observe(hVh,{attributes:true,attributeFilter:["class"]});
 homeData();
+// ---------- Teman (Supabase untuk daftar & status, PeerJS untuk chat & undangan) ----------
+(()=>{
+const LS=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);v===null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){return null}};
+const CF={url:"https://sgidwhniyoxskrsuevcb.supabase.co",key:"sb_publishable_FTZd5Hwi4TOBlwFJ_85lDw_PLcxs28k"};
+let ME=null,DATA={rel:[],names:{},on:{}},SIG="",tm=0,HB=0,busy=0,P=null,PR=null,CN={},CH=null,INV=null,UN={};
+try{ME=JSON.parse(LS("zf-me")||"null")}catch(e){}
+const GM={sudoku:["Sudoku","sdk"],chess:["Catur","chs"],uno:["UNO","uno"],pul:["Pulse Tap","pt"],blast:["Block Blast","bb"]};
+const AL="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",mk=n=>Array.from({length:n},()=>AL[zR(AL.length)]).join("");
+const hist=f=>{try{return JSON.parse(LS("zf-h-"+f)||"[]")}catch(e){return[]}},saveH=(f,a)=>LS("zf-h-"+f,JSON.stringify(a.slice(-100)));
+const isFr=f=>DATA.rel.some(r=>r.status==="accepted"&&(r.from_code===f||r.to_code===f)),opn=()=>!!(P&&P.classList.contains("show"));
+window.zfTake=k=>{const R=window.zfRoom;if(R&&R.k===k&&Date.now()-R.t<3e5){window.zfRoom=null;return R.c}return null};
+async function api(path,o){o=o||{};const r=await fetch(CF.url.replace(/\/+$/,"")+"/rest/v1/"+path,{method:o.m||"GET",headers:{apikey:CF.key,Authorization:"Bearer "+CF.key,"Content-Type":"application/json",Prefer:o.p||"return=representation"},body:o.b?JSON.stringify(o.b):undefined});
+  if(!r.ok)throw new Error(r.status);const t=await r.text();return t?JSON.parse(t):[]}
+const beat=()=>api("zg_profiles?on_conflict=code",{m:"POST",p:"resolution=merge-duplicates,return=minimal",b:{code:ME.code,name:ME.name,ts:Date.now()}});
+// ----- PeerJS: chat & undangan -----
+const PCF={config:{iceServers:[{urls:"stun:stun.l.google.com:19302"},{urls:"stun:stun.cloudflare.com:3478"}]}};
+const lp=()=>window.Peer?Promise.resolve():new Promise((res,rej)=>{const u=["https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js","https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"];let i=0;const t=()=>{if(i>=u.length)return rej();const s=document.createElement("script");s.src=u[i++];s.onload=res;s.onerror=t;document.head.appendChild(s)};t()});
+function hook(c){const f=String(c.peer).slice(4).toUpperCase();CN[f]=c;c.on("data",d=>onData(f,d));c.on("close",()=>{if(CN[f]===c)delete CN[f]})}
+function peerUp(){if(PR||!ME||!window.Peer)return;const p=PR=new Peer("zcf-"+ME.code.toLowerCase(),PCF);
+  p.on("connection",hook);p.on("disconnected",()=>{try{p.reconnect()}catch(e){}});
+  p.on("error",e=>{if(e.type==="unavailable-id"||e.type==="network"||e.type==="server-error"){try{p.destroy()}catch(_){}if(PR===p)PR=null;setTimeout(peerUp,6000)}})}
+const conn=f=>new Promise((res,rej)=>{const o=CN[f];if(o&&o.open)return res(o);if(!PR)return rej();
+  const c=PR.connect("zcf-"+f.toLowerCase(),{reliable:true,serialization:"json"}),to=setTimeout(()=>{try{c.close()}catch(e){}rej()},6000);
+  c.on("open",()=>{clearTimeout(to);hook(c);res(c)});c.on("error",()=>{clearTimeout(to);rej()})});
+const send=async(f,o)=>(await conn(f)).send(o);
+function boot(){if(HB)return;HB=setInterval(()=>{if(!document.hidden){beat().catch(()=>{});if(!opn())refresh()}},30000);lp().then(peerUp).catch(()=>{})}
+function onData(f,d){if(!d||typeof d!=="object"||!isFr(f))return;
+  if(d.t==="m"&&typeof d.x==="string"){const a=hist(f);a.push({me:0,x:d.x.slice(0,500)});saveH(f,a);sfx("recv");
+    if(opn()&&CH===f)drawChat();else{UN[f]=(UN[f]||0)+1;dot();toast((DATA.names[f]||f)+": "+d.x.slice(0,40),2200);if(opn()&&!CH&&!INV)draw(true)}}
+  else if(d.t==="inv"&&GM[d.g]&&/^[A-Z0-9]{5}$/.test(d.c))banner(f,d.g,d.c)}
+function banner(f,g,c){const o=$("zfn");if(o)o.remove();const b=document.createElement("div");b.id="zfn";b.className="zfn";
+  b.innerHTML='<span>'+esc(DATA.names[f]||f)+' mengajak main <b>'+GM[g][0]+'</b></span><button type="button" class="chip on" data-a="join">Gabung</button><button type="button" class="chip" data-a="no">✕</button>';
+  b.onclick=e=>{const a=e.target.closest("[data-a]");if(!a)return;if(a.dataset.a==="join"){try{navigator.clipboard.writeText(c)}catch(_){}close();const x=document.querySelector('[data-w="'+g+'"]');if(x)x.click();toast("Kode room "+c+" disalin. Pilih Online → Gabung",4500)}b.remove()};
+  document.body.appendChild(b);sfx("recv");setTimeout(()=>{if(b.isConnected)b.remove()},60000)}
+async function invite(f,g){const c=mk(5);
+  try{await send(f,{t:"inv",g,c,n:ME.name})}catch(e){return toast("Teman sedang offline atau belum membuka web",2600)}
+  window.zfRoom={k:GM[g][1],c,t:Date.now()};INV=null;close();const x=document.querySelector('[data-w="'+g+'"]');if(x)x.click();toast("Undangan terkirim. Pilih Online → Buat room",4500)}
+// ----- Supabase: profil, teman, status -----
+async function setup(){
+  if(!ME){const n=await dlg({title:"Nama kamu",text:"Nama yang dilihat temanmu",input:LS("zc-chname")||"",ok:"Simpan"});if(!n||!n.trim())return false;
+    const m=n.trim().match(/^([A-Za-z0-9]{6})\s+(.+)$/);ME={code:m?m[1].toUpperCase():mk(6),name:QT(m?m[2]:n,16)};LS("zf-me",JSON.stringify(ME))}
+  try{await beat();return true}catch(e){toast("Gagal terhubung. Cek koneksi internet kamu.",3200);return false}}
+async function load(){
+  const me=ME.code,rel=await api("zg_friends?select=id,from_code,to_code,status&or=(from_code.eq."+me+",to_code.eq."+me+")");
+  const cs=[...new Set(rel.map(r=>r.from_code===me?r.to_code:r.from_code))],names={},on={};
+  if(cs.length)(await api("zg_profiles?select=code,name,ts&code=in.("+cs.join(",")+")")).forEach(p=>{names[p.code]=p.name;on[p.code]=Date.now()-(+p.ts||0)<75000});
+  DATA={rel,names,on};dot();return DATA}
+const inc=()=>DATA.rel.filter(r=>r.status==="pending"&&r.to_code===ME.code);
+function dot(){const d=$("zfd");if(d)d.classList.toggle("on",!!(ME&&(inc().length||Object.keys(UN).length)))}
+const B=(a,t,x,c)=>'<button type="button" class="chip'+(c?" "+c:"")+'" data-a="'+a+'"'+(x||"")+'>'+t+'</button>';
+function row(r,k){const c=r.from_code===ME.code?r.to_code:r.from_code,n=esc(DATA.names[c]||c),id=' data-id="'+r.id+'"',f=' data-f="'+c+'"';
+  const nm='<b>'+(k==="fr"?'<i class="zfo'+(DATA.on[c]?" on":"")+'"></i>':"")+n+'<small>'+c+'</small></b>';
+  return '<div class="zfr">'+nm+(k==="in"?B("ok","Terima",id,"on")+B("del","Tolak",id):k==="out"?B("del","Batal",id):B("chat","Chat"+(UN[c]?" ("+UN[c]+")":""),f)+B("inv","Ajak",f,"on")+B("rm","✕",id))+'</div>'}
+function drawChat(){const f=CH,h=hist(f);
+  P.querySelector(".zfb").innerHTML='<div class="zfs">Chat dengan '+esc(DATA.names[f]||f)+(DATA.on[f]?" · online":" · offline")+'</div><div class="zfm" id="zfm">'+(h.map(m=>'<div class="zfg '+(m.me?"me":"op")+'">'+esc(m.x)+'</div>').join("")||'<p class="zfe">Belum ada pesan.</p>')+'</div><div class="zfadd"><input id="zfmi" maxlength="500" autocomplete="off" placeholder="Tulis pesan">'+B("send","Kirim","","on")+'</div>'+B("back","Kembali","","zfreset");
+  const m=$("zfm");if(m)m.scrollTop=m.scrollHeight}
+function draw(force){
+  if(CH)return force?drawChat():0;
+  const me=ME.code,R=DATA.rel,sig=JSON.stringify([R,DATA.names,DATA.on,UN,INV]);if(!force&&sig===SIG)return;SIG=sig;
+  if(INV){P.querySelector(".zfb").innerHTML='<div class="zfs">Ajak '+esc(DATA.names[INV]||INV)+' main</div>'+Object.keys(GM).map(g=>B("go",GM[g][0],' data-g="'+g+'"',"zfgm")).join("")+B("back","Kembali","","zfreset");return}
+  const v=($("zfin")||{}).value||"",sec=(t,a,k)=>a.length?'<div class="zfs">'+t+'</div>'+a.map(r=>row(r,k)).join(""):"",fr=R.filter(r=>r.status==="accepted");
+  P.querySelector(".zfb").innerHTML='<div class="glass zfme"><span class="zfnm">'+esc(ME.name)+'</span><button type="button" class="zfpen" data-a="edit" aria-label="Ubah nama"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button><button type="button" class="chip on zfcd" data-a="copy" aria-label="Salin kode">'+me+'</button></div>'
+    +'<div class="zfadd"><input id="zfin" maxlength="6" autocomplete="off" autocapitalize="characters" placeholder="Kode akun teman" value="'+esc(v)+'">'+B("add","Tambah","","on")+'</div>'
+    +sec("Permintaan masuk",inc(),"in")+sec("Teman ("+fr.length+")",fr,"fr")+sec("Menunggu",R.filter(r=>r.status==="pending"&&r.from_code===me),"out")
+    }
+async function refresh(force){try{await load();draw(force)}catch(e){}}
+async function act(a,id,x){
+  const R=DATA.rel,r=R.find(y=>String(y.id)===String(id));
+  try{
+    if(a==="copy"){try{await navigator.clipboard.writeText(ME.code);toast("Kode disalin",1600)}catch(e){toast("Kodemu: "+ME.code,2600)}return}
+    if(a==="edit"){const n=await dlg({title:"Ubah nama",input:ME.name,ok:"Simpan"});const t=QT(n,16);if(!t||t===ME.name)return;
+      ME.name=t;LS("zf-me",JSON.stringify(ME));await beat();draw(true);toast("Nama diubah",1600);return}
+    if(a==="back"){CH=null;INV=null;draw(true);return}
+    if(a==="chat"){CH=x;delete UN[x];dot();drawChat();return}
+    if(a==="inv"){INV=x;draw(true);return}
+    if(a==="go"){invite(INV,x);return}
+    if(a==="send"){const i=$("zfmi"),t=QT2(i&&i.value,500);if(!t)return;
+      try{await send(CH,{t:"m",x:t})}catch(e){return toast("Teman sedang offline atau belum membuka web",2600)}
+      const h=hist(CH);h.push({me:1,x:t});saveH(CH,h);drawChat();const n=$("zfmi");if(n)n.focus();return}
+    if(a==="add"){const c=(($("zfin")||{}).value||"").toUpperCase().replace(/[^A-Z0-9]/g,"");
+      if(c.length<6)return toast("Masukkan 6 karakter kode teman",2000);if(c===ME.code)return toast("Itu kodemu sendiri",2000);
+      const ex=R.find(y=>y.from_code===c||y.to_code===c);
+      if(ex&&ex.status==="accepted")return toast("Kalian sudah berteman",2000);
+      if(ex&&ex.from_code===ME.code)return toast("Permintaan sudah terkirim",2000);
+      if(ex){await api("zg_friends?id=eq."+ex.id,{m:"PATCH",b:{status:"accepted"}});sfx("ok");toast("Berteman!",1800)}
+      else{const p=await api("zg_profiles?select=code,name&code=eq."+c);if(!p.length)return toast("Kode tidak ditemukan",2200);
+        await api("zg_friends",{m:"POST",p:"return=minimal",b:{from_code:ME.code,to_code:c,status:"pending"}});sfx("ok");toast("Permintaan dikirim ke "+p[0].name,2200)}
+      const i=$("zfin");if(i)i.value=""}
+    else if(a==="ok"){await api("zg_friends?id=eq."+id,{m:"PATCH",b:{status:"accepted"}});sfx("ok")}
+    else if(a==="del"){await api("zg_friends?id=eq."+id,{m:"DELETE",p:"return=minimal"})}
+    else if(a==="rm"){const c=r&&(r.from_code===ME.code?r.to_code:r.from_code);if(!await confirmX("Hapus teman",(DATA.names[c]||c)+" akan dihapus dari daftar temanmu.","Hapus",true))return;await api("zg_friends?id=eq."+id,{m:"DELETE",p:"return=minimal"})}
+    await refresh(true)}catch(e){toast("Gagal, coba lagi",2200)}}
+function close(){clearInterval(tm);tm=0;CH=null;INV=null;if(P)P.classList.remove("show")}
+async function open(){
+  if(busy)return;busy=1;sfx("click");
+  try{if(!(await setup()))return;boot();
+    if(!P){P=document.createElement("div");P.id="zfp";P.innerHTML='<div class="zfh"><button type="button" class="hb sm" data-a="x" aria-label="Tutup"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><b>Teman</b></div><div class="zfb"></div>';document.body.appendChild(P);
+      P.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;if(b.dataset.a==="x"){if(CH||INV)act("back");else close()}else act(b.dataset.a,b.dataset.id,b.dataset.f||b.dataset.g)});
+      P.addEventListener("keydown",e=>{if(e.key!=="Enter")return;if(e.target.id==="zfin")act("add");else if(e.target.id==="zfmi")act("send")})}
+    await refresh(true);P.classList.add("show");tm=setInterval(()=>refresh(),8000)}
+  finally{busy=0}}
+const hk=$("hkey"),w=document.createElement("div"),fb=document.createElement("button");
+w.className="zfw";fb.type="button";fb.className="hb";fb.id="zfbtn";fb.setAttribute("aria-label","Teman");
+fb.innerHTML='<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><i class="zfd" id="zfd"></i>';
+hk.parentNode.insertBefore(w,hk);w.append(fb,hk);fb.onclick=open;
+if(ME){refresh();beat().catch(()=>{});boot()}
+})();
 </script>
 </body>
 </html>
