@@ -5104,11 +5104,18 @@ async function pushSync(ask){
     else if(e&&e.name==="AbortError")w="layanan push browser gagal (cek internet/Google Play Services, jangan mode penyamaran)";
     else if(e&&e.name&&e.name!=="Error")w=e.name+": "+w;
     return{ok:0,why:step+": "+w}}}
+async function notifHelp(){await dlg({title:"Notifikasi diblokir",text:"Chrome tidak lagi menampilkan kotak izin untuk web ini. Buka ikon di sebelah kiri kolom alamat → Izin / Setelan situs → Notifikasi → Izinkan. Atau: titik tiga Chrome → Setelan → Setelan situs → Notifikasi → cari web ini → Izinkan. Setelah itu muat ulang dan tekan Aktifkan lagi.",ok:"Mengerti",alert:true})}
 async function pushEnable(){
   if(isIOS()&&!isApp())return toast("iPhone/iPad: ketuk Bagikan → Tambah ke Layar Utama, buka web dari ikon itu, lalu aktifkan lagi",5200);
   if(!pushOK())return toast("Browser ini belum mendukung notifikasi",2600);
-  if(Notification.permission==="denied")return toast("Notifikasi diblokir. Izinkan lewat pengaturan situs di browser",3800);
-  const r=await pushSync(1);toast(r.ok?"Notifikasi aktif ✓":"Gagal: "+r.why,r.ok?2200:7000);HSIG="";renderHome()}
+  if(Notification.permission==="denied")return notifHelp();
+  let r=await pushSync(1);
+  // izin belum diberikan (kotak izin tidak muncul / tertutup): minta lagi lewat ketukan baru
+  if(!r.ok&&Notification.permission==="default"){
+    const y=await dlg({title:"Izinkan notifikasi?",text:"Supaya telepon dan pesan teman masuk walau web ditutup. Ketuk Izinkan, lalu pilih Izinkan di kotak Chrome. Kalau kotaknya tidak muncul, ketuk ikon lonceng/gembok di kolom alamat.",ok:"Izinkan"});
+    if(y)r=await pushSync(1)}
+  if(!r.ok&&Notification.permission==="denied")return notifHelp();
+  toast(r.ok?"Notifikasi aktif ✓":"Gagal: "+r.why,r.ok?2200:7000);HSIG="";renderHome()}
 if("serviceWorker" in navigator)navigator.serviceWorker.addEventListener("message",e=>{const f=e.data&&e.data.zopen;if(f&&isFr(f))open("fr",{a:"chat",f})});
 // ----- PeerJS: chat & undangan -----
 const PCF={config:{iceServers:[{urls:"stun:stun.l.google.com:19302"},{urls:"stun:stun.cloudflare.com:3478"},{urls:["turn:openrelay.metered.ca:80","turn:openrelay.metered.ca:443","turn:openrelay.metered.ca:443?transport=tcp","turns:openrelay.metered.ca:443?transport=tcp"],username:"openrelayproject",credential:"openrelayproject"}]}};
