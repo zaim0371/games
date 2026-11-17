@@ -2,8 +2,18 @@
 <html lang="id">
 <head>
 <meta charset="utf-8">
+<!--
+  CATATAN: web ini memakai 2 hal di luar index.html untuk notifikasi push:
+  1) sw.js (file terpisah di repo GitHub, folder yang sama dengan index.html) -> menerima & menampilkan notifikasi saat web ditutup
+  2) Supabase Edge Function "send-push" -> mengirim push ke perangkat penerima (dipicu Database Webhook pada tabel zg_msgs)
+  Tabel zg_push (Supabase) menyimpan perangkat yang mengaktifkan notifikasi. Detail lengkap ada di komentar paling bawah file ini.
+-->
 <title>Zaim’s Games</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="theme-color" content="#202020">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Zaim’s Games">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%23202020'/%3E%3Ctext x='50' y='66' font-size='54' text-anchor='middle'%3E%F0%9F%A7%A0%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1807,6 +1817,23 @@ html:not(:has(#bru.gfs:has(.un))):not(:has(#bru.gfs:has(.ures))) #gbar[data-g="u
 </div>
 <div class="modal" id="dmodal"><div class="glass card"><h2 id="dt"></h2><p id="dx"></p><input id="di" autocomplete="off" maxlength="200"><div class="row"><button class="chip" id="dno" type="button">Batal</button><button class="chip on" id="dok" type="button">OK</button></div></div></div>
 <script>
+// ===== NAV: tombol Back/geser-kembali menutup layar teratas, bukan keluar dari web =====
+window.NAV=(()=>{const S=[];let skip=0,q=[];
+const NAV={
+ push(n,c){if(S.some(x=>x.n===n))return;if(skip){q.push([n,c]);return}S.push({n,c});try{history.pushState({z:n},"")}catch(e){}},
+ close(...ns){let k=0;ns.forEach(n=>{q=q.filter(a=>a[0]!==n);const i=S.findIndex(x=>x.n===n);if(i<0)return;if(i===S.length-1){S.pop();k++}else S.splice(i,1)});
+  if(k){skip++;try{history.go(-k)}catch(e){skip--}}}};
+addEventListener("popstate",()=>{if(skip>0){skip--;if(!skip)setTimeout(()=>{while(q.length&&!skip){const a=q.shift();NAV.push(a[0],a[1])}},0);return}
+ const t=S.pop();if(t){try{t.c()}catch(e){}}});
+return NAV})();
+// Manifest & ikon aplikasi dibuat otomatis di sini (tidak perlu file manifest/ikon di GitHub). Dibutuhkan agar web bisa dipasang di Layar Utama.
+(()=>{try{const ic=n=>{const c=document.createElement("canvas");c.width=c.height=n;const x=c.getContext("2d");x.fillStyle="#202020";x.beginPath();if(x.roundRect)x.roundRect(0,0,n,n,n*.24);else x.rect(0,0,n,n);x.fill();x.fillStyle="#5e90f0";x.font="700 "+Math.round(n*.56)+"px sans-serif";x.textAlign="center";x.textBaseline="middle";x.fillText("Z",n/2,n/2+n*.03);return c.toDataURL("image/png")};
+const u=location.href.split("#")[0].split("?")[0],a=ic(192),b=ic(512);
+const m={name:"Zaim’s Games",short_name:"Zaim’s Games",start_url:u,scope:u.replace(/[^/]*$/,""),display:"standalone",background_color:"#202020",theme_color:"#202020",icons:[{src:a,sizes:"192x192",type:"image/png"},{src:b,sizes:"512x512",type:"image/png"}]};
+const l=document.createElement("link");l.rel="manifest";l.href=URL.createObjectURL(new Blob([JSON.stringify(m)],{type:"application/manifest+json"}));document.head.appendChild(l);
+const t=document.createElement("link");t.rel="apple-touch-icon";t.href=a;document.head.appendChild(t)}catch(e){}})();
+// >>> MEMAKAI sw.js: file terpisah di repo (sejajar dengan index.html). Kalau sw.js tidak ada, notifikasi saat web ditutup tidak jalan.
+if("serviceWorker" in navigator)addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{})});
 const $=s=>document.getElementById(s);
 function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
 window.zFold=function(root){
@@ -1846,6 +1873,7 @@ function dlg(o){return new Promise(res=>{const m=$("dmodal"),i=$("di"),ok=$("dok
   i.onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();ok.click()}};
   m.classList.add("show");if(inp)setTimeout(()=>{i.focus();i.select()},280)})}
 const confirmX=(title,text,okTxt,danger)=>dlg({title,text,ok:okTxt||"Ya",danger});
+(()=>{const m=$("dmodal");if(!m)return;new MutationObserver(()=>{if(m.classList.contains("show"))NAV.push("dlg",()=>m.click());else NAV.close("dlg")}).observe(m,{attributes:true,attributeFilter:["class"]})})();
 const alertX=(text,title)=>dlg({title:title||"Info",text,ok:"OK",alert:true});
 let SND=true;try{SND=localStorage.getItem("zc-snd")!=="0"}catch(e){}
 let AC=null;
@@ -3641,8 +3669,9 @@ function pick(b,a){
 const ONL={sudoku:["logic","Sudoku",()=>{brPlay("brs");brS("online")}],chess:["logic","Catur",()=>{brPlay("brc");brC("online")}],pul:["reaction","Pulse Tap",()=>{brPlay("brr");brR("pul","online")}],blast:["logic","Block Blast",()=>{brPlay("brb");brBO()}],uno:["logic","UNO",()=>{brPlay("bru");brU("online")}]};
 window.zfLaunch=g=>{const m=ONL[g];if(!m)return;go(m[0]);const i=CATS[m[0]].items.findIndex(x=>x.n===m[1]),a=CATS[m[0]].items[i],b=$("brl").querySelector('.ap[data-i="'+i+'"]');if(b&&a)launch(b,{...a,k:0,f:m[2]});else m[2]()};
 const vh=$("vh"),vg=$("v4");
-function go(k){cat=k;vh.classList.remove("show");vg.classList.add("show");render();zGame.sync()}
-function home(){vg.classList.remove("show");vh.classList.add("show");paint();zGame.sync()}
+function gPop(){const b=$("gback");b&&b.onclick&&b.onclick();if(vg.classList.contains("show"))NAV.push("g",gPop)}
+function go(k){cat=k;vh.classList.remove("show");vg.classList.add("show");render();zGame.sync();NAV.push("g",gPop)}
+function home(){vg.classList.remove("show");vh.classList.add("show");paint();zGame.sync();NAV.close("g")}
 document.querySelector(".hts").addEventListener("click",e=>{const t=e.target.closest(".ht");if(!t)return;sfx("click");const g=t.dataset.g;
   if(g==="memory"||g==="math"||g==="logic"||g==="reaction")go(g);else toast("Segera hadir",2000)});
 document.querySelector(".hws").addEventListener("click",e=>{const w=e.target.closest(".hw");if(!w)return;sfx("click");
@@ -5012,7 +5041,7 @@ homeData();
 (()=>{
 const LS=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);v===null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){return null}};
 const CF={url:"https://ypdtaoccfxzquyfsiloy.supabase.co",key:"sb_publishable_2crOjnp8Rf4zhCt2bdO_Ug_rH4enKGH"};
-let ZM="fr",ZN=0,REC=null,RB=0,AU=null,PN={},ME=null,DATA={rel:[],names:{},on:{}},SIG="",tm=0,HB=0,busy=0,P=null,PR=null,CN={},CH=null,INV=null,UN={},SEL=null,OPT={},INVP=0,OUT=null,BN=null;
+let DIRECT=0,ZM="fr",ZN=0,REC=null,RB=0,AU=null,PN={},ME=null,DATA={rel:[],names:{},on:{}},SIG="",tm=0,HB=0,busy=0,P=null,PR=null,CN={},CH=null,INV=null,UN={},SEL=null,OPT={},INVP=0,OUT=null,BN=null;
 try{ME=JSON.parse(LS("zf-me")||"null");UN=JSON.parse(LS("zf-un")||"{}")||{}}catch(e){}
 const saveUN=()=>LS("zf-un",JSON.stringify(UN));
 const LVO=[["mudah","Mudah"],["sedang","Sedang"],["sulit","Sulit"]];
@@ -5038,6 +5067,33 @@ window.zfLobby=o=>{const G=Object.values(GM).find(x=>x.k===o.k)||GM.sudoku,opp=o
 async function api(path,o){o=o||{};const r=await fetch(CF.url.replace(/\/+$/,"")+"/rest/v1/"+path,{method:o.m||"GET",headers:Object.assign({apikey:CF.key,"Content-Type":"application/json",Prefer:o.p||"return=representation"},CF.key.startsWith("sb_")?{}:{Authorization:"Bearer "+CF.key}),body:o.b?JSON.stringify(o.b):undefined});
   if(!r.ok){let g="";try{const j=await r.json();g=j.code||j.error_code||""}catch(_){}const er=new Error(r.status);er.pg=g;throw er}const t=await r.text();return t?JSON.parse(t):[]}
 const beat=()=>api("zg_profiles?on_conflict=code",{m:"POST",p:"resolution=merge-duplicates,return=minimal",b:{code:ME.code,name:ME.name,ts:Date.now()}});
+
+// ----- notifikasi push (tetap masuk walau browser/web ditutup) -----
+// Alur: tombol "Aktifkan" -> izin notifikasi -> langganan push disimpan ke tabel Supabase "zg_push"
+//   -> saat ada pesan baru masuk ke tabel "zg_msgs", Database Webhook memanggil Supabase Edge Function "send-push"
+//   -> fungsi itu mengirim push -> sw.js (service worker di repo GitHub) menampilkan notifikasinya.
+// VAPID di bawah = kunci PUBLIK (aman ada di sini). Pasangan privatnya hanya ada di Supabase Secrets (VAPID_PRIVATE), jangan ditaruh di file ini.
+const VAPID="BOcT8BtJPxfjfYWBg_utyiLTSXeed29hT9xRYGRUGWUJYj3MC8V4tyoA7Qo-u16F6aRKWlIcX1qyQ9Oe85imxCo";
+const pushOK=()=>VAPID.length>40&&"serviceWorker" in navigator&&"PushManager" in window&&"Notification" in window;
+const b64u=t=>{t=(t+"=".repeat((4-t.length%4)%4)).replace(/-/g,"+").replace(/_/g,"/");return Uint8Array.from(atob(t),c=>c.charCodeAt(0))};
+const isIOS=()=>/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+const isApp=()=>!!(navigator.standalone||(window.matchMedia&&matchMedia("(display-mode: standalone)").matches));
+const needPush=()=>{try{return !!ME&&VAPID.length>40&&(!("Notification" in window)||Notification.permission!=="granted"||LS("zf-push")!==ME.code)}catch(e){return false}};
+// Menyimpan langganan push perangkat ini ke Supabase (tabel zg_push). Butuh sw.js sudah terdaftar.
+async function pushSync(ask){if(!ME||!pushOK())return false;
+  try{if(Notification.permission==="default"&&ask)await Notification.requestPermission();
+    if(Notification.permission!=="granted")return false;
+    const reg=await Promise.race([navigator.serviceWorker.ready,new Promise((_,r)=>setTimeout(r,6000))]);let sub=await reg.pushManager.getSubscription();
+    if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64u(VAPID)});
+    const j=sub.toJSON();
+    await api("zg_push?on_conflict=endpoint",{m:"POST",p:"resolution=merge-duplicates,return=minimal",b:{endpoint:j.endpoint,code:ME.code,p256dh:j.keys.p256dh,auth:j.keys.auth,ts:Date.now()}});
+    LS("zf-push",ME.code);return true}catch(e){return false}}
+async function pushEnable(){
+  if(isIOS()&&!isApp())return toast("iPhone/iPad: ketuk Bagikan → Tambah ke Layar Utama, buka web dari ikon itu, lalu aktifkan lagi",5200);
+  if(!pushOK())return toast("Browser ini belum mendukung notifikasi",2600);
+  if(Notification.permission==="denied")return toast("Notifikasi diblokir. Izinkan lewat pengaturan situs di browser",3800);
+  const ok=await pushSync(1);toast(ok?"Notifikasi aktif ✓":"Gagal mengaktifkan notifikasi",2200);HSIG="";renderHome()}
+if("serviceWorker" in navigator)navigator.serviceWorker.addEventListener("message",e=>{const f=e.data&&e.data.zopen;if(f&&isFr(f))open("fr",{a:"chat",f})});
 // ----- PeerJS: chat & undangan -----
 const PCF={config:{iceServers:[{urls:"stun:stun.l.google.com:19302"},{urls:"stun:stun.cloudflare.com:3478"},{urls:["turn:openrelay.metered.ca:80","turn:openrelay.metered.ca:443","turn:openrelay.metered.ca:443?transport=tcp","turns:openrelay.metered.ca:443?transport=tcp"],username:"openrelayproject",credential:"openrelayproject"}]}};
 const lp=()=>window.Peer?Promise.resolve():new Promise((res,rej)=>{const u=["https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js","https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"];let i=0;const t=()=>{if(i>=u.length)return rej();const s=document.createElement("script");s.src=u[i++];s.onload=res;s.onerror=t;document.head.appendChild(s)};t()});
@@ -5261,11 +5317,11 @@ async function act(a,id,x,bt){
     if(a==="rcancel"){recStop(false);return}
     if(a==="play"){zplay(x);return}
     if(a==="view"){zview(x);return}
-    if(a==="back"){recStop(false);zstop();CH=null;INV=null;SEL=null;OPT={};INVP=0;ZN=0;draw(true);return}
-    if(a==="new"){ZN=1;INV=null;CH=null;draw(true);return}
+    if(a==="back"){NAV.close("zfs");recStop(false);zstop();CH=null;INV=null;SEL=null;OPT={};INVP=0;ZN=0;draw(true);return}
+    if(a==="new"){ZN=1;INV=null;CH=null;NAV.push("zfs",()=>act("back"));draw(true);return}
     if(a==="tofr"){ZM="fr";ZN=0;draw(true);return}
-    if(a==="chat"){CH=x;ZN=0;delete UN[x];saveUN();dot();drawChat();return}
-    if(a==="inv"){INV=x;SEL=null;OPT={};INVP=0;draw(true);return}
+    if(a==="chat"){CH=x;ZN=0;delete UN[x];saveUN();dot();NAV.push("zfs",()=>act("back"));drawChat();return}
+    if(a==="inv"){INV=x;SEL=null;OPT={};INVP=0;NAV.push("zfs",()=>act("back"));draw(true);return}
     if(a==="pg"){if(!GM[x])return;if(SEL!==x){SEL=x;OPT={};GM[x].opt.forEach(o=>OPT[o.k]=o.d);sfx("click");invUpd()}return}
     if(a==="op"){const g=SEL&&GM[SEL],o=g&&g.opt.find(y=>y.k===bt.dataset.o);if(!o)return;const v=o.v.find(y=>String(y[0])===bt.dataset.v);if(!v)return;OPT[o.k]=v[0];sfx("click");
       bt.parentNode.querySelectorAll(".zoc").forEach(y=>y.classList.toggle("on",y===bt));return}
@@ -5287,17 +5343,17 @@ async function act(a,id,x,bt){
     else if(a==="del"){await api("zg_friends?id=eq."+id,{m:"DELETE",p:"return=minimal"})}
     else if(a==="rm"){const c=r&&(r.from_code===ME.code?r.to_code:r.from_code);if(!await confirmX("Hapus teman",(DATA.names[c]||c)+" akan dihapus dari daftar temanmu.","Hapus",true))return;await api("zg_friends?id=eq."+id,{m:"DELETE",p:"return=minimal"})}
     await refresh(true)}catch(e){toast("Gagal, coba lagi",2200)}}
-function close(){recStop(false);zstop();clearInterval(tm);tm=0;CH=null;INV=null;SEL=null;OPT={};INVP=0;ZN=0;if(P)P.classList.remove("show")}
+function close(){recStop(false);zstop();clearInterval(tm);tm=0;CH=null;INV=null;SEL=null;OPT={};INVP=0;ZN=0;DIRECT=0;if(P)P.classList.remove("show");NAV.close("zfs","zfp")}
 async function open(m,t){
   if(busy)return;busy=1;sfx("click");
   try{if(!(await setup()))return;boot();if(!PR||PR.destroyed){PR=null;lp().then(peerUp).catch(()=>{})}ZM=m||"fr";CH=null;INV=null;SEL=null;OPT={};INVP=0;ZN=0;
     if(t&&t.f&&isFr(t.f)){if(t.a==="chat"){CH=t.f;delete UN[t.f];saveUN();dot()}else if(t.a==="inv"){INV=t.f}}
     if(!P){P=document.createElement("div");P.id="zfp";P.innerHTML='<div class="zfh"><button type="button" class="hb sm" data-a="x" aria-label="Tutup"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><div class="zft" id="zft"><b>Teman</b></div><button type="button" class="zfpen zfnw" data-a="new" id="zfnw" aria-label="Chat baru" hidden><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button type="button" class="zfpen zfcl" data-a="call" id="zfcall" aria-label="Telepon" hidden><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></button><button type="button" class="zfpen zfcl" data-a="vcall" id="zfvcall" aria-label="Video call" hidden><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="13" height="12" rx="3"/><path d="M15 10.5l6-3.5v10l-6-3.5z"/></svg></button></div><div class="zfb"></div><input type="file" id="zff1" accept="image/*" hidden><input type="file" id="zff2" accept="image/*" capture="environment" hidden>';document.body.appendChild(P);
-      P.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;if(b.dataset.a==="x"){if(CH||INV||ZN)act("back");else close()}else act(b.dataset.a,b.dataset.id,b.dataset.f||b.dataset.g||b.dataset.u,b)});
+      P.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;if(b.dataset.a==="x"){if(!DIRECT&&(CH||INV||ZN))act("back");else close()}else act(b.dataset.a,b.dataset.id,b.dataset.f||b.dataset.g||b.dataset.u,b)});
       P.addEventListener("change",e=>{const t=e.target;if(t.id!=="zff1"&&t.id!=="zff2")return;const fl=t.files&&t.files[0];t.value="";if(fl)zsendImg(fl)});
       P.addEventListener("keydown",e=>{if(e.key!=="Enter")return;if(e.target.id==="zfin")act("add");else if(e.target.id==="zfmi")act("send");else if(e.target.classList&&e.target.classList.contains("zfc"))e.target.click()});
       P.addEventListener("input",e=>{if(e.target.id==="zfmi"){zgo();return}if(e.target.id!=="zfq")return;const q=e.target.value.trim().toLowerCase();P.querySelectorAll(".zfc[data-n]").forEach(r=>{r.style.display=r.dataset.n.includes(q)?"":"none"})})}
-    await refresh(true);if((CH||INV)&&!P.querySelector(".zfb").innerHTML)draw(true);P.classList.add("show");tm=setInterval(()=>refresh(),8000)}
+    await refresh(true);if((CH||INV)&&!P.querySelector(".zfb").innerHTML)draw(true);P.classList.add("show");DIRECT=(CH||INV)?1:0;NAV.push("zfp",close);tm=setInterval(()=>refresh(),8000)}
   finally{busy=0}}
 
 // ----- beranda: kategori "Main dengan teman" -----
@@ -5317,11 +5373,12 @@ function renderHome(){const el=$("zhfr");if(!el)return;
         +'<span class="zfbs"><button type="button" class="zfb1 ic" data-hf="chat" data-f="'+ea(c)+'" aria-label="Chat '+ea(n)+'">'+HCH+(u?'<i class="zfub">'+(u>9?"9+":u)+'</i>':'')+'</button>'
         +'<button type="button" class="zfb1 on" data-hf="inv" data-f="'+ea(c)+'" aria-label="Ajak '+ea(n)+' main">'+HPL+'<span>Ajak main</span></button>'
         +'<button type="button" class="zfb1 ic zfph" data-hf="vcall" data-f="'+ea(c)+'" aria-label="Video call">'+CIC.vd+'</button><button type="button" class="zfb1 ic zfph" data-hf="call" data-f="'+ea(c)+'" aria-label="Telepon '+ea(n)+'">'+CIC.ph+'</button></span></div>'}).join("")}
+  if(needPush()){sig+="|np";h+='<div class="zfq zfe0"><span class="zt"><b>Notifikasi</b><em>Terima pesan walau web ditutup</em></span><button type="button" class="zfb1 on" data-hf="push"><span>Aktifkan</span></button></div>'}
   if(sig===HSIG)return;HSIG=sig;el.innerHTML=h}
 (()=>{const el=$("zhfr");if(!el)return;
   el.addEventListener("click",e=>{const b=e.target.closest("[data-hf]");if(!b)return;
     const k=b.dataset.hf,f=b.dataset.f;
-    if(k==="open")open("fr");else if(k==="call")startCall(f);else if(k==="vcall")startCall(f,1);else open("fr",{a:k,f})})})();
+    if(k==="push")pushEnable();else if(k==="open")open("fr");else if(k==="call")startCall(f);else if(k==="vcall")startCall(f,1);else open("fr",{a:k,f})})})();
 // ----- panggilan suara (WebRTC lewat PeerJS) -----
 let CALL=null,ACX=null,RTM=0,VTM=0,WL=null;
 const CIC={
@@ -5520,8 +5577,108 @@ fb.innerHTML='<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke
 const cb=document.createElement("button");cb.type="button";cb.className="hb";cb.id="zfcbtn";cb.setAttribute("aria-label","Chat");
 cb.innerHTML='<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg><i class="zfd" id="zfd2"></i>';
 hk.parentNode.insertBefore(w,hk);w.append(fb,cb,hk);fb.onclick=()=>open("fr");cb.onclick=()=>open("chat");
-if(ME){refresh();beat().catch(()=>{});boot()}dot();
+if(ME){refresh();beat().catch(()=>{});boot();pushSync(0)}dot();
+setTimeout(async()=>{const c=(new URLSearchParams(location.search).get("chat")||"").toUpperCase();if(!c||!ME)return;try{history.replaceState(history.state,"",location.pathname)}catch(e){}await refresh(true);if(isFr(c))open("fr",{a:"chat",f:c})},1200);
 })();
 </script>
+
+<!--
+=====================================================================
+CATATAN SETUP NOTIFIKASI (semua ada di sini, tidak ikut tampil di web)
+=====================================================================
+Yang diunggah ke GitHub: index.html + sw.js (isi sw.js ada di bawah).
+
+[1] SQL (Supabase > SQL Editor > Run)
+create table if not exists public.zg_push (
+  endpoint text primary key,
+  code text not null,
+  p256dh text not null,
+  auth text not null,
+  ts bigint
+);
+create index if not exists zg_push_code_idx on public.zg_push (code);
+alter table public.zg_push enable row level security;
+drop policy if exists zg_push_all on public.zg_push;
+create policy zg_push_all on public.zg_push for all to anon using (true) with check (true);
+grant select, insert, update, delete on public.zg_push to anon;
+
+[2] sw.js (buat file baru bernama sw.js di repo, tempel isi ini)
+self.addEventListener("install",()=>self.skipWaiting());
+self.addEventListener("activate",e=>e.waitUntil(self.clients.claim()));
+self.addEventListener("push",e=>{
+  let d={};try{d=e.data?e.data.json():{}}catch(_){d={}}
+  e.waitUntil((async()=>{
+    const cs=await self.clients.matchAll({type:"window",includeUncontrolled:true});
+    if(cs.some(c=>c.visibilityState==="visible"))return;
+    await self.registration.showNotification(d.title||"Zaim’s Games",{body:d.body||"Pesan baru",tag:d.tag||"zg",renotify:true,data:{from:d.from||""}});
+  })());
+});
+self.addEventListener("notificationclick",e=>{
+  e.notification.close();
+  const from=(e.notification.data&&e.notification.data.from)||"";
+  e.waitUntil((async()=>{
+    const cs=await self.clients.matchAll({type:"window",includeUncontrolled:true});
+    if(cs.length){const c=cs[0];try{await c.focus()}catch(_){}if(from)c.postMessage({zopen:from});return}
+    await self.clients.openWindow("./"+(from?"?chat="+encodeURIComponent(from):""));
+  })());
+});
+
+[3] Edge Function (Supabase > Edge Functions > Deploy a new function > Via Editor, nama: send-push)
+// Edge Function: dipanggil Database Webhook tiap ada baris baru di zg_msgs,
+// lalu mengirim Web Push ke semua perangkat penerima.
+import webpush from "npm:web-push@3.6.7";
+import { createClient } from "npm:@supabase/supabase-js@2";
+
+webpush.setVapidDetails(
+  Deno.env.get("VAPID_SUBJECT")!,   // mis. mailto:kamu@email.com
+  Deno.env.get("VAPID_PUBLIC")!,
+  Deno.env.get("VAPID_PRIVATE")!,
+);
+const db = createClient(
+  Deno.env.get("SUPABASE_URL")!,
+  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+);
+
+Deno.serve(async (req) => {
+  try {
+    const { record } = await req.json();
+    const b = record?.body;
+    if (!record || !b || b.t !== "m" || typeof b.x !== "string") return new Response("skip");
+
+    const [{ data: from }, { data: subs }] = await Promise.all([
+      db.from("zg_profiles").select("name").eq("code", record.from_code).maybeSingle(),
+      db.from("zg_push").select("*").eq("code", record.to_code),
+    ]);
+    if (!subs?.length) return new Response("no subs");
+
+    const payload = JSON.stringify({
+      title: from?.name || "Pesan baru",
+      body: b.x.slice(0, 140),
+      from: record.from_code,
+      tag: "chat-" + record.from_code,
+    });
+
+    await Promise.all(subs.map(async (s) => {
+      try {
+        await webpush.sendNotification(
+          { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },
+          payload, { TTL: 86400, urgency: "high" },
+        );
+      } catch (e) {
+        // langganan sudah tidak berlaku → hapus
+        if (e?.statusCode === 404 || e?.statusCode === 410)
+          await db.from("zg_push").delete().eq("endpoint", s.endpoint);
+      }
+    }));
+    return new Response("ok");
+  } catch (e) {
+    return new Response(String(e), { status: 500 });
+  }
+});
+
+Secrets (Edge Functions > Secrets): VAPID_PUBLIC, VAPID_PRIVATE, VAPID_SUBJECT (mis. mailto:emailmu@gmail.com)
+[4] Webhook (Database > Webhooks > Create): tabel zg_msgs, event Insert, tipe Supabase Edge Function, pilih send-push
+=====================================================================
+-->
 </body>
 </html>
