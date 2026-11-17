@@ -1469,7 +1469,7 @@ body,button,input{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF
 #zfp{position:fixed;inset:0;z-index:9000;background:var(--bg1);display:none;flex-direction:column;padding:calc(14px + env(safe-area-inset-top,0px)) 16px calc(14px + env(safe-area-inset-bottom,0px))}#zfp.show{display:flex}
 .zfh{display:flex;align-items:center;gap:12px;padding-bottom:12px}.zfh b{font-size:20px}
 .zfb{flex:1;overflow:auto;display:flex;flex-direction:column;gap:10px}
-.zfme{padding:10px 12px 10px 16px;display:flex;align-items:center;gap:6px;flex:none}.zfs{font-size:12px;font-weight:700;opacity:.6;letter-spacing:.06em;text-transform:uppercase}.zfnm{font-size:18px;font-weight:800;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.zfpen{border:0;background:none;color:inherit;opacity:.6;padding:6px;display:grid;place-items:center;cursor:pointer;flex:none}.zfcd{margin-left:auto;letter-spacing:.12em;font-weight:800;flex:none}
+.zfme{padding:10px 12px 10px 16px;display:flex;align-items:center;gap:6px;flex:none}.zfs{font-size:12px;font-weight:700;opacity:.6;letter-spacing:.06em;text-transform:uppercase}.zfnm{font-size:18px;font-weight:800;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.zfpen{border:0;background:none;color:inherit;opacity:.6;padding:6px;display:grid;place-items:center;cursor:pointer;flex:none}.zfcw{margin-left:auto;flex:none;display:flex;flex-direction:column;align-items:center;gap:3px}.zfcw small{font-size:11px;font-weight:700;opacity:.55;letter-spacing:.04em}.zfcd{letter-spacing:.12em;font-weight:800;flex:none}
 .zfadd{display:flex;gap:8px}.zfadd input{flex:1;min-width:0;padding:12px 14px;border-radius:14px;border:1.5px solid #e1dfd7;font:700 16px inherit;font-family:inherit;text-transform:uppercase;letter-spacing:.1em;background:#fff;color:var(--tx)}
 .zfr{display:flex;align-items:center;gap:8px;padding:10px 12px;background:#fff;border:1.5px solid #e6e4dc;border-radius:18px;flex:none}.zfr b{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden}.zfr small{font-weight:600;opacity:.5;letter-spacing:.08em}
 .zfe{text-align:center;opacity:.6;font-size:14px}.zfreset{align-self:center;margin-top:8px;opacity:.7;flex:none}
@@ -1492,8 +1492,127 @@ body,button,input{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF
 .zfg i{display:block;font-style:normal;font-size:10.5px;opacity:.55;text-align:right;margin-top:2px}
 .zfbar{display:flex;gap:8px;align-items:center;flex:none}.zfbar input{flex:1;min-width:0;padding:11px 16px;border-radius:22px;border:1.5px solid #e1dfd7;font:500 16px inherit;font-family:inherit;background:#fff;color:var(--tx)}
 .zfsd{flex:none;width:42px;height:42px;border-radius:50%;border:0;background:#007AFF;color:#fff;display:grid;place-items:center;cursor:pointer}
+.zfbar .zfpill{flex:1;min-width:0;display:flex;align-items:center;background:#fff;border:1.5px solid #e1dfd7;border-radius:22px;padding:0 2px}
+.zfbar .zfpill input{flex:1;min-width:0;border:0;border-radius:0;background:none;padding:11px 4px;outline:none}
+.zfic{flex:none;width:38px;height:40px;border:0;background:none;color:#8E8E93;display:grid;place-items:center;cursor:pointer}
+.zfsd.zfx{background:#e5252c}.zfrec{background:#fff;border:1.5px solid #e1dfd7;border-radius:26px;padding:4px}
+.zfrd{flex:none;width:10px;height:10px;border-radius:50%;background:#e5252c;animation:zfbk 1s infinite}@keyframes zfbk{50%{opacity:.25}}
+#zfrt{font-variant-numeric:tabular-nums;font-size:16px}.zfrs{flex:1;opacity:.55;font-size:14px}
+.zfg.zfmd{padding:4px}.zfim{display:block;width:min(240px,62vw);max-width:100%;border-radius:12px;cursor:pointer;background:#e3e2dc;min-height:80px;object-fit:cover}.zfmd i{padding:0 6px 2px}
+.zfau{display:flex;align-items:center;gap:8px;min-width:190px;padding:2px 0}
+.zfpl{flex:none;width:34px;height:34px;border-radius:50%;border:0;background:#007AFF;color:#fff;display:grid;place-items:center;cursor:pointer}.zfpl .pa{display:none}.zfpl.on .pa{display:block}.zfpl.on .pp{display:none}
+.zfpg{flex:1;height:4px;border-radius:2px;background:rgba(0,0,0,.15);overflow:hidden}.zfpf{display:block;height:100%;width:0;background:#007AFF}.zfau small{flex:none;font-size:12px;opacity:.6;font-variant-numeric:tabular-nums}
+.zfpn{font-size:14px;opacity:.6}
+.zfiv{position:fixed;inset:0;z-index:9600;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center}.zfiv img{max-width:100%;max-height:100%;object-fit:contain}
+.zfivx{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:14px;border:0;background:none;color:#fff;font-size:28px;cursor:pointer}
 .zfgm{width:100%;padding:14px;font-size:16px;flex:none}
 .zfn{position:fixed;left:12px;right:12px;top:calc(12px + env(safe-area-inset-top,0px));z-index:9500;display:flex;align-items:center;gap:8px;padding:10px 12px;background:#fff;border:1.5px solid #e1dfd7;border-radius:18px;box-shadow:0 8px 24px rgba(0,0,0,.18)}.zfn span{flex:1;min-width:0}
+/* ===== Ajak teman: pilih game ===== */
+.zim{--s1:#c7c7cc;--s2:#aeaeb2;display:flex;flex-direction:column;gap:14px;flex:1;min-height:0;padding:2px 8px 4px}
+.zihd{display:flex;align-items:center;gap:12px;padding:12px 14px;background:#fff;border:1.5px solid #e6e4dc;border-radius:22px;flex:none;animation:zIn .55s cubic-bezier(.2,1,.3,1) backwards}
+.zihd .zfav{width:48px;height:48px}
+.zihd>div{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.25}
+.zihd small{font-size:12px;font-weight:600;opacity:.55}
+.zihd b{font-size:18px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.zist{flex:none;display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:6px 11px;border-radius:99px;background:#eceae3;color:#8a887f}
+.zist::before{content:"";width:8px;height:8px;border-radius:50%;background:#c3c1b8}
+.zist.on{background:rgba(48,200,100,.14);color:#1b8a45}
+.zist.on::before{background:var(--ok);animation:zDot 1.8s ease-out infinite}
+.zis{flex:none;margin:2px 4px -4px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.55;animation:zIn .55s .05s cubic-bezier(.2,1,.3,1) backwards}
+.zig{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:none;perspective:900px}
+.zgc{position:relative;overflow:hidden;isolation:isolate;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:12px;min-height:138px;padding:14px;border:0;border-radius:26px;color:#fff;text-align:left;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;
+ background:linear-gradient(150deg,var(--c1),var(--c2));box-shadow:0 8px 18px -10px var(--c2);
+ animation:zCard .7s cubic-bezier(.2,1.25,.35,1) backwards;animation-delay:calc(var(--i)*75ms + 90ms);
+ transition:transform .42s cubic-bezier(.2,1.35,.4,1),opacity .3s,filter .3s,box-shadow .35s}
+.zgc::before{content:"";position:absolute;z-index:-1;right:-34px;bottom:-40px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.17);transition:transform .7s cubic-bezier(.2,1,.3,1)}
+.zgc::after{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.34) 50%,transparent 65%);transform:translateX(-120%)}
+.zgc.on::after{animation:zShine .9s .05s ease-out}
+.zgc:active{transform:scale(.95)}
+.zgc.on{transform:translateY(-4px) scale(1.03);box-shadow:0 16px 30px -10px var(--c2),0 0 0 3px #fff,0 0 0 6px var(--c2)}
+.zgc.on:active{transform:translateY(-2px) scale(1)}
+.zgc.on::before{transform:scale(2.1)}
+.zgc.off{opacity:.5;filter:saturate(.55);transform:scale(.965)}
+.zgi{flex:none;width:46px;height:46px;border-radius:15px;display:grid;place-items:center;background:rgba(255,255,255,.22);box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
+.zgi svg,.zbi svg,.zlg svg{fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.zgi svg{width:25px;height:25px}
+.zgc.on .zgi{animation:zWig .65s cubic-bezier(.3,1.4,.5,1)}
+.zgt{display:flex;flex-direction:column;gap:2px;min-width:0}
+.zgt b{font-size:18px;font-weight:800;line-height:1.1;letter-spacing:-.01em}
+.zgt em{font-style:normal;font-size:12px;line-height:1.3;opacity:.88}
+.zck{position:absolute;top:12px;right:12px;width:26px;height:26px;border-radius:50%;background:#fff;display:grid;place-items:center;transform:scale(0) rotate(-90deg);transition:transform .45s cubic-bezier(.2,1.6,.4,1)}
+.zck svg{width:15px;height:15px;fill:none;stroke:var(--c2);stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset .4s .15s ease-out}
+.zgc.on .zck{transform:none}.zgc.on .zck svg{stroke-dashoffset:0}
+.zgc.w{grid-column:1/-1;flex-direction:row;align-items:center;justify-content:flex-start;min-height:0;gap:14px;padding:14px 16px}
+.zgc.w .zgt{flex:1}
+.zio{display:grid;grid-template-rows:0fr;transition:grid-template-rows .5s cubic-bezier(.2,.9,.2,1);flex:none;margin-top:-14px}
+.zio.open{grid-template-rows:1fr;margin-top:0}
+.zio>div{overflow:hidden;min-height:0}
+.zioi{background:#fff;border:1.5px solid #e6e4dc;border-radius:22px;padding:14px 14px 16px}
+.zio.open .zioi{animation:zIn .45s cubic-bezier(.2,1,.3,1) backwards}
+.zol{margin:12px 2px 7px;font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;opacity:.55}
+.zol:first-child{margin-top:0}
+.zor{display:flex;gap:7px}
+.zoc{flex:1 1 0;min-width:0;padding:11px 6px;border:1.5px solid #e1dfd7;border-radius:13px;background:#faf9f5;color:var(--tx);font:700 14px inherit;font-family:inherit;cursor:pointer;transition:transform .3s cubic-bezier(.2,1.4,.4,1),background .25s,color .25s,box-shadow .25s,border-color .25s}
+.zoc.on{background:linear-gradient(150deg,var(--s1),var(--s2));border-color:transparent;color:#fff;transform:scale(1.05);box-shadow:0 6px 14px -5px var(--s2)}
+.zoc:active{transform:scale(.94)}
+.zcta{margin-top:auto;padding-top:4px;flex:none;position:sticky;bottom:0;background:linear-gradient(to top,var(--bg1) 70%,transparent)}
+.zsend{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:16px 18px;border:0;border-radius:20px;font:800 17px inherit;font-family:inherit;color:#fff;background:linear-gradient(135deg,var(--s1),var(--s2));box-shadow:0 12px 24px -10px var(--s2);cursor:pointer;transition:transform .25s cubic-bezier(.2,1.4,.4,1),box-shadow .3s,opacity .3s}
+.zsend span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.zsend:disabled{background:#dcdad2;color:#8f8d84;box-shadow:none;cursor:default}
+.zsend:not(:disabled):active{transform:scale(.96)}
+.zsend.pop{animation:zPop .5s cubic-bezier(.2,1.5,.4,1)}
+.zsend.ld::before{content:"";flex:none;width:18px;height:18px;border-radius:50%;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;animation:zSp .7s linear infinite}
+@keyframes zIn{from{opacity:0;transform:translateY(14px)}}
+@keyframes zCard{from{opacity:0;transform:translateY(34px) scale(.82) rotateX(24deg)}}
+@keyframes zPop{40%{transform:scale(1.045)}}
+@keyframes zWig{0%{transform:scale(1) rotate(0)}30%{transform:scale(1.3) rotate(-14deg)}60%{transform:scale(1.1) rotate(9deg)}100%{transform:scale(1) rotate(0)}}
+@keyframes zShine{to{transform:translateX(120%)}}
+@keyframes zDot{0%{box-shadow:0 0 0 0 rgba(48,200,100,.55)}100%{box-shadow:0 0 0 7px rgba(48,200,100,0)}}
+@keyframes zSp{to{transform:rotate(360deg)}}
+.zim.still .zihd,.zim.still .zis,.zim.still .zgc,.zim.still .zioi{animation:none}
+/* ===== Undangan masuk ===== */
+.zfi{--c1:#5fe08a;--c2:#1fa84a;overflow:hidden;padding:12px 12px 15px;gap:10px;border:0;border-radius:22px;box-shadow:0 14px 34px -8px rgba(0,0,0,.32);animation:zBn .6s cubic-bezier(.2,1.3,.35,1) backwards}
+.zfi .zbi{flex:none;width:46px;height:46px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(150deg,var(--c1),var(--c2));animation:zWig .8s .3s cubic-bezier(.3,1.4,.5,1)}
+.zfi .zbi svg{width:25px;height:25px}
+.zfi .zbt{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.25}
+.zfi .zbt small{font-size:12px;font-weight:600;opacity:.55;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.zfi .zbt b{font-size:17px}
+.zfi .chip{flex:none}
+.zfi::after{content:"";position:absolute;left:0;bottom:0;height:4px;width:100%;background:linear-gradient(90deg,var(--c1),var(--c2));transform-origin:left;animation:zBar 60s linear forwards}
+.zfi.out{animation:zBo .3s ease-in forwards}
+@keyframes zBn{from{opacity:0;transform:translateY(-120%) scale(.92)}}
+@keyframes zBo{to{opacity:0;transform:translateY(-120%)}}
+@keyframes zBar{to{transform:scaleX(0)}}
+/* ===== Layar tunggu online ===== */
+.zlb{--c1:#5fe08a;--c2:#1fa84a;max-width:420px;margin:0 auto;padding:34px 18px 18px;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;color:var(--tx)}
+.zlh{display:flex;flex-direction:column;align-items:center;gap:12px;animation:zIn .6s cubic-bezier(.2,1,.3,1) backwards}
+.zlg{width:78px;height:78px;border-radius:26px;display:grid;place-items:center;background:linear-gradient(150deg,var(--c1),var(--c2));box-shadow:0 16px 30px -10px var(--c2);animation:zFl 3.2s ease-in-out infinite}
+.zlg svg{width:40px;height:40px;stroke-width:1.7}
+.zlh b{font-size:23px;font-weight:800;letter-spacing:-.01em}
+.zlv{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;margin:14px 0 4px}
+.zlp{display:flex;flex-direction:column;align-items:center;gap:9px;width:92px;animation:zCard .7s .15s cubic-bezier(.2,1.25,.35,1) backwards}
+.zlp+.zll+.zlp{animation-delay:.3s}
+.zlp b{max-width:100%;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.zlav{position:relative;width:66px;height:66px;border-radius:50%;display:grid;place-items:center;color:#fff;font:800 27px inherit;font-family:inherit;font-style:normal;box-shadow:0 8px 18px -8px var(--rc)}
+.zlp.w .zlav{animation:zRing 1.6s ease-out infinite}
+.zll{display:flex;align-items:center;gap:7px;padding-bottom:26px}
+.zll u{width:9px;height:9px;border-radius:50%;background:var(--c2);opacity:.2;text-decoration:none;animation:zDt 1.3s ease-in-out infinite}
+.zll u:nth-child(2){animation-delay:.18s}.zll u:nth-child(3){animation-delay:.36s}
+.zll.ok u{background:var(--ok);opacity:1;animation:zPop .6s cubic-bezier(.2,1.5,.4,1) both}
+.zll.ok u:nth-child(2){animation-delay:.1s}.zll.ok u:nth-child(3){animation-delay:.2s}
+.zll.err u{background:#e5484d;opacity:.45;animation:none}
+.zls,.zle{margin:0;min-height:24px;font-size:15px;line-height:1.4;font-weight:600}
+.zls{opacity:.7;animation:zTx 2.4s ease-in-out infinite}
+.zle{color:#d9283a;max-width:300px}
+.zlt{margin:0;font-size:12px;opacity:.45}
+.zlx{margin-top:6px;padding:14px 30px;border:0;border-radius:18px;background:#e3e2dc;color:var(--tx);font:700 16px inherit;font-family:inherit;cursor:pointer;transition:transform .25s cubic-bezier(.2,1.4,.4,1)}
+.zlx:active{transform:scale(.95)}
+.zlb.er .zlx{background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;box-shadow:0 10px 22px -10px var(--c2)}
+@keyframes zFl{50%{transform:translateY(-6px) rotate(-3deg)}}
+@keyframes zDt{0%,100%{opacity:.2;transform:scale(.8)}45%{opacity:1;transform:scale(1.25)}}
+@keyframes zRing{0%{box-shadow:0 0 0 0 var(--rc)}100%{box-shadow:0 0 0 20px transparent}}
+@keyframes zTx{50%{opacity:.4}}
+@media (prefers-reduced-motion:reduce){.zim *,.zlb *,.zfi,.zfi *{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
@@ -1714,7 +1833,7 @@ window.zGame=(()=>{
     reg(k,el,st,exit){G[k]={el,st,exit:()=>{exit();el.scrollTo({top:0});sync()}};
       const mo=new MutationObserver(sync);mo.observe(el,{childList:true,attributes:true,attributeFilter:["style"]});
       const v=el.closest(".view");if(v)mo.observe(v,{attributes:true,attributeFilter:["class"]});sync()},
-    ask,sync}
+    ask,sync,cur:()=>bar.classList.contains("on")?bar.dataset.g:null,quit:k=>{if(G[k])G[k].exit()}}
 })();
 
 // ---------- Brain: hafalan ----------
@@ -2879,18 +2998,15 @@ function onMsg(m){if(!m||typeof m!=="object")return;
  else if(m.t==="chat"&&(B.net||B.onl))ZC.recv(m)
  else if(m.t==="rq"&&OL.role==="host")netGo()}
 function wire(c){OL.conn=c;ZC.bind({el,fab:false,title:()=>OL.opp||"Lawan",name:()=>OL.opp||"Lawan",send:o=>netSend(o),ok:()=>!!(OL.conn&&OL.conn.open)});c.on("data",onMsg);c.on("close",()=>{if(OL.conn!==c)return;OL.conn=null;if(B.net&&B.ph==="play")fin(true,"Lawan keluar dari room.");else if(B.onl&&OL.role){OL.err="Teman keluar dari room.";onlDraw()}})}
-function cfgOnline(){netLeave();stop();B={...blank(),onl:1};onlDraw()}
-function cbox(v,big){let r="";for(let i=0;i<5;i++)r+="<span"+(big?"":v[i]?' class="f"':"")+">"+(v[i]?esc(v[i]):"")+"</span>";return r}
-function onlDraw(){if(!B.onl)return;const h=OL.role==="host",bz=!!OL.busy;let s='<div class="o6"><div class="o6h"><i>▦</i><div><b>Sudoku online</b><small>'+(OL.role?(h?"Kamu host":"Tersambung"):"Lewat internet, beda perangkat")+'</small></div></div>';
- if(!OL.role){const t=OL.tab;s+='<div class="o6l">Namamu</div><div class="o6g"><input class="o6i" id="sdonm" maxlength="12" autocomplete="off" placeholder="Nama" value="'+esc(OL.name)+'"></div><div class="o6s"><button type="button" data-tab="host" class="'+(t==="host"?"on":"")+'">Buat room</button><button type="button" data-tab="join" class="'+(t==="join"?"on":"")+'">Gabung</button></div>';
-  if(t==="host")s+='<div class="o6l">Tingkat puzzle</div><div class="o6s n3">'+["mudah","sedang","sulit"].map(l=>'<button type="button" data-lv="'+l+'" class="'+(OL.lv===l?"on":"")+'">'+LN[l]+'</button>').join("")+'</div><p class="o6m">Kamu jadi host, lalu bagikan kode 5 huruf ke teman. Puzzle sama untuk kalian berdua. Yang lebih dulu mencapai 100 poin (papan terisi penuh) menang.</p><button type="button" class="o6b" id="sdoh"'+(bz?" disabled":"")+'>'+(bz?"Menghubungkan…":"Buat room")+'</button>';
-  else s+='<div class="o6l">Kode room</div><div class="o6c" id="sdobx">'+cbox((OL.code||"").slice(0,5))+'<input id="sdocd" maxlength="5" autocomplete="off" autocapitalize="characters" spellcheck="false" value="'+esc(OL.code||"")+'"></div><button type="button" class="o6b" id="sdoj"'+(bz?" disabled":"")+'>'+(bz?"Menghubungkan…":"Gabung")+'</button>';
-  s+='<button type="button" class="o6b g" id="sdobk">Kembali</button>'}
- else{if(h)s+='<div class="o6l">Kode room · bagikan ke teman</div><div class="o6c big">'+cbox(OL.code.split(""),1)+'</div><button type="button" class="o6b" id="sdosh">Bagikan kode</button><p class="o6m">Menunggu teman masuk… Game mulai otomatis.</p>';else s+='<p class="o6m">Terhubung ke room <b>'+esc(OL.code)+'</b>. Menunggu host memulai…</p>';s+='<button type="button" class="o6b g" id="sdolv">Keluar room</button>'}
- s+=(OL.err?'<p class="o6m er">'+esc(OL.err)+"</p>":"")+(OL.st&&!OL.role?'<p class="o6m">'+esc(OL.st)+"</p>":"")+'<p class="o6m sm">Tips: tetap buka halaman ini selama main. Butuh internet, buka di Chrome.</p></div>';el.innerHTML=s}
+function cfgOnline(){netLeave();stop();B={...blank(),onl:1};OL.err="";const A=window.zfAuto&&zfAuto("sdk");
+ if(!A){OL.want="";OL.opp0="";OL.err="Ajak teman lewat daftar teman untuk main online.";onlDraw();return}
+ OL.name=A.me;OL.opp0=A.opp;OL.want=A.role;OL.code=A.c;OL.inv=A.c;if(A.o&&["mudah","sedang","sulit"].includes(A.o.lv))OL.lv=A.o.lv;
+ window.zfLeave=leaveLobby;window.zfAbort=(c,m)=>{if(!B.onl||OL.inv!==c||(OL.conn&&OL.conn.open))return;const p=OL.peer;try{p&&p.destroy()}catch(e){}OL.peer=null;OL.role="";OL.busy=0;OL.err=m;onlDraw()};onlDraw();A.role==="host"?ohost():ojoin()}
+function leaveLobby(){if(!B.onl)return;window.zfLeave=null;window.zfAbort=null;window.zfCancel&&zfCancel();stop();netLeave();B=blank();setup();window.brLauncher&&brLauncher()}
+function onlDraw(){if(!B.onl)return;el.innerHTML=window.zfLobby?zfLobby({k:"sdk",me:OL.name,opp:OL.opp0,role:OL.want,st:OL.role?(OL.want==="host"?"wait":"ok"):"conn",err:OL.err}):""}
 async function ohost(){if(OL.busy)return;OL.busy=1;OL.err="";OL.st="Menghubungkan…";onlDraw();
  try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Kalau dibuka lewat preview di aplikasi Claude, koneksi diblokir: buka di Chrome.";onlDraw();return}
- const mk=n=>{const code=(window.zfTake&&zfTake("sdk"))||Array.from({length:5},()=>CHRc[Math.random()*CHRc.length|0]).join(""),p=new Peer("zcsdk-"+code.toLowerCase(),PCFG);
+ const mk=n=>{const code=OL.code||Array.from({length:5},()=>CHRc[Math.random()*CHRc.length|0]).join(""),p=new Peer("zcsdk-"+code.toLowerCase(),PCFG);
   const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}OL.busy=0;OL.st="";OL.err="Server PeerJS tidak merespons. Coba buka di Chrome.";onlDraw()},10000);
   p.on("open",()=>{clearTimeout(to);OL.busy=0;OL.role="host";OL.peer=p;OL.code=code;OL.st="";onlDraw()});
   p.on("connection",c=>{if(OL.conn&&OL.conn.open){try{c.close()}catch(e){}return}wire(c)});
@@ -2901,17 +3017,12 @@ async function ojoin(){const code=(OL.code||"").toUpperCase();if(OL.busy)return;
  let tries=0,ok_=0;const p=new Peer(PCFG);OL.peer=p;
  const fail=t=>{OL.busy=0;OL.st="";OL.err=t;try{p.destroy()}catch(e){}OL.peer=null;onlDraw()};
  const att=()=>{tries++;const c=p.connect("zcsdk-"+code.toLowerCase(),{reliable:true});
-  const to=setTimeout(()=>{if(ok_)return;try{c.close()}catch(e){}if(tries<6)att();else fail("Tidak bisa terhubung ke room. Pastikan host masih membuka halaman game.")},6000);
+  const to=setTimeout(()=>{if(ok_)return;try{c.close()}catch(e){}if(tries<6)att();else fail("Tidak bisa terhubung ke teman. Pastikan ia masih membuka halaman game.")},6000);
   c.on("open",()=>{ok_=1;clearTimeout(to);OL.busy=0;OL.role="client";OL.code=code;OL.st="";wire(c);c.send({t:"hello",name:OL.name||"Tamu"});onlDraw()})};
- p.on("open",att);p.on("error",er=>{if(ok_)return;if(er.type==="peer-unavailable"){if(tries<6)setTimeout(att,1200);else fail("Room tidak ditemukan.")}else fail("Gagal: "+(er.type||"koneksi"))})}
+ p.on("open",att);p.on("error",er=>{if(ok_)return;if(er.type==="peer-unavailable"){if(tries<6)setTimeout(att,1200);else fail("Ajakan sudah tidak berlaku. Minta temanmu mengajak lagi.")}else fail("Gagal: "+(er.type||"koneksi"))})}
 function rematch(){if(!OL.conn||!OL.conn.open){toast("Lawan sudah keluar",1600);return}if(OL.role==="host")netGo();else{netSend({t:"rq"});toast("Meminta host mulai ulang…",1800)}}
-el.addEventListener("input",e=>{if(!B.onl)return;const t=e.target;if(t.id==="sdonm"){OL.name=t.value;try{localStorage.setItem("zc-chname",t.value)}catch(_){}}else if(t.id==="sdocd"){t.value=t.value.replace(/[^A-Za-z0-9]/g,"").toUpperCase().slice(0,5);OL.code=t.value;const b=el.querySelector("#sdobx");if(b)b.querySelectorAll("span").forEach((x,i)=>{x.textContent=t.value[i]||"";x.className=t.value[i]?"f":""})}});
 function netClick(e){const g=s=>e.target.closest(s);
- if(B.onl){const tb=g("[data-tab]"),lb=g("[data-lv]");
-  if(tb){OL.tab=tb.dataset.tab;OL.err="";onlDraw()}else if(lb){OL.lv=lb.dataset.lv;onlDraw()}
-  else if(g("#sdoh"))ohost();else if(g("#sdoj"))ojoin();else if(g("#sdolv")){netLeave();onlDraw()}else if(g("#sdobk"))exitNet();
-  else if(g("#sdosh")){const t="Ayo main Sudoku online bareng! Kode room: "+OL.code;try{if(navigator.share)navigator.share({text:t}).catch(()=>{});else navigator.clipboard.writeText(t).then(()=>toast("Kode disalin",1500))}catch(_){}}
-  return true}
+ if(B.onl){if(g("#zlx"))leaveLobby();return true}
  if(!B.net)return false;
  if(B.ph==="res"){if(g("#sdolc")){ZC.open();return true}if(g("#sdolx")){exitNet();return true}if(g("#sdorm")){rematch();return true}return false}
  if(B.ph==="play"){
@@ -2963,7 +3074,7 @@ const POS={up:"grid-column:2;grid-row:1",left:"grid-column:1;grid-row:2",right:"
 let B={ph:"setup",gen:false},tm=0,nx=0,cd=0,cfT=0,stt={};
 const clr=()=>{cfEnd();clearTimeout(tm);clearTimeout(nx);clearTimeout(cd);tm=nx=cd=0;Object.values(stt).forEach(clearTimeout);stt={}};
 function setup(){clr();netLeave();B={ph:"setup",gen:false};window.brLauncher&&brLauncher()}
-window.rxPd=g=>["mudah","sedang","sulit"].map(l=>{const r=S.rec[g+"_"+l];return[l,LN[l],(TF(g)?TP[l].c+"×"+TP[l].r+" · ":"")+LV[l]+" nyawa"+(r?" · rekor "+r.score:""),{mudah:"#0f9a4c",sedang:"#ee8f06",sulit:"#d9283a"}[l]]}).concat(g==="pul"?[["online","Main online","Beda device · 2 pemain","#1479c4"]]:[]);
+window.rxPd=g=>["mudah","sedang","sulit"].map(l=>{const r=S.rec[g+"_"+l];return[l,LN[l],(TF(g)?TP[l].c+"×"+TP[l].r+" · ":"")+LV[l]+" nyawa"+(r?" · rekor "+r.score:""),{mudah:"#0f9a4c",sedang:"#ee8f06",sulit:"#d9283a"}[l]]});
 
 function ctrl(){
   if(B.g==="dir")return'<div class="rxdp">'+DIRS.map(([d,a])=>'<button type="button" class="rxkey" data-a="'+d+'" style="'+POS[d]+'" aria-label="'+d+'"><svg viewBox="0 0 24 24" style="transform:rotate('+a+'deg)"><path d="M6 15l6-6 6 6"/></svg></button>').join("")+'<i class="rxdc"></i></div>';
@@ -3271,18 +3382,15 @@ function onMsg(m){if(!m||typeof m!=="object")return;
  else if(m.t==="chat"&&(B.net||B.onl))ZC.recv(m)
  else if(m.t==="rq"&&OL.role==="host")netGo()}
 function wire(c){OL.conn=c;ZC.bind({el,fab:false,title:()=>OL.opp||"Lawan",name:()=>OL.opp||"Lawan",send:o=>netSend(o),ok:()=>!!(OL.conn&&OL.conn.open)});c.on("data",onMsg);c.on("close",()=>{if(OL.conn!==c)return;OL.conn=null;if(B.net&&B.ph==="play")nFin(true,"Lawan keluar dari room.");else if(B.onl&&OL.role){OL.err="Teman keluar dari room.";onlDraw()}})}
-function cfgOnline(){clr();netLeave();B={ph:"setup",gen:false,onl:1};onlDraw()}
-function cbox(v,big){let r="";for(let i=0;i<5;i++)r+="<span"+(big?"":v[i]?' class="f"':"")+">"+(v[i]?esc(v[i]):"")+"</span>";return r}
-function onlDraw(){if(!B.onl)return;const h=OL.role==="host",bz=!!OL.busy;let s='<div class="o6"><div class="o6h"><i>⚡</i><div><b>Pulse Tap online</b><small>'+(OL.role?(h?"Kamu host":"Tersambung"):"Lewat internet, beda perangkat")+'</small></div></div>';
- if(!OL.role){const t=OL.tab;s+='<div class="o6l">Namamu</div><div class="o6g"><input class="o6i" id="ronm" maxlength="12" autocomplete="off" placeholder="Nama" value="'+esc(OL.name)+'"></div><div class="o6s"><button type="button" data-tab="host" class="'+(t==="host"?"on":"")+'">Buat room</button><button type="button" data-tab="join" class="'+(t==="join"?"on":"")+'">Gabung</button></div>';
-  if(t==="host")s+='<div class="o6l">Tingkat</div><div class="o6s n3">'+["mudah","sedang","sulit"].map(l=>'<button type="button" data-lv="'+l+'" class="'+(OL.lv===l?"on":"")+'">'+LN[l]+'</button>').join("")+'</div><div class="o6l">Target skor</div><div class="o6s n3">'+[300,600,1000].map(v=>'<button type="button" data-tg="'+v+'" class="'+(!OL.tgm&&OL.tg===v?"on":"")+'">'+fmtN(v)+'</button>').join("")+'<button type="button" data-tgm="1" class="'+(OL.tgm?"on":"")+'">Manual</button></div>'+(OL.tgm?'<div class="o6g"><input class="o6i" id="rotgm" inputmode="numeric" maxlength="7" autocomplete="off" placeholder="Ketik target skor" value="'+(OL.tg>0?OL.tg:"")+'"></div>':"")+'<p class="o6m">Kamu jadi host, lalu bagikan kode 5 huruf ke teman. Kalian main di layar masing-masing dengan tingkat yang sama. Yang lebih dulu mencapai target skor menang, tapi kalau nyawamu habis kamu langsung kalah.</p><button type="button" class="o6b" id="rohost"'+(bz?" disabled":"")+'>'+(bz?"Menghubungkan…":"Buat room")+'</button>';
-  else s+='<div class="o6l">Kode room</div><div class="o6c" id="robx">'+cbox((OL.code||"").slice(0,5))+'<input id="rocd" maxlength="5" autocomplete="off" autocapitalize="characters" spellcheck="false" value="'+esc(OL.code||"")+'"></div><button type="button" class="o6b" id="rojoin"'+(bz?" disabled":"")+'>'+(bz?"Menghubungkan…":"Gabung")+'</button>';
-  s+='<button type="button" class="o6b g" id="robk">Kembali</button>'}
- else{if(h)s+='<div class="o6l">Kode room · bagikan ke teman</div><div class="o6c big">'+cbox(OL.code.split(""),1)+'</div><button type="button" class="o6b" id="rosh">Bagikan kode</button><p class="o6m">Menunggu teman masuk… Game mulai otomatis.</p>';else s+='<p class="o6m">Terhubung ke room <b>'+esc(OL.code)+'</b>. Menunggu host memulai…</p>';s+='<button type="button" class="o6b g" id="rolv">Keluar room</button>'}
- s+=(OL.err?'<p class="o6m er">'+esc(OL.err)+"</p>":"")+(OL.st&&!OL.role?'<p class="o6m">'+esc(OL.st)+"</p>":"")+'<p class="o6m sm">Tips: tetap buka halaman ini selama main. Butuh internet, buka di Chrome.</p></div>';el.innerHTML=s}
+function cfgOnline(){clr();netLeave();B={ph:"setup",gen:false,onl:1};OL.err="";const A=window.zfAuto&&zfAuto("pt");
+ if(!A){OL.want="";OL.opp0="";OL.err="Ajak teman lewat daftar teman untuk main online.";onlDraw();return}
+ OL.name=A.me;OL.opp0=A.opp;OL.want=A.role;OL.code=A.c;OL.inv=A.c;if(A.o){if(["mudah","sedang","sulit"].includes(A.o.lv))OL.lv=A.o.lv;if(A.o.tg>=100)OL.tg=A.o.tg|0;OL.tgm=0}
+ window.zfLeave=leaveLobby;window.zfAbort=(c,m)=>{if(!B.onl||OL.inv!==c||(OL.conn&&OL.conn.open))return;const p=OL.peer;try{p&&p.destroy()}catch(e){}OL.peer=null;OL.role="";OL.busy=0;OL.err=m;onlDraw()};onlDraw();A.role==="host"?ohost():ojoin()}
+function leaveLobby(){if(!B.onl)return;window.zfLeave=null;window.zfAbort=null;window.zfCancel&&zfCancel();setup();el.innerHTML=""}
+function onlDraw(){if(!B.onl)return;el.innerHTML=window.zfLobby?zfLobby({k:"pt",me:OL.name,opp:OL.opp0,role:OL.want,st:OL.role?(OL.want==="host"?"wait":"ok"):"conn",err:OL.err}):""}
 async function ohost(){if(OL.busy)return;if(!(OL.tg>=50)){OL.err="Target skor minimal 50.";onlDraw();return}if(!(OL.tg>=100)){OL.err="Target skor minimal 100.";onlDraw();return}OL.busy=1;OL.err="";OL.st="Menghubungkan…";onlDraw();
  try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Kalau dibuka lewat preview di aplikasi Claude, koneksi diblokir: buka di Chrome.";onlDraw();return}
- const mk=n=>{const code=(window.zfTake&&zfTake("pt"))||Array.from({length:5},()=>CHRc[Math.random()*CHRc.length|0]).join(""),p=new Peer("zcpt-"+code.toLowerCase(),PCFG);
+ const mk=n=>{const code=OL.code||Array.from({length:5},()=>CHRc[Math.random()*CHRc.length|0]).join(""),p=new Peer("zcpt-"+code.toLowerCase(),PCFG);
   const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}OL.busy=0;OL.st="";OL.err="Server PeerJS tidak merespons. Coba buka di Chrome.";onlDraw()},10000);
   p.on("open",()=>{clearTimeout(to);OL.busy=0;OL.role="host";OL.peer=p;OL.code=code;OL.st="";onlDraw()});
   p.on("connection",c=>{if(OL.conn&&OL.conn.open){try{c.close()}catch(e){}return}wire(c)});
@@ -3293,17 +3401,12 @@ async function ojoin(){const code=(OL.code||"").toUpperCase();if(OL.busy)return;
  let tries=0,ok_=0;const p=new Peer(PCFG);OL.peer=p;
  const fail=t=>{OL.busy=0;OL.st="";OL.err=t;try{p.destroy()}catch(e){}OL.peer=null;onlDraw()};
  const att=()=>{tries++;const c=p.connect("zcpt-"+code.toLowerCase(),{reliable:true});
-  const to=setTimeout(()=>{if(ok_)return;try{c.close()}catch(e){}if(tries<6)att();else fail("Tidak bisa terhubung ke room. Pastikan host masih membuka halaman game.")},6000);
+  const to=setTimeout(()=>{if(ok_)return;try{c.close()}catch(e){}if(tries<6)att();else fail("Tidak bisa terhubung ke teman. Pastikan ia masih membuka halaman game.")},6000);
   c.on("open",()=>{ok_=1;clearTimeout(to);OL.busy=0;OL.role="client";OL.code=code;OL.st="";wire(c);c.send({t:"hello",name:OL.name||"Tamu"});onlDraw()})};
- p.on("open",att);p.on("error",er=>{if(ok_)return;if(er.type==="peer-unavailable"){if(tries<6)setTimeout(att,1200);else fail("Room tidak ditemukan.")}else fail("Gagal: "+(er.type||"koneksi"))})}
+ p.on("open",att);p.on("error",er=>{if(ok_)return;if(er.type==="peer-unavailable"){if(tries<6)setTimeout(att,1200);else fail("Ajakan sudah tidak berlaku. Minta temanmu mengajak lagi.")}else fail("Gagal: "+(er.type||"koneksi"))})}
 function rematch(){if(!OL.conn||!OL.conn.open){toast("Lawan sudah keluar",1600);return}if(OL.role==="host")netGo();else{netSend({t:"rq"});toast("Meminta host mulai ulang…",1800)}}
-el.addEventListener("input",e=>{if(!B.onl)return;const t=e.target;if(t.id==="rotgm"){t.value=t.value.replace(/\D/g,"").slice(0,7);OL.tg=+t.value||0}else if(t.id==="ronm"){OL.name=t.value;try{localStorage.setItem("zc-chname",t.value)}catch(_){}}else if(t.id==="rocd"){t.value=t.value.replace(/[^A-Za-z0-9]/g,"").toUpperCase().slice(0,5);OL.code=t.value;const b=el.querySelector("#robx");if(b)b.querySelectorAll("span").forEach((x,i)=>{x.textContent=t.value[i]||"";x.className=t.value[i]?"f":""})}});
 el.addEventListener("click",e=>{const g=q=>e.target.closest(q);
- if(B.onl){const tb=g("[data-tab]"),tg=g("[data-tg]"),lv=g("[data-lv]"),tm=g("[data-tgm]");
-  if(tb){OL.tab=tb.dataset.tab;OL.err="";onlDraw()}else if(lv){OL.lv=lv.dataset.lv;onlDraw()}else if(tg){OL.tg=+tg.dataset.tg;OL.tgm=0;onlDraw()}else if(tm){OL.tgm=1;OL.tg=0;OL.err="";onlDraw()}
-  else if(g("#rohost"))ohost();else if(g("#rojoin"))ojoin();else if(g("#rolv")){netLeave();onlDraw()}else if(g("#robk"))exitNet();
-  else if(g("#rosh")){const t="Ayo main Pulse Tap online bareng! Kode room: "+OL.code;try{if(navigator.share)navigator.share({text:t}).catch(()=>{});else navigator.clipboard.writeText(t).then(()=>toast("Kode disalin",1500))}catch(_){}}
-  return}
+ if(B.onl){if(g("#zlx"))leaveLobby();return}
  if(!B.net)return;
  if(B.ph==="res"){if(g("#rxolc"))ZC.open();else if(g("#rxolx"))exitNet();else if(g("#rxolr"))rematch();return}
  if(B.ph==="play"){if(g("#rxch"))ZC.open();else if(g("#rxpk")){B.pk=!B.pk;sfx("click");if(B.pk)toast("Mengintip layar "+(OL.opp||"lawan"),1400);pkPaint()}}});
@@ -3384,11 +3487,11 @@ const CATS={
   {n:"Number Hunter",s:"Cari angka target",c:["#5fe09a","#0f9a4c"],g:G.num,pick:1,pd:()=>rxPd("num"),pf:l=>{brPlay("brr");brR("num",l)}},
   {n:"Pulse Tap",s:"Klasik · Pola · Alir",c:["#ffb340","#ff9500"],g:G.tap,pick:1,pd:()=>rxPd("pul"),pf:l=>{brPlay("brr");brR("pul",l)}}]},
  logic:{t:"Logic",items:[
-  {n:"Sudoku",s:"Solo atau online",c:["#5fe08a","#34c759"],g:G.sdk,pick:1,pd:()=>[["bebas","Bebas","Tanpa batas","#7b61ff"],["mudah","Mudah","40 petunjuk","#0f9a4c"],["sedang","Sedang","32 petunjuk","#ee8f06"],["sulit","Sulit","26 petunjuk","#d9283a"],["online","Main online","Beda device · 2 pemain","#1479c4"]]},
-  {n:"Catur",s:"Lawan AI atau teman",c:["#7d7aff","#5856d6"],g:G.chs,pick:1,sd:1,ti:"Pilih lawan",pd:()=>[["mudah","Mudah","AI pemula","#0f9a4c"],["sedang","Sedang","AI menengah","#ee8f06"],["sulit","Sulit","AI kuat","#d9283a"],["friend","1v1 Teman","Tanpa AI","#7b61ff"],["online","Main online","Beda device · 2 pemain","#1479c4"]],pf:(l,sd)=>{brPlay("brc");brC(l,sd)}},
+  {n:"Sudoku",s:"Solo atau ajak teman",c:["#5fe08a","#34c759"],g:G.sdk,pick:1,pd:()=>[["bebas","Bebas","Tanpa batas","#7b61ff"],["mudah","Mudah","40 petunjuk","#0f9a4c"],["sedang","Sedang","32 petunjuk","#ee8f06"],["sulit","Sulit","26 petunjuk","#d9283a"]]},
+  {n:"Catur",s:"Lawan AI atau teman",c:["#7d7aff","#5856d6"],g:G.chs,pick:1,sd:1,ti:"Pilih lawan",pd:()=>[["mudah","Mudah","AI pemula","#0f9a4c"],["sedang","Sedang","AI menengah","#ee8f06"],["sulit","Sulit","AI kuat","#d9283a"],["friend","1v1 Teman","Tanpa AI","#7b61ff"]],pf:(l,sd)=>{brPlay("brc");brC(l,sd)}},
   {n:"Nonogram",s:"Isi kotak dari angka",c:["#5fe0b0","#0f9c74"],g:G.nng,pick:1,pd:()=>[["mudah","Mudah","5×5","#0f9a4c"],["sedang","Sedang","8×8","#ee8f06"],["sulit","Sulit","10×10","#d9283a"]],pf:l=>{brPlay("brn");brN(l)}},
-  {n:"Block Blast",get s(){const b=bbBest();return b?"Rekor "+b:"Susun & hapus baris"},c:["#4da3ff","#007aff"],g:G.blk,pick:1,ti:"Mode permainan",pd:()=>[["solo","Main sendiri","Kejar rekor tertinggi","#e5484d"],["online","Main online","Beda device · 2 pemain","#1479c4"]],pf:l=>{brPlay("brb");l==="online"?brBO():brB()}},
-  {n:"UNO",get s(){let w=0,g=0;try{const o=JSON.parse(localStorage.getItem("zc-uno")||"{}");w=+o.wins||0;g=+o.games||0}catch(e){}return g?"Menang "+w+" dari "+g:"Lawan AI atau teman"},c:["#ff6b60","#ff3b30"],g:G.uno,pick:1,ti:"Pilih mode",pd:()=>[["1","1 Lawan AI","Duel 2 pemain","#0f9a4c"],["2","2 Lawan AI","3 pemain","#ee8f06"],["3","3 Lawan AI","4 pemain","#d9283a"],["friend","Main dengan teman","Offline · 2–5 pemain","#7b61ff"],["online","Main online","Beda device · 2–5 pemain","#1479c4"]],pf:l=>{brPlay("bru");brU(l)}}]}};
+  {n:"Block Blast",get s(){const b=bbBest();return b?"Rekor "+b:"Susun & hapus baris"},c:["#4da3ff","#007aff"],g:G.blk,f:()=>{brPlay("brb");brB()}},
+  {n:"UNO",get s(){let w=0,g=0;try{const o=JSON.parse(localStorage.getItem("zc-uno")||"{}");w=+o.wins||0;g=+o.games||0}catch(e){}return g?"Menang "+w+" dari "+g:"Lawan AI atau teman"},c:["#ff6b60","#ff3b30"],g:G.uno,pick:1,ti:"Pilih mode",pd:()=>[["1","1 Lawan AI","Duel 2 pemain","#0f9a4c"],["2","2 Lawan AI","3 pemain","#ee8f06"],["3","3 Lawan AI","4 pemain","#d9283a"],["friend","Main dengan teman","Offline · 2–5 pemain","#7b61ff"]],pf:l=>{brPlay("bru");brU(l)}}]}};
 CATS.logic.items=CATS.logic.items.filter(x=>x.n!=="Nonogram");CATS.reaction.items=CATS.reaction.items.filter(x=>x.n==="Pulse Tap");CATS.logic.t=CATS.reaction.t="Games";
 const CN=["br","brm","bri","brs","brr","brc","brn","brb","bru"];
 window.brPlay=id=>{$("brl").style.display="none";CN.forEach(x=>$(x).style.display=x===id?"":"none")};
@@ -3422,6 +3525,8 @@ function pick(b,a){
   o.addEventListener("pointerdown",e=>{const x=e.target.closest(".pko");if(!x)return;const r=x.getBoundingClientRect();x.style.setProperty("--mx",(e.clientX-r.left)+"px");x.style.setProperty("--my",(e.clientY-r.top)+"px")});
   const close=()=>{o.classList.remove("in");setTimeout(()=>o.remove(),480)};
   o.addEventListener("click",e=>{const sb=e.target.closest(".pkst");if(sb){sd=sb.dataset.s;try{localStorage.setItem("zc-chside",sd)}catch(_){}o.querySelectorAll(".pkst").forEach(x=>x.classList.toggle("on",x===sb));sfx("click");return}if(e.target===o||e.target.closest(".pkx")){close();return}const x=e.target.closest(".pko");if(x){close();launch(b,{...a,f:()=>{if(a.pf)a.pf(x.dataset.l,sd);else{brPlay("brs");brS(x.dataset.l)}}})}})}
+const ONL={sudoku:["logic","Sudoku",()=>{brPlay("brs");brS("online")}],chess:["logic","Catur",()=>{brPlay("brc");brC("online")}],pul:["reaction","Pulse Tap",()=>{brPlay("brr");brR("pul","online")}],blast:["logic","Block Blast",()=>{brPlay("brb");brBO()}],uno:["logic","UNO",()=>{brPlay("bru");brU("online")}]};
+window.zfLaunch=g=>{const m=ONL[g];if(!m)return;go(m[0]);const i=CATS[m[0]].items.findIndex(x=>x.n===m[1]),a=CATS[m[0]].items[i],b=$("brl").querySelector('.ap[data-i="'+i+'"]');if(b&&a)launch(b,{...a,k:0,f:m[2]});else m[2]()};
 const vh=$("vh"),vg=$("v4");
 function go(k){cat=k;vh.classList.remove("show");vg.classList.add("show");render();zGame.sync()}
 function home(){vg.classList.remove("show");vh.classList.add("show");paint();zGame.sync()}
@@ -3431,7 +3536,7 @@ document.querySelector(".hws").addEventListener("click",e=>{const w=e.target.clo
   const m={sudoku:["logic",0],pul:["reaction",3],blast:["logic",3],pola:["memgames",1],uno:["logic",4]}[w.dataset.w];go(m[0]);
   const b=$("brl").querySelector('.ap[data-i="'+m[1]+'"]');if(b)setTimeout(()=>b.click(),60)});
 document.querySelector(".zhome").addEventListener("click",e=>{const w=e.target.closest("[data-w]");if(!w)return;sfx("click");const m={sudoku:["logic","Sudoku"],chess:["logic","Catur"],pul:["reaction","Pulse Tap"],blast:["logic","Block Blast"],uno:["logic","UNO"]}[w.dataset.w];go(m[0]);const i=CATS[m[0]].items.findIndex(x=>x.n===m[1]),b=$("brl").querySelector('.ap[data-i="'+i+'"]');if(b)setTimeout(()=>b.click(),60)});
-$("gback").onclick=()=>{if(cat==="rxtap"){sfx("click");go("reaction")}else if(cat==="memgames"||cat==="memhaf"){sfx("click");go("memory")}else home()};$("hkey").onclick=()=>{sfx("click");openSet()};
+$("gback").onclick=()=>{if(window.zfLeave)zfLeave();if(cat==="rxtap"){sfx("click");go("reaction")}else if(cat==="memgames"||cat==="memhaf"){sfx("click");go("memory")}else home()};$("hkey").onclick=()=>{sfx("click");openSet()};
 paint();paintXp();
 })();
 // ---------- Logic: Catur ----------
@@ -3710,17 +3815,15 @@ function onMsg(m){if(!m||typeof m!=="object")return;
  else if(m.t==="chat")ZC.recv(m)
  else if(m.t==="rq"&&OL.role==="host")netRematch()}
 function wire(c){OL.conn=c;ZC.bind({el,title:()=>OL.opp||"Lawan",name:()=>OL.opp||"Lawan",send:o=>netSend(o),ok:()=>!!(OL.conn&&OL.conn.open)});c.on("data",onMsg);c.on("close",()=>{if(OL.conn!==c)return;OL.conn=null;if(B.net&&B.ph==="play")finish({o:B.me===1?"win":"loss",r:"Lawan keluar dari room"});else if(OL.role&&!B.net){OL.err="Teman keluar dari room.";onlDraw()}})}
-function cfgOnline(sd){netLeave();OL.sd=sd||"acak";B={ph:"setup",gen:false,tm:0,tok:B.tok||0,onl:1};onlDraw()}
-function cbox(v,big){let r="";for(let i=0;i<5;i++)r+="<span"+(big?"":v[i]?' class="f"':"")+">"+(v[i]?esc(v[i]):"")+"</span>";return r}
-function onlDraw(){if(!B.onl)return;const h=OL.role==="host",bz=!!OL.busy;let s='<div class="o6"><div class="o6h"><i>♞</i><div><b>Catur online</b><small>'+(OL.role?(h?"Kamu host":"Tersambung"):"Lewat internet, beda perangkat")+'</small></div></div>';
- if(!OL.role){const t=OL.tab;s+='<div class="o6l">Namamu</div><div class="o6g"><input class="o6i" id="cfnm" maxlength="12" autocomplete="off" placeholder="Nama" value="'+esc(OL.name)+'"></div><div class="o6s"><button type="button" data-tab="host" class="'+(t==="host"?"on":"")+'">Buat room</button><button type="button" data-tab="join" class="'+(t==="join"?"on":"")+'">Gabung</button></div>';
-  if(t==="host")s+='<p class="o6m">Kamu jadi host, lalu bagikan kode 5 huruf ke teman.</p><button type="button" class="o6b" id="cfhost"'+(bz?" disabled":"")+'>'+(bz?"Menghubungkan…":"Buat room")+'</button>';
-  else s+='<div class="o6l">Kode room</div><div class="o6c" id="cfbx">'+cbox((OL.code||"").slice(0,5))+'<input id="cfcd" maxlength="5" autocomplete="off" autocapitalize="characters" spellcheck="false" value="'+esc(OL.code||"")+'"></div><button type="button" class="o6b" id="cfjoin"'+(bz?" disabled":"")+'>'+(bz?"Menghubungkan…":"Gabung")+'</button>'}
- else{if(h)s+='<div class="o6l">Kode room · bagikan ke teman</div><div class="o6c big">'+cbox(OL.code.split(""),1)+'</div><button type="button" class="o6b" id="cfsh">Bagikan kode</button><p class="o6m">Menunggu teman masuk… Game mulai otomatis.</p>';else s+='<p class="o6m">Terhubung ke room <b>'+esc(OL.code)+'</b>. Menunggu host memulai…</p>';s+='<button type="button" class="o6b g" id="cfbk">Keluar room</button>'}
- s+=(OL.err?'<p class="o6m er">'+esc(OL.err)+"</p>":"")+(OL.st&&!OL.role?'<p class="o6m">'+esc(OL.st)+"</p>":"")+'<p class="o6m sm">Tips: tetap buka halaman ini selama main. Butuh internet, buka di Chrome.</p></div>';el.innerHTML=s}
+function cfgOnline(sd){netLeave();OL.sd=sd||"acak";B={ph:"setup",gen:false,tm:0,tok:B.tok||0,onl:1};OL.err="";const A=window.zfAuto&&zfAuto("chs");
+ if(!A){OL.want="";OL.opp0="";OL.err="Ajak teman lewat daftar teman untuk main online.";onlDraw();return}
+ OL.name=A.me;OL.opp0=A.opp;OL.want=A.role;OL.code=A.c;OL.inv=A.c;OL.sd=A.o&&["putih","hitam","acak"].includes(A.o.sd)?A.o.sd:"acak";
+ window.zfLeave=leaveLobby;window.zfAbort=(c,m)=>{if(!B.onl||OL.inv!==c||(OL.conn&&OL.conn.open))return;const p=OL.peer;try{p&&p.destroy()}catch(e){}OL.peer=null;OL.role="";OL.busy=0;OL.err=m;onlDraw()};onlDraw();A.role==="host"?chost():cjoin()}
+function leaveLobby(){if(!B.onl)return;window.zfLeave=null;window.zfAbort=null;window.zfCancel&&zfCancel();B.tok=(B.tok||0)+1;B.busy=false;hideBub();netLeave();setup();el.innerHTML=""}
+function onlDraw(){if(!B.onl)return;el.innerHTML=window.zfLobby?zfLobby({k:"chs",me:OL.name,opp:OL.opp0,role:OL.want,st:OL.role?(OL.want==="host"?"wait":"ok"):"conn",err:OL.err}):""}
 async function chost(){if(OL.busy)return;OL.busy=1;OL.err="";OL.st="Menghubungkan…";onlDraw();
  try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Kalau dibuka lewat preview di aplikasi Claude, koneksi diblokir: buka di Chrome.";onlDraw();return}
- const mk=n=>{const code=(window.zfTake&&zfTake("chs"))||Array.from({length:5},()=>CHRc[Math.random()*CHRc.length|0]).join(""),p=new Peer("zcchs-"+code.toLowerCase(),PCFG);
+ const mk=n=>{const code=OL.code||Array.from({length:5},()=>CHRc[Math.random()*CHRc.length|0]).join(""),p=new Peer("zcchs-"+code.toLowerCase(),PCFG);
   const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}OL.busy=0;OL.st="";OL.err="Server PeerJS tidak merespons. Coba buka di Chrome.";onlDraw()},10000);
   p.on("open",()=>{clearTimeout(to);OL.busy=0;OL.role="host";OL.peer=p;OL.code=code;OL.st="";onlDraw()});
   p.on("connection",c=>{if(OL.conn&&OL.conn.open){try{c.close()}catch(e){}return}wire(c)});
@@ -3731,13 +3834,10 @@ async function cjoin(){const code=(OL.code||"").toUpperCase();if(OL.busy)return;
  let tries=0,ok=0;const p=new Peer(PCFG);OL.peer=p;
  const fail=t=>{OL.busy=0;OL.st="";OL.err=t;try{p.destroy()}catch(e){}OL.peer=null;onlDraw()};
  const att=()=>{tries++;const c=p.connect("zcchs-"+code.toLowerCase(),{reliable:true});
-  const to=setTimeout(()=>{if(ok)return;try{c.close()}catch(e){}if(tries<6)att();else fail("Tidak bisa terhubung ke room. Pastikan host masih membuka halaman game.")},6000);
+  const to=setTimeout(()=>{if(ok)return;try{c.close()}catch(e){}if(tries<6)att();else fail("Tidak bisa terhubung ke teman. Pastikan ia masih membuka halaman game.")},6000);
   c.on("open",()=>{ok=1;clearTimeout(to);OL.busy=0;OL.role="client";OL.code=code;OL.st="";wire(c);c.send({t:"hello",name:OL.name||"Tamu"});onlDraw()})};
- p.on("open",att);p.on("error",er=>{if(ok)return;if(er.type==="peer-unavailable"){if(tries<6)setTimeout(att,1200);else fail("Room tidak ditemukan.")}else fail("Gagal: "+(er.type||"koneksi"))})}
-el.addEventListener("input",e=>{if(!B.onl)return;const t=e.target;if(t.id==="cfnm"){OL.name=t.value;try{localStorage.setItem("zc-chname",t.value)}catch(_){}}else if(t.id==="cfcd"){t.value=t.value.replace(/[^A-Za-z0-9]/g,"").toUpperCase().slice(0,5);OL.code=t.value;const b=el.querySelector("#cfbx");if(b)b.querySelectorAll("span").forEach((x,i)=>{x.textContent=t.value[i]||"";x.className=t.value[i]?"f":""})}});
-el.addEventListener("click",e=>{if(!B.onl)return;const g=s=>e.target.closest(s),tb=g("[data-tab]");
- if(tb){OL.tab=tb.dataset.tab;OL.err="";onlDraw()}else if(g("#cfhost"))chost();else if(g("#cfjoin"))cjoin();else if(g("#cfbk")){netLeave();onlDraw()}
- else if(g("#cfsh")){const t="Ayo main catur bareng! Kode room: "+OL.code;try{if(navigator.share)navigator.share({text:t}).catch(()=>{});else navigator.clipboard.writeText(t).then(()=>toast("Kode disalin",1500))}catch(_){}}});
+ p.on("open",att);p.on("error",er=>{if(ok)return;if(er.type==="peer-unavailable"){if(tries<6)setTimeout(att,1200);else fail("Ajakan sudah tidak berlaku. Minta temanmu mengajak lagi.")}else fail("Gagal: "+(er.type||"koneksi"))})}
+el.addEventListener("click",e=>{if(!B.onl)return;if(e.target.closest("#zlx"))leaveLobby()});
 window.brC=(l,s)=>start(l,s);
 zGame.reg("c",el,()=>B,()=>{B.tok=(B.tok||0)+1;B.busy=false;hideBub();setup()});
 })();
@@ -4226,18 +4326,15 @@ function onMsg(m){if(!m||typeof m!=="object")return;
  else if(m.t==="chat"&&(B.net||B.onl))ZC.recv(m)
  else if(m.t==="rq"&&OL.role==="host")netGo()}
 function wire(c){OL.conn=c;ZC.bind({el,fab:false,title:()=>OL.opp||"Lawan",name:()=>OL.opp||"Lawan",send:o=>netSend(o),ok:()=>!!(OL.conn&&OL.conn.open)});c.on("data",onMsg);c.on("close",()=>{if(OL.conn!==c)return;OL.conn=null;if(B.net&&B.ph==="play")bFin(true,"Lawan keluar dari room.");else if(B.onl&&OL.role){OL.err="Teman keluar dari room.";onlDraw()}})}
-function cfgOnline(){netLeave();cancelAnimationFrame(tw);if(dg){dg.d.remove();dg=null}el.classList.remove("bbpk");B={ph:"setup",gen:false,onl:1};onlDraw()}
-function cbox(v,big){let r="";for(let i=0;i<5;i++)r+="<span"+(big?"":v[i]?' class="f"':"")+">"+(v[i]?esc(v[i]):"")+"</span>";return r}
-function onlDraw(){if(!B.onl)return;const h=OL.role==="host",bz=!!OL.busy;let s='<div class="o6"><div class="o6h"><i>▦</i><div><b>Block Blast online</b><small>'+(OL.role?(h?"Kamu host":"Tersambung"):"Lewat internet, beda perangkat")+'</small></div></div>';
- if(!OL.role){const t=OL.tab;s+='<div class="o6l">Namamu</div><div class="o6g"><input class="o6i" id="bonm" maxlength="12" autocomplete="off" placeholder="Nama" value="'+esc(OL.name)+'"></div><div class="o6s"><button type="button" data-tab="host" class="'+(t==="host"?"on":"")+'">Buat room</button><button type="button" data-tab="join" class="'+(t==="join"?"on":"")+'">Gabung</button></div>';
-  if(t==="host")s+='<div class="o6l">Target skor</div><div class="o6s n3">'+[20000,50000,100000].map(v=>'<button type="button" data-tg="'+v+'" class="'+(!OL.tgm&&OL.tg===v?"on":"")+'">'+fmtN(v)+'</button>').join("")+'<button type="button" data-tgm="1" class="'+(OL.tgm?"on":"")+'">Manual</button></div>'+(OL.tgm?'<div class="o6g"><input class="o6i" id="botgm" inputmode="numeric" maxlength="8" autocomplete="off" placeholder="Ketik target skor" value="'+(OL.tg>0?OL.tg:"")+'"></div>':"")+'<p class="o6m">Kamu jadi host, lalu bagikan kode 5 huruf ke teman. Kalian main di papan masing-masing. Yang lebih dulu mencapai target skor menang, tapi kalau papanmu kehabisan ruang kamu langsung kalah.</p><button type="button" class="o6b" id="bohost"'+(bz?" disabled":"")+'>'+(bz?"Menghubungkan…":"Buat room")+'</button>';
-  else s+='<div class="o6l">Kode room</div><div class="o6c" id="bobx">'+cbox((OL.code||"").slice(0,5))+'<input id="bocd" maxlength="5" autocomplete="off" autocapitalize="characters" spellcheck="false" value="'+esc(OL.code||"")+'"></div><button type="button" class="o6b" id="bojoin"'+(bz?" disabled":"")+'>'+(bz?"Menghubungkan…":"Gabung")+'</button>';
-  s+='<button type="button" class="o6b g" id="bobk">Kembali</button>'}
- else{if(h)s+='<div class="o6l">Kode room · bagikan ke teman</div><div class="o6c big">'+cbox(OL.code.split(""),1)+'</div><button type="button" class="o6b" id="bosh">Bagikan kode</button><p class="o6m">Menunggu teman masuk… Game mulai otomatis.</p>';else s+='<p class="o6m">Terhubung ke room <b>'+esc(OL.code)+'</b>. Menunggu host memulai…</p>';s+='<button type="button" class="o6b g" id="bolv">Keluar room</button>'}
- s+=(OL.err?'<p class="o6m er">'+esc(OL.err)+"</p>":"")+(OL.st&&!OL.role?'<p class="o6m">'+esc(OL.st)+"</p>":"")+'<p class="o6m sm">Tips: tetap buka halaman ini selama main. Butuh internet, buka di Chrome.</p></div>';el.innerHTML=s}
+function cfgOnline(){netLeave();cancelAnimationFrame(tw);if(dg){dg.d.remove();dg=null}el.classList.remove("bbpk");B={ph:"setup",gen:false,onl:1};OL.err="";const A=window.zfAuto&&zfAuto("bb");
+ if(!A){OL.want="";OL.opp0="";OL.err="Ajak teman lewat daftar teman untuk main online.";onlDraw();return}
+ OL.name=A.me;OL.opp0=A.opp;OL.want=A.role;OL.code=A.c;OL.inv=A.c;if(A.o&&A.o.tg>=100)OL.tg=A.o.tg|0;OL.tgm=0;
+ window.zfLeave=leaveLobby;window.zfAbort=(c,m)=>{if(!B.onl||OL.inv!==c||(OL.conn&&OL.conn.open))return;const p=OL.peer;try{p&&p.destroy()}catch(e){}OL.peer=null;OL.role="";OL.busy=0;OL.err=m;onlDraw()};onlDraw();A.role==="host"?ohost():ojoin()}
+function leaveLobby(){if(!B.onl)return;window.zfLeave=null;window.zfAbort=null;window.zfCancel&&zfCancel();exitNet();el.innerHTML=""}
+function onlDraw(){if(!B.onl)return;el.innerHTML=window.zfLobby?zfLobby({k:"bb",me:OL.name,opp:OL.opp0,role:OL.want,st:OL.role?(OL.want==="host"?"wait":"ok"):"conn",err:OL.err}):""}
 async function ohost(){if(OL.busy)return;if(!(OL.tg>=100)){OL.err="Target skor minimal 100.";onlDraw();return}OL.busy=1;OL.err="";OL.st="Menghubungkan…";onlDraw();
  try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Kalau dibuka lewat preview di aplikasi Claude, koneksi diblokir: buka di Chrome.";onlDraw();return}
- const mk=n=>{const code=(window.zfTake&&zfTake("bb"))||Array.from({length:5},()=>CHRc[Math.random()*CHRc.length|0]).join(""),p=new Peer("zcbb-"+code.toLowerCase(),PCFG);
+ const mk=n=>{const code=OL.code||Array.from({length:5},()=>CHRc[Math.random()*CHRc.length|0]).join(""),p=new Peer("zcbb-"+code.toLowerCase(),PCFG);
   const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}OL.busy=0;OL.st="";OL.err="Server PeerJS tidak merespons. Coba buka di Chrome.";onlDraw()},10000);
   p.on("open",()=>{clearTimeout(to);OL.busy=0;OL.role="host";OL.peer=p;OL.code=code;OL.st="";onlDraw()});
   p.on("connection",c=>{if(OL.conn&&OL.conn.open){try{c.close()}catch(e){}return}wire(c)});
@@ -4248,17 +4345,12 @@ async function ojoin(){const code=(OL.code||"").toUpperCase();if(OL.busy)return;
  let tries=0,ok_=0;const p=new Peer(PCFG);OL.peer=p;
  const fail=t=>{OL.busy=0;OL.st="";OL.err=t;try{p.destroy()}catch(e){}OL.peer=null;onlDraw()};
  const att=()=>{tries++;const c=p.connect("zcbb-"+code.toLowerCase(),{reliable:true});
-  const to=setTimeout(()=>{if(ok_)return;try{c.close()}catch(e){}if(tries<6)att();else fail("Tidak bisa terhubung ke room. Pastikan host masih membuka halaman game.")},6000);
+  const to=setTimeout(()=>{if(ok_)return;try{c.close()}catch(e){}if(tries<6)att();else fail("Tidak bisa terhubung ke teman. Pastikan ia masih membuka halaman game.")},6000);
   c.on("open",()=>{ok_=1;clearTimeout(to);OL.busy=0;OL.role="client";OL.code=code;OL.st="";wire(c);c.send({t:"hello",name:OL.name||"Tamu"});onlDraw()})};
- p.on("open",att);p.on("error",er=>{if(ok_)return;if(er.type==="peer-unavailable"){if(tries<6)setTimeout(att,1200);else fail("Room tidak ditemukan.")}else fail("Gagal: "+(er.type||"koneksi"))})}
+ p.on("open",att);p.on("error",er=>{if(ok_)return;if(er.type==="peer-unavailable"){if(tries<6)setTimeout(att,1200);else fail("Ajakan sudah tidak berlaku. Minta temanmu mengajak lagi.")}else fail("Gagal: "+(er.type||"koneksi"))})}
 function rematch(){if(!OL.conn||!OL.conn.open){toast("Lawan sudah keluar",1600);return}if(OL.role==="host")netGo();else{netSend({t:"rq"});toast("Meminta host mulai ulang…",1800)}}
-el.addEventListener("input",e=>{if(!B.onl)return;const t=e.target;if(t.id==="botgm"){t.value=t.value.replace(/\D/g,"").slice(0,8);OL.tg=+t.value||0;return}if(t.id==="bonm"){OL.name=t.value;try{localStorage.setItem("zc-chname",t.value)}catch(_){}}else if(t.id==="bocd"){t.value=t.value.replace(/[^A-Za-z0-9]/g,"").toUpperCase().slice(0,5);OL.code=t.value;const b=el.querySelector("#bobx");if(b)b.querySelectorAll("span").forEach((x,i)=>{x.textContent=t.value[i]||"";x.className=t.value[i]?"f":""})}});
 function bClick(e){const g=q=>e.target.closest(q);
- if(B.onl){const tb=g("[data-tab]"),tg=g("[data-tg]");
-  const tm=g("[data-tgm]");if(tb){OL.tab=tb.dataset.tab;OL.err="";onlDraw()}else if(tg){OL.tg=+tg.dataset.tg;OL.tgm=0;onlDraw()}else if(tm){OL.tgm=1;OL.tg=0;OL.err="";onlDraw()}
-  else if(g("#bohost"))ohost();else if(g("#bojoin"))ojoin();else if(g("#bolv")){netLeave();onlDraw()}else if(g("#bobk"))exitNet();
-  else if(g("#bosh")){const t="Ayo main Block Blast online bareng! Kode room: "+OL.code;try{if(navigator.share)navigator.share({text:t}).catch(()=>{});else navigator.clipboard.writeText(t).then(()=>toast("Kode disalin",1500))}catch(_){}}
-  return true}
+ if(B.onl){if(g("#zlx"))leaveLobby();return true}
  if(!B.net)return false;
  if(B.ph==="res"){if(g("#bbolc")){ZC.open();return true}if(g("#bbolx")){exitNet();return true}if(g("#bbolr")){rematch();return true}return false}
  if(B.ph==="play"){
@@ -4555,40 +4647,17 @@ function olCss(){if(document.getElementById("olcss"))return;const st=document.cr
 .olm{margin:12px 2px 0;font-size:13px;line-height:1.4;opacity:.8}.olm.er{color:#ff8a8a;opacity:1}
 .olw{font-size:12px;opacity:.7;margin:8px 2px 0;line-height:1.4}
 `;document.head.appendChild(st)}
-function olCodeBoxes(v,cls){let r="";for(let i=0;i<5;i++)r+='<span'+(cls?"":(v[i]?' class="f"':""))+'>'+(v[i]?esc(v[i]):"")+"</span>";return r}
-function onlDraw(){if(!B.onl)return;olCss();
- const h=OL.role==="host",busy=!!OL.busy;let s='<div class="olc"><div class="olh"><i>U</i><div><h3>Main online</h3><small>'+(OL.role?(h?"Kamu host":"Tersambung"):"Lewat internet, beda perangkat")+'</small></div>'
-  +(OL.role?'<span class="olp">● Online</span>':OL.st?'<span class="olp w">'+esc(OL.st)+'</span>':"")+'</div>';
- if(!OL.role){const tab=OL.tab||"host";
-  s+='<div class="oll" style="margin-top:0">Namamu</div><input class="olin" id="uonm" maxlength="12" autocomplete="off" placeholder="Nama" value="'+esc(OL.name)+'">'
-   +'<div class="olt"><button type="button" data-tab="host" class="'+(tab==="host"?"on":"")+'">Buat room</button><button type="button" data-tab="join" class="'+(tab==="join"?"on":"")+'">Gabung</button></div>';
-  if(tab==="host")s+='<p class="olm">Kamu jadi host, lalu bagikan kode 5 huruf ke teman.</p><button type="button" class="olb" id="uohost"'+(busy?" disabled":"")+'>'+(busy?"Menghubungkan…":"Buat room")+'</button><p class="olw">Tips: tetap buka halaman ini selama main (jangan pindah app) supaya teman bisa masuk.</p>';
-  else{const v=(OL.code||"").slice(0,5);
-   s+='<div class="oll">Kode room</div><div class="olcd" id="uobx">'+olCodeBoxes(v)+'<input id="uocd" maxlength="5" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Kode room" value="'+esc(v)+'"></div><button type="button" class="olb" id="uojoin"'+(busy?" disabled":"")+'>'+(busy?"Menghubungkan…":"Gabung")+'</button>'}}
- else{
-  if(h)s+='<div class="oll" style="margin-top:0">Kode room · bagikan ke teman</div><div class="olbig">'+olCodeBoxes((OL.code||"").split(""),1)+'</div><div class="olr"><button type="button" class="olb s" id="uocp">Salin kode</button><button type="button" class="olb s" id="uosh">Bagikan</button></div>';
-  else s+='<p class="olm" style="margin-top:0">Terhubung ke room <b>'+esc(OL.code)+'</b>. Menunggu host memulai…</p>';
-  s+='<div class="oll">Pemain ('+OL.names.length+'/5)</div>'
-   +OL.names.map((n,i)=>'<div class="olpl"><i style="background:'+AV[i%AV.length]+'">'+esc((n||"?")[0])+'</i><b>'+esc(n)+'</b><em>'+(i===(h?0:OL.seat)?"KAMU":i===0?"HOST":"")+'</em></div>').join("")
-   +(OL.names.length<5?'<div class="olpl e">Menunggu pemain lain…</div>':"")
-   +(h?'<button type="button" class="olb g" id="uogo"'+(OL.names.length<2?" disabled":"")+'>Mulai main</button>':"")
-   +'<button type="button" class="olb s" id="uobk">Keluar room</button>'}
- s+=(OL.err?'<p class="olm er">'+esc(OL.err)+"</p>":"")+(OL.st&&OL.role?'<p class="olm">'+esc(OL.st)+"</p>":"")+"</div>";
- el.innerHTML=s}
-function cfgOnline(){clearTimeout(tm);netLeave();B={ph:"setup",gen:false,onl:1};OL.err="";onlDraw()}
-function onlClick(e){const g=s=>e.target.closest(s),nm0=()=>{const i=el.querySelector("#uonm");OL.name=((i&&i.value)||OL.name).trim().slice(0,12)||"Pemain";S.on=OL.name;save()};
- if(g("[data-tab]")){nm0();OL.tab=g("[data-tab]").dataset.tab;OL.err="";onlDraw()}
- else if(g("#uohost")){nm0();ohost()}
- else if(g("#uojoin")){nm0();const i=el.querySelector("#uocd");OL.code=i?i.value:OL.code;ojoin()}
- else if(g("#uogo")){ostart()}
- else if(g("#uocp")){try{navigator.clipboard.writeText(OL.code);toast("Kode disalin",1200)}catch(x){}}
- else if(g("#uosh")){const t="Ayo main UNO bareng! Kode room: "+OL.code;try{if(navigator.share)navigator.share({text:t}).catch(()=>{});else{navigator.clipboard.writeText(t);toast("Teks undangan disalin",1400)}}catch(x){}}
- else if(g("#uobk")){netLeave();OL.err="";onlDraw()}}
-el.addEventListener("input",e=>{if(!B.onl)return;const t=e.target;if(t.id==="uonm")OL.name=t.value;else if(t.id==="uocd"){t.value=t.value.replace(/[^A-Za-z0-9]/g,"").toUpperCase().slice(0,5);OL.code=t.value;const bx=el.querySelector("#uobx");if(bx)[...bx.querySelectorAll("span")].forEach((sp,i)=>{sp.textContent=t.value[i]||"";sp.className=t.value[i]?"f":""})}});
+function onlDraw(){if(!B.onl)return;el.innerHTML=window.zfLobby?zfLobby({k:"uno",me:OL.name,opp:OL.opp0,role:OL.want,st:OL.role?(OL.want==="host"?(OL.names.length>=2?"ok":"wait"):"ok"):"conn",msg:OL.want==="host"?"Memulai permainan…":OL.st,err:OL.err}):""}
+function cfgOnline(){clearTimeout(tm);netLeave();B={ph:"setup",gen:false,onl:1};OL.err="";const A=window.zfAuto&&zfAuto("uno");
+ if(!A){OL.want="";OL.opp0="";OL.err="Ajak teman lewat daftar teman untuk main online.";onlDraw();return}
+ OL.name=A.me;S.on=A.me;OL.auto=A.role==="host"?1:0;OL.opp0=A.opp;OL.want=A.role;OL.code=A.c;OL.inv=A.c;
+ window.zfLeave=leaveLobby;window.zfAbort=(c,m)=>{if(!B.onl||OL.inv!==c||(OL.conn&&OL.conn.open))return;const p=OL.peer;try{p&&p.destroy()}catch(e){}OL.peer=null;OL.role="";OL.busy=0;OL.err=m;onlDraw()};onlDraw();A.role==="host"?ohost():ojoin()}
+function leaveLobby(){if(!B.onl)return;window.zfLeave=null;window.zfAbort=null;window.zfCancel&&zfCancel();OL.auto=0;setup()}
+function onlClick(e){if(e.target.closest("#zlx"))leaveLobby()}
 // --- host ---
 async function ohost(){if(OL.busy)return;OL.busy=1;OL.err="";OL.st="Menghubungkan…";onlDraw();
  try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Kalau kamu buka lewat preview di aplikasi Claude, koneksi internet diblokir: buka file ini di Chrome.";onlDraw();return}
- const mk=n=>{const code=(window.zfTake&&zfTake("uno"))||Array.from({length:5},()=>CHR[zR(CHR.length)]).join(""),p=new Peer("zcuno-"+code.toLowerCase(),PCFG);
+ const mk=n=>{const code=OL.code||Array.from({length:5},()=>CHR[zR(CHR.length)]).join(""),p=new Peer("zcuno-"+code.toLowerCase(),PCFG);
   const to=setTimeout(()=>{if(OL.role==="host")return;try{p.destroy()}catch(e){}OL.busy=0;OL.st="";OL.err="Server PeerJS tidak merespons. Coba buka file ini di browser (Chrome) atau cek koneksi.";onlDraw()},10000);
   p.on("open",()=>{clearTimeout(to);OL.busy=0;OL.role="host";OL.peer=p;OL.code=code;OL.names=[OL.name];OL.conns=[null];OL.toks=[""];OL.seen=[0];OL.st="";ZC.bind({el,group:1,title:()=>"Chat room",name:()=>"",send:o=>sendAll({...o,from:OL.name}),ok:()=>OL.conns.length>1});hbStart();onlDraw()});
   hwire(p);
@@ -4613,7 +4682,7 @@ function hconn(c){
     if(B.onl){lobbyBc();onlDraw()}else if(B.mode==="net"&&B.host)revive(k0);return}
    if(!B.onl||OL.names.length>=5){try{c.send({t:"full",r:B.onl?"Room penuh":"Game sudah berjalan"})}catch(e){}setTimeout(()=>{try{c.close()}catch(e){}},400);return}
    if(OL.conns.includes(c))return;
-   OL.names.push(String(m.name||"Pemain").slice(0,12)||"Pemain");OL.conns.push(c);OL.toks.push(tok);OL.seen.push(Date.now());lobbyBc();onlDraw();return}
+   OL.names.push(String(m.name||"Pemain").slice(0,12)||"Pemain");OL.conns.push(c);OL.toks.push(tok);OL.seen.push(Date.now());lobbyBc();onlDraw();if(OL.auto)setTimeout(()=>{if(B.onl&&OL.role==="host"&&OL.names.length>=2)ostart()},900);return}
   const k=OL.conns.indexOf(c);if(k<1)return;
   OL.seen[k]=Date.now();
   if(m.t==="bye"){hleft(c,1);return}
@@ -4661,10 +4730,10 @@ async function ojoin(){const code=OL.code.replace(/[^A-Za-z0-9]/g,"").toUpperCas
  const fail=t=>{if(done)return;done=1;clearTimeout(to);try{p.destroy()}catch(e){}OL.peer=null;OL.hc=null;OL.busy=0;OL.st="";OL.err=t;onlDraw()};
  const att=()=>{if(done)return;tries++;OL.st="Menghubungkan… ("+tries+")";onlDraw();
   const c=p.connect("zcuno-"+code.toLowerCase(),{reliable:true,serialization:"json"});OL.hc=c;let ok=0;
-  to=setTimeout(()=>{if(ok||done)return;try{c.close()}catch(e){}if(tries<6)att();else fail("Tidak bisa terhubung ke room. Pastikan host masih membuka halaman game (jangan pindah app), lalu coba lagi.")},9000);
+  to=setTimeout(()=>{if(ok||done)return;try{c.close()}catch(e){}if(tries<6)att();else fail("Tidak bisa terhubung ke teman. Pastikan ia masih membuka halaman game (jangan pindah app).")},9000);
   c.on("open",()=>{if(done)return;ok=1;clearTimeout(to);done=1;OL.busy=0;OL.role="client";OL.st="";OL.names=[];ZC.bind({el,group:1,title:()=>"Chat room",name:()=>"",send:o=>nsend(o),ok:()=>!!(OL.hc&&OL.hc.open)});cwire(c);c.send({t:"hello",name:OL.name,tok:ctok()});onlDraw()});
   c.on("error",()=>{})};
- p.on("error",er=>{if(er.type==="peer-unavailable"){if(tries<8){clearTimeout(to);setTimeout(att,2000)}else fail("Room tidak ditemukan. Pastikan kode benar dan host masih membuka lobby di layar.")}else fail("Gagal: "+(er.type||"koneksi"))});
+ p.on("error",er=>{if(er.type==="peer-unavailable"){if(tries<8){clearTimeout(to);setTimeout(att,2000)}else fail("Ajakan sudah tidak berlaku. Minta temanmu mengajak lagi.")}else fail("Gagal: "+(er.type||"koneksi"))});
  p.on("open",att)}
 function ctok(){if(!OL.tok){OL.tok=S.tk||(Math.random().toString(36).slice(2,10)+Date.now().toString(36));if(S.tk!==OL.tok){S.tk=OL.tok;save()}}return OL.tok}
 function cwire(c){OL.hc=c;OL.hbAt=Date.now();c.on("data",m=>{OL.hbAt=Date.now();cdata(m)});c.on("close",()=>{if(OL.hc===c&&OL.role==="client")cdrop()});c.on("error",()=>{});
@@ -4830,14 +4899,29 @@ homeData();
 (()=>{
 const LS=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);v===null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){return null}};
 const CF={url:"https://ypdtaoccfxzquyfsiloy.supabase.co",key:"sb_publishable_2crOjnp8Rf4zhCt2bdO_Ug_rH4enKGH"};
-let ZM="fr",ZN=0,ME=null,DATA={rel:[],names:{},on:{}},SIG="",tm=0,HB=0,busy=0,P=null,PR=null,CN={},CH=null,INV=null,UN={};
+let ZM="fr",ZN=0,REC=null,RB=0,AU=null,PN={},ME=null,DATA={rel:[],names:{},on:{}},SIG="",tm=0,HB=0,busy=0,P=null,PR=null,CN={},CH=null,INV=null,UN={},SEL=null,OPT={},INVP=0,OUT=null,BN=null;
 try{ME=JSON.parse(LS("zf-me")||"null");UN=JSON.parse(LS("zf-un")||"{}")||{}}catch(e){}
 const saveUN=()=>LS("zf-un",JSON.stringify(UN));
-const GM={sudoku:["Sudoku","sdk"],chess:["Catur","chs"],uno:["UNO","uno"],pul:["Pulse Tap","pt"],blast:["Block Blast","bb"]};
+const LVO=[["mudah","Mudah"],["sedang","Sedang"],["sulit","Sulit"]];
+const GM={
+ sudoku:{n:"Sudoku",k:"sdk",d:"Isi papan lebih cepat dari temanmu",c:["#5fe08a","#1fa84a"],i:'<rect x="3" y="3" width="18" height="18" rx="3.5"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/>',opt:[{k:"lv",t:"Tingkat puzzle",v:LVO,d:"sedang"}]},
+ chess:{n:"Catur",k:"chs",d:"Duel strategi satu lawan satu",c:["#8f8cff","#5856d6"],i:'<circle cx="12" cy="6.5" r="3"/><path d="M9.5 21h5M8 17.5h8M10.5 17.5c0-4 .5-6 1.5-8.5 1 2.5 1.5 4.5 1.5 8.5"/>',opt:[{k:"sd",t:"Kamu main sebagai",v:[["putih","Putih"],["hitam","Hitam"],["acak","Acak"]],d:"acak"}]},
+ uno:{n:"UNO",k:"uno",d:"Habiskan kartumu lebih dulu",c:["#ff7a6e","#ff3b30"],i:'<rect x="5" y="2.5" width="14" height="19" rx="3"/><ellipse cx="12" cy="12" rx="4" ry="6.5" transform="rotate(30 12 12)"/>',opt:[]},
+ pul:{n:"Pulse Tap",k:"pt",d:"Adu refleks, kejar target skor",c:["#ffb340","#ff8a00"],i:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',opt:[{k:"lv",t:"Tingkat",v:LVO,d:"sedang"},{k:"tg",t:"Target skor",v:[[300,"300"],[600,"600"],[1000,"1.000"]],d:600}]},
+ blast:{n:"Block Blast",k:"bb",d:"Susun blok, balapan skor",c:["#4da3ff","#007aff"],i:'<rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="14" y="14" width="6" height="6" rx="1.5"/>',opt:[{k:"tg",t:"Target skor",v:[[20000,"20.000"],[50000,"50.000"],[100000,"100.000"]],d:20000}]}};
 const AL="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",mk=n=>Array.from({length:n},()=>AL[zR(AL.length)]).join("");
 const hist=f=>{try{return JSON.parse(LS("zf-h-"+f)||"[]")}catch(e){return[]}},saveH=(f,a)=>LS("zf-h-"+f,JSON.stringify(a.slice(-100)));
 const isFr=f=>DATA.rel.some(r=>r.status==="accepted"&&(r.from_code===f||r.to_code===f)),opn=()=>!!(P&&P.classList.contains("show"));
-window.zfTake=k=>{const R=window.zfRoom;if(R&&R.k===k&&Date.now()-R.t<3e5){window.zfRoom=null;return R.c}return null};
+window.zfAuto=k=>{const R=window.zfRoom;if(R&&R.k===k&&Date.now()-R.t<3e5){window.zfRoom=null;return R}return null};
+window.zfCancel=()=>{const o=OUT;OUT=null;if(o)send(o.f,{t:"invx",c:o.c}).catch(()=>{})};
+const AVC=["#e5252c","#f08a24","#1ea04b","#1479c4","#8e44ad","#16a085","#d6336c"],avc=n=>AVC[[...String(n||"?")].reduce((a,ch)=>a+ch.charCodeAt(0),0)%AVC.length];
+window.zfLobby=o=>{const G=Object.values(GM).find(x=>x.k===o.k)||GM.sudoku,opp=o.opp||"Teman",me=o.me||"Kamu",st=o.err?"err":o.st,host=o.role==="host",
+ pl=(n,w)=>'<div class="zlp'+(w?" w":"")+'"><i class="zlav" style="background:'+avc(n)+';--rc:'+avc(n)+'88">'+esc(Array.from(String(n).trim())[0]||"?")+'</i><b>'+esc(n)+'</b></div>',
+ msg=st==="conn"?(host?"Menyiapkan permainan…":"Menyambungkan ke "+opp+"…"):st==="wait"?"Menunggu "+opp+" menerima ajakan…":(o.msg||"Tersambung! Permainan segera dimulai…");
+ return '<div class="zlb'+(st==="err"?" er":"")+'" style="--c1:'+G.c[0]+';--c2:'+G.c[1]+'"><div class="zlh"><span class="zlg"><svg viewBox="0 0 24 24">'+G.i+'</svg></span><b>'+G.n+' online</b></div>'
+  +'<div class="zlv">'+pl(me,0)+'<div class="zll '+(st==="ok"?"ok":st==="err"?"err":"")+'"><u></u><u></u><u></u></div>'+pl(opp,st==="wait"||st==="conn")+'</div>'
+  +(st==="err"?'<p class="zle">'+esc(o.err)+'</p>':'<p class="zls">'+esc(msg)+'</p><p class="zlt">Tetap buka halaman ini sampai permainan dimulai.</p>')
+  +'<button type="button" class="zlx" id="zlx">'+(st==="err"?"Kembali":"Batalkan")+'</button></div>'};
 async function api(path,o){o=o||{};const r=await fetch(CF.url.replace(/\/+$/,"")+"/rest/v1/"+path,{method:o.m||"GET",headers:Object.assign({apikey:CF.key,"Content-Type":"application/json",Prefer:o.p||"return=representation"},CF.key.startsWith("sb_")?{}:{Authorization:"Bearer "+CF.key}),body:o.b?JSON.stringify(o.b):undefined});
   if(!r.ok){let g="";try{const j=await r.json();g=j.code||j.error_code||""}catch(_){}const er=new Error(r.status);er.pg=g;throw er}const t=await r.text();return t?JSON.parse(t):[]}
 const beat=()=>api("zg_profiles?on_conflict=code",{m:"POST",p:"resolution=merge-duplicates,return=minimal",b:{code:ME.code,name:ME.name,ts:Date.now()}});
@@ -4854,16 +4938,50 @@ const conn=f=>new Promise((res,rej)=>{const o=CN[f];if(o&&o.open)return res(o);i
 const send=async(f,o)=>(await conn(f)).send(o);
 function boot(){if(HB)return;HB=setInterval(()=>{if(!document.hidden){beat().catch(()=>{});if(!opn())refresh()}},30000);lp().then(peerUp).catch(()=>{})}
 function onData(f,d){if(!d||typeof d!=="object"||!isFr(f))return;
-  if(d.t==="m"&&typeof d.x==="string"){const a=hist(f);a.push({me:0,x:d.x.slice(0,500),t:Date.now()});saveH(f,a);sfx("recv");
-    if(opn()&&CH===f)drawChat();else{UN[f]=(UN[f]||0)+1;saveUN();dot();toast((DATA.names[f]||f)+": "+d.x.slice(0,40),2200);if(opn()&&!CH&&!INV&&!ZN)draw(true)}}
-  else if(d.t==="inv"&&GM[d.g]&&/^[A-Z0-9]{5}$/.test(d.c))banner(f,d.g,d.c)}
-function banner(f,g,c){const o=$("zfn");if(o)o.remove();const b=document.createElement("div");b.id="zfn";b.className="zfn";
-  b.innerHTML='<span>'+esc(DATA.names[f]||f)+' mengajak main <b>'+GM[g][0]+'</b></span><button type="button" class="chip on" data-a="join">Gabung</button><button type="button" class="chip" data-a="no">✕</button>';
-  b.onclick=e=>{const a=e.target.closest("[data-a]");if(!a)return;if(a.dataset.a==="join"){try{navigator.clipboard.writeText(c)}catch(_){}close();const x=document.querySelector('[data-w="'+g+'"]');if(x)x.click();toast("Kode room "+c+" disalin. Pilih Online → Gabung",4500)}b.remove()};
-  document.body.appendChild(b);sfx("recv");setTimeout(()=>{if(b.isConnected)b.remove()},60000)}
-async function invite(f,g){const c=mk(5);
-  try{await send(f,{t:"inv",g,c,n:ME.name})}catch(e){return toast("Teman sedang offline atau belum membuka web",2600)}
-  window.zfRoom={k:GM[g][1],c,t:Date.now()};INV=null;close();const x=document.querySelector('[data-w="'+g+'"]');if(x)x.click();toast("Undangan terkirim. Pilih Online → Buat room",4500)}
+  if(d.t==="m"&&typeof d.x==="string"){const md=zin(d);if(md===false)return;const x=md?md.x:d.x.slice(0,500),a=hist(f);a.push(Object.assign({me:0,x,t:Date.now()},md||{}));saveH(f,a);sfx("recv");
+    if(opn()&&CH===f)drawChat();else{UN[f]=(UN[f]||0)+1;saveUN();dot();toast((DATA.names[f]||f)+": "+x.slice(0,40),2200);if(opn()&&!CH&&!INV&&!ZN)draw(true)}}
+  else if(d.t==="inv"&&GM[d.g]&&/^[A-Z0-9]{5}$/.test(d.c))banner(f,d.g,d.c)
+  else if(d.t==="invr"&&OUT&&OUT.c===d.c&&OUT.f===f){if(!d.ok){OUT=null;window.zfAbort&&zfAbort(d.c,(DATA.names[f]||f)+" menolak ajakan.")}}
+  else if(d.t==="invx"&&BN&&BN.c===d.c&&BN.f===f){bannerOff();toast((DATA.names[f]||f)+" membatalkan ajakan",2200)}}
+function bannerOff(){const o=$("zfn");BN=null;if(!o)return;o.classList.add("out");setTimeout(()=>o.remove(),320)}
+function banner(f,g,c){const o=$("zfn");if(o)o.remove();const G=GM[g],n=DATA.names[f]||f;BN={f,g,c};
+  const b=document.createElement("div");b.id="zfn";b.className="zfn zfi";b.style.setProperty("--c1",G.c[0]);b.style.setProperty("--c2",G.c[1]);
+  b.innerHTML='<span class="zbi"><svg viewBox="0 0 24 24">'+G.i+'</svg></span><div class="zbt"><small>'+esc(n)+' mengajak main</small><b>'+G.n+'</b></div><button type="button" class="chip" data-a="no">Tolak</button><button type="button" class="chip on" data-a="join">Terima</button>';
+  b.onclick=e=>{const a=e.target.closest("[data-a]");if(!a)return;if(a.dataset.a==="join")accept(f,g,c);else decline(f,c)};
+  document.body.appendChild(b);sfx("recv");setTimeout(()=>{if(BN&&BN.c===c)bannerOff()},60000)}
+async function accept(f,g,c){
+  const cur=window.zGame&&zGame.cur&&zGame.cur();
+  if(cur&&!(await confirmX("Terima ajakan?","Game yang sedang berjalan akan ditutup.","Terima",true)))return;
+  if(!BN||BN.c!==c)return;
+  bannerOff();if(cur)zGame.quit(cur);
+  send(f,{t:"invr",c,ok:1}).catch(()=>{});
+  close();window.zfRoom={k:GM[g].k,c,t:Date.now(),role:"client",opp:DATA.names[f]||f,me:ME.name};
+  window.zfLaunch&&zfLaunch(g)}
+function decline(f,c){bannerOff();send(f,{t:"invr",c,ok:0}).catch(()=>{})}
+async function invite(f,g,o){const c=mk(5);
+  try{await send(f,{t:"inv",g,c,n:ME.name})}catch(e){toast("Teman sedang offline atau belum membuka web",2600);return false}
+  OUT={f,c};window.zfRoom={k:GM[g].k,c,t:Date.now(),role:"host",opp:DATA.names[f]||f,me:ME.name,o:o||{}};
+  INV=null;SEL=null;OPT={};INVP=0;close();window.zfLaunch&&zfLaunch(g);return true}
+// ----- layar pilih game -----
+function optHtml(){const G=SEL&&GM[SEL];if(!G||!G.opt.length)return"";
+  return G.opt.map(o=>'<div class="zol">'+o.t+'</div><div class="zor">'+o.v.map(v=>'<button type="button" class="zoc'+(OPT[o.k]===v[0]?" on":"")+'" data-a="op" data-o="'+o.k+'" data-v="'+v[0]+'">'+v[1]+'</button>').join("")+'</div>').join("")}
+function sendTxt(){return SEL?"Ajak "+esc(DATA.names[INV]||INV)+" main "+GM[SEL].n:"Pilih game dulu"}
+function invUpd(fresh){const z=P&&P.querySelector(".zim");if(!z)return;const G=SEL&&GM[SEL];
+  z.style.setProperty("--s1",G?G.c[0]:"#c7c7cc");z.style.setProperty("--s2",G?G.c[1]:"#aeaeb2");
+  z.querySelectorAll(".zgc").forEach(x=>{const on=x.dataset.g===SEL;x.classList.toggle("on",on);x.classList.toggle("off",!!SEL&&!on);x.setAttribute("aria-pressed",on)});
+  const io=z.querySelector(".zio"),ii=z.querySelector(".zioi"),h=optHtml();
+  if(fresh!==1||!ii.innerHTML){ii.innerHTML=h}
+  io.classList.toggle("open",!!h);
+  if(fresh===1)return;
+  ii.style.animation="none";void ii.offsetWidth;ii.style.animation="";
+  const sb=z.querySelector(".zsend");sb.disabled=!SEL;sb.querySelector("span").innerHTML=sendTxt();sb.classList.remove("pop");void sb.offsetWidth;sb.classList.add("pop")}
+function invDraw(){const f=INV,n=DATA.names[f]||f,on=!!DATA.on[f],ks=Object.keys(GM),still=INVP;INVP=1;
+  P.querySelector(".zfb").innerHTML='<div class="zim'+(still?" still":"")+'"><div class="zihd">'+zav(f)+'<div><small>Ajak main</small><b>'+esc(n)+'</b></div><span class="zist'+(on?" on":"")+'">'+(on?"Online":"Offline")+'</span></div>'
+   +'<div class="zis">Pilih game</div><div class="zig">'
+   +ks.map((g,i)=>{const G=GM[g];return '<button type="button" class="zgc'+(ks.length%2&&i===ks.length-1?" w":"")+(SEL===g?" on":SEL?" off":"")+'" data-a="pg" data-g="'+g+'" style="--i:'+i+';--c1:'+G.c[0]+';--c2:'+G.c[1]+'" aria-pressed="'+(SEL===g)+'"><span class="zgi"><svg viewBox="0 0 24 24">'+G.i+'</svg></span><span class="zgt"><b>'+G.n+'</b><em>'+G.d+'</em></span><i class="zck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i></button>'}).join("")
+   +'</div><div class="zio"><div><div class="zioi"></div></div></div>'
+   +'<div class="zcta"><button type="button" class="zsend" data-a="send"'+(SEL?"":" disabled")+'><span>'+sendTxt()+'</span></button></div></div>';
+  invUpd(1)}
 // ----- Supabase: profil, teman, status -----
 async function setup(){
   if(!ME){const n=await dlg({title:"Nama kamu",text:"Nama yang dilihat temanmu",input:LS("zc-chname")||"",ok:"Simpan"});if(!n||!n.trim())return false;
@@ -4880,6 +4998,7 @@ const B=(a,t,x,c)=>'<button type="button" class="chip'+(c?" "+c:"")+'" data-a="'
 function row(r,k){const c=r.from_code===ME.code?r.to_code:r.from_code,n=esc(DATA.names[c]||c),id=' data-id="'+r.id+'"',f=' data-f="'+c+'"';
   const nm='<b>'+(k==="fr"?'<i class="zfo'+(DATA.on[c]?" on":"")+'"></i>':"")+n+'<small>'+c+'</small></b>';
   return '<div class="zfr">'+nm+(k==="in"?B("ok","Terima",id,"on")+B("del","Tolak",id):k==="out"?B("del","Batal",id):B("chat","Chat"+(UN[c]?" ("+UN[c]+")":""),f)+B("inv","Ajak",f,"on")+B("rm","✕",id))+'</div>'}
+const ea=s=>esc(s).replace(/"/g,"&quot;").replace(/'/g,"&#39;");
 const ZC=["#e5252c","#f08a24","#1ea04b","#1479c4","#8e44ad","#16a085","#d6336c"],z2=n=>(n<10?"0":"")+n,
   zhm=t=>{const d=new Date(t);return z2(d.getHours())+":"+z2(d.getMinutes())},
   zd0=t=>{const d=new Date(t);d.setHours(0,0,0,0);return d.getTime()},
@@ -4892,17 +5011,94 @@ const ZC=["#e5252c","#f08a24","#1ea04b","#1479c4","#8e44ad","#16a085","#d6336c"]
 function zhead(){const t=$("zft"),n=$("zfnw");if(!t||!n)return;
   if(CH){t.innerHTML=zav(CH)+'<div class="zfth"><b>'+esc(DATA.names[CH]||CH)+'</b><small>'+(DATA.on[CH]?"online":"offline")+'</small></div>';n.hidden=true}
   else if(ZN){t.innerHTML='<b>Chat baru</b>';n.hidden=true}
+  else if(INV){t.innerHTML='<b>Ajak main</b>';n.hidden=true}
   else if(ZM==="chat"&&!INV){t.innerHTML='<b>Chat</b>';n.hidden=false}
   else{t.innerHTML='<b>Teman</b>';n.hidden=true}}
-function zrow(c,sub,tm,u,nm){return '<div class="zfc" role="button" tabindex="0" data-a="chat" data-f="'+c+'"'+(nm?' data-n="'+esc((DATA.names[c]||c).toLowerCase())+'"':'')+'>'+zav(c)+'<div class="zfcm"><div class="zfct"><b>'+esc(DATA.names[c]||c)+'</b>'+(tm?'<small'+(u?' class="un"':'')+'>'+tm+'</small>':'')+'</div><div class="zfcl"><span>'+esc(sub)+'</span>'+(u?'<em class="zfbg">'+u+'</em>':'')+'</div></div></div>'}
+function zrow(c,sub,tm,u,nm){return '<div class="zfc" role="button" tabindex="0" data-a="chat" data-f="'+ea(c)+'"'+(nm?' data-n="'+ea((DATA.names[c]||c).toLowerCase())+'"':'')+'>'+zav(c)+'<div class="zfcm"><div class="zfct"><b>'+esc(DATA.names[c]||c)+'</b>'+(tm?'<small'+(u?' class="un"':'')+'>'+tm+'</small>':'')+'</div><div class="zfcl"><span>'+esc(sub)+'</span>'+(u?'<em class="zfbg">'+u+'</em>':'')+'</div></div></div>'}
 function zlist(cl){P.querySelector(".zfb").innerHTML=cl.length?'<div class="zfls">'+cl.map(o=>zrow(o.c,o.l?o.l.x:"",zlt(o.t),o.u)).join("")+'</div>':'<div class="zfem"><p class="zfe">Belum ada chat</p>'+B("new","Chat baru","","on")+'</div>'}
 function znew(){const fr=zfrs().sort((a,b)=>(DATA.names[a]||a).localeCompare(DATA.names[b]||b));
   P.querySelector(".zfb").innerHTML=fr.length?'<input id="zfq" class="zfsr" placeholder="Cari teman" autocomplete="off"><div class="zfls">'+fr.map(c=>zrow(c,DATA.on[c]?"online":"offline","",0,1)).join("")+'</div>':'<div class="zfem"><p class="zfe">Belum ada teman</p>'+B("tofr","Tambah teman","","on")+'</div>'}
+const ZP={img:'<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/>',
+  cam:'<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>',
+  mic:'<path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v4"/><path d="M8 23h8"/>',
+  snd:'<path d="M12 19V5"/><path d="M5 12l7-7 7 7"/>',
+  del:'<path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/>'},
+  ZI=(p,n,w,c)=>'<svg'+(c?' class="'+c+'"':'')+' viewBox="0 0 24 24" width="'+n+'" height="'+n+'" fill="none" stroke="currentColor" stroke-width="'+(w||2.2)+'" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>',
+  ZPL='<svg class="pp" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M7 4l13 8-13 8z"/></svg><svg class="pa" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>';
+function ZOK(u){return typeof u==="string"&&u.length<300&&u.indexOf(CF.url+"/storage/v1/object/public/zg-chat/")===0&&/^[A-Za-z0-9:._\/-]+$/.test(u)&&u.indexOf("..")<0}
+function zin(d){if(!d.k)return null;if((d.k!=="img"&&d.k!=="aud")||!ZOK(d.u))return false;
+  const o={k:d.k,u:d.u,x:d.k==="img"?"📷 Foto":"🎤 Suara"};
+  if(d.k==="aud")o.d=Math.max(0,Math.min(600,Math.round(+d.d)||0));
+  else{const w=Math.round(+d.w),h=Math.round(+d.h);if(w>0&&h>0&&w<=4000&&h<=4000){o.w=w;o.h=h}}
+  return o}
+// ----- unggah ke Supabase Storage (bucket zg-chat) -----
+async function zup(blob,mime,ext){
+  const path=ME.code+"/"+Date.now()+"-"+mk(6).toLowerCase()+"."+ext;let r;
+  try{r=await fetch(CF.url+"/storage/v1/object/zg-chat/"+path,{method:"POST",headers:{apikey:CF.key,"Content-Type":mime,"x-upsert":"false"},body:blob})}
+  catch(e){const er=new Error("jaringan");er.up=1;throw er}
+  if(!r.ok){let m="";try{const j=await r.json();m=j.message||j.error||""}catch(_){}const er=new Error(r.status);er.up=1;er.m=m;throw er}
+  return CF.url+"/storage/v1/object/public/zg-chat/"+path}
+async function zsend(f,k,blob,mime,ext,extra){
+  try{await conn(f)}catch(e){return toast("Teman sedang offline atau belum membuka web",2600)}
+  PN[f]=(PN[f]||0)+1;if(CH===f)drawChat();
+  try{const u=await zup(blob,mime,ext),x=k==="img"?"📷 Foto":"🎤 Suara";
+    await send(f,Object.assign({t:"m",k,u,x},extra));
+    const h=hist(f);h.push(Object.assign({me:1,x,t:Date.now(),k,u},extra));saveH(f,h)}
+  catch(e){toast(e&&e.up?"Gagal mengunggah ke Supabase ("+e.message+(e.m?": "+String(e.m).slice(0,60):"")+")":"Teman sedang offline atau belum membuka web",4200)}
+  finally{PN[f]=Math.max(0,(PN[f]||1)-1);if(opn()&&CH===f)drawChat()}}
+function zimg(file){return new Promise((res,rej)=>{const u=URL.createObjectURL(file),im=new Image();
+  im.onload=()=>{URL.revokeObjectURL(u);const M=1280,r=Math.min(1,M/Math.max(im.naturalWidth,im.naturalHeight)),w=Math.max(1,Math.round(im.naturalWidth*r)),h=Math.max(1,Math.round(im.naturalHeight*r)),c=document.createElement("canvas");c.width=w;c.height=h;c.getContext("2d").drawImage(im,0,0,w,h);c.toBlob(b=>b?res({b,w,h}):rej(),"image/jpeg",.82)};
+  im.onerror=()=>{URL.revokeObjectURL(u);rej()};im.src=u})}
+async function zsendImg(file){const f=CH;if(!f)return;
+  if(!/^image\//.test(file.type))return toast("File harus berupa gambar",2200);
+  let im;try{im=await zimg(file)}catch(e){return toast("Gambar tidak bisa dibaca",2200)}
+  zsend(f,"img",im.b,"image/jpeg","jpg",{w:im.w,h:im.h})}
+// ----- voice note -----
+async function recStart(){if(REC||RB)return;
+  if(!navigator.mediaDevices||!window.MediaRecorder)return toast("Perekam suara tidak didukung di browser ini",2800);
+  RB=1;let st;try{st=await navigator.mediaDevices.getUserMedia({audio:true})}catch(e){RB=0;return toast("Izin mikrofon ditolak",2600)}RB=0;
+  if(!CH){st.getTracks().forEach(t=>t.stop());return}
+  const mt=["audio/webm;codecs=opus","audio/webm","audio/mp4","audio/ogg;codecs=opus"].find(t=>MediaRecorder.isTypeSupported(t))||"";
+  let mr;try{mr=new MediaRecorder(st,mt?{mimeType:mt}:undefined)}catch(e){st.getTracks().forEach(t=>t.stop());return toast("Perekam suara gagal dimulai",2600)}
+  REC={mr,st,ch:[],t0:Date.now(),mt:mr.mimeType||mt||"audio/webm",send:false,iv:setInterval(recTick,250)};
+  mr.ondataavailable=e=>{if(REC&&e.data&&e.data.size)REC.ch.push(e.data)};mr.onstop=recDone;
+  mr.start();drawBar()}
+function recTick(){if(!REC)return;const t=Math.floor((Date.now()-REC.t0)/1000),e=$("zfrt");if(e)e.textContent=Math.floor(t/60)+":"+z2(t%60);if(t>=120)recStop(true)}
+function recStop(send){if(!REC)return;REC.send=send;try{if(REC.mr.state!=="inactive")REC.mr.stop();else recDone()}catch(e){recDone()}}
+function recDone(){const R=REC;if(!R)return;REC=null;clearInterval(R.iv);try{R.st.getTracks().forEach(t=>t.stop())}catch(e){}
+  const dur=Math.round((Date.now()-R.t0)/1000),f=CH;
+  if(R.send&&f){if(!R.ch.length||dur<1)toast("Rekaman terlalu singkat",1800);
+    else{const mime=(R.mt||"audio/webm").split(";")[0],ext=mime.indexOf("mp4")>=0?"m4a":mime.indexOf("ogg")>=0?"ogg":"webm";zsend(f,"aud",new Blob(R.ch,{type:mime}),mime,ext,{d:dur})}}
+  if(CH)drawBar()}
+function zstop(){if(AU){try{AU.a.pause()}catch(e){}if(AU.b)AU.b.classList.remove("on");AU=null}}
+function zplay(u){const b=[...P.querySelectorAll(".zfpl")].find(x=>x.dataset.u===u);if(!b)return;
+  if(AU&&AU.u===u){if(AU.a.paused)AU.a.play().catch(()=>{});else AU.a.pause();return}
+  zstop();const a=new Audio(u);AU={a,u,b};const bar=()=>AU&&AU.b&&AU.b.parentNode.querySelector(".zfpf");
+  a.ontimeupdate=()=>{const p=bar();if(p&&a.duration)p.style.width=(a.currentTime/a.duration*100)+"%"};
+  a.onplay=()=>{if(AU&&AU.a===a&&AU.b)AU.b.classList.add("on")};a.onpause=()=>{if(AU&&AU.a===a&&AU.b)AU.b.classList.remove("on")};
+  a.onended=()=>{const p=bar();if(p)p.style.width="0";if(AU&&AU.b)AU.b.classList.remove("on");AU=null};
+  a.onerror=()=>{AU=null;toast("Suara tidak bisa diputar di perangkat ini",2800)};
+  a.play().catch(()=>{})}
+function zrebind(){if(!AU)return;const nb=[...P.querySelectorAll(".zfpl")].find(b=>b.dataset.u===AU.u);
+  if(!nb)return zstop();AU.b=nb;nb.classList.toggle("on",!AU.a.paused);const p=nb.parentNode.querySelector(".zfpf");if(p&&AU.a.duration)p.style.width=(AU.a.currentTime/AU.a.duration*100)+"%"}
+function zview(u){if(!ZOK(u))return;const o=document.createElement("div");o.className="zfiv";o.innerHTML='<img alt="Foto" src="'+u+'"><button type="button" class="zfivx" aria-label="Tutup">✕</button>';o.onclick=()=>o.remove();document.body.appendChild(o)}
+function zbubble(m){const c="zfg "+(m.me?"me":"op"),tm=m.t?"<i>"+zhm(m.t)+"</i>":"";
+  if(m.k==="img"&&ZOK(m.u)){const ar=m.w>0&&m.h>0?' style="aspect-ratio:'+(+m.w)+"/"+(+m.h)+'"':"";
+    return '<div class="'+c+' zfmd"><img class="zfim" src="'+m.u+'" data-a="view" data-u="'+m.u+'" alt="Foto"'+ar+'>'+tm+"</div>"}
+  if(m.k==="aud"&&ZOK(m.u)){const d=Math.max(0,+m.d||0);
+    return '<div class="'+c+'"><div class="zfau"><button type="button" class="zfpl" data-a="play" data-u="'+m.u+'" aria-label="Putar">'+ZPL+'</button><div class="zfpg"><span class="zfpf"></span></div><small>'+Math.floor(d/60)+":"+z2(d%60)+"</small></div>"+tm+"</div>"}
+  return '<div class="'+c+'">'+esc(m.x)+tm+"</div>"}
+function zbar(){
+  if(REC)return '<div class="zfbar zfrec"><button type="button" class="zfsd zfx" data-a="rcancel" aria-label="Batal">'+ZI(ZP.del,20)+'</button><span class="zfrd"></span><b id="zfrt">0:00</b><span class="zfrs">Merekam</span><button type="button" class="zfsd" data-a="rsend" aria-label="Kirim">'+ZI(ZP.snd,20,2.6)+'</button></div>';
+  return '<div class="zfbar"><div class="zfpill"><button type="button" class="zfic" data-a="pick" aria-label="Kirim foto">'+ZI(ZP.img,22,2)+'</button><input id="zfmi" maxlength="500" autocomplete="off" placeholder="Pesan"><button type="button" class="zfic" data-a="cam" aria-label="Buka kamera">'+ZI(ZP.cam,22,2)+'</button></div><button type="button" class="zfsd" id="zfgo" data-a="mic" aria-label="Rekam suara">'+ZI(ZP.mic,20,2.2)+'</button></div>'}
+function zgo(){const g=$("zfgo"),i=$("zfmi");if(!g||!i)return;const t=i.value.trim()!=="";
+  if((g.dataset.a==="send")===t)return;g.dataset.a=t?"send":"mic";g.setAttribute("aria-label",t?"Kirim":"Rekam suara");g.innerHTML=t?ZI(ZP.snd,20,2.6):ZI(ZP.mic,20,2.2)}
+function drawBar(){const b=P&&P.querySelector(".zfbar");if(b){b.outerHTML=zbar();zgo()}}
 function drawChat(){const f=CH,h=hist(f),old=$("zfmi"),v=old?old.value:"",fo=old&&document.activeElement===old;zhead();let pd=0,out="";
-  h.forEach(m=>{if(m.t){const d=zd0(m.t);if(d!==pd){pd=d;out+='<div class="zfds">'+zdl(m.t)+'</div>'}}
-    out+='<div class="zfg '+(m.me?"me":"op")+'">'+esc(m.x)+(m.t?'<i>'+zhm(m.t)+'</i>':'')+'</div>'});
-  P.querySelector(".zfb").innerHTML='<div class="zfm" id="zfm">'+(out||'<p class="zfe">Belum ada pesan</p>')+'</div><div class="zfbar"><input id="zfmi" maxlength="500" autocomplete="off" placeholder="Pesan"><button type="button" class="zfsd" data-a="send" aria-label="Kirim"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg></button></div>';
-  const n=$("zfmi");if(n){n.value=v;if(fo)n.focus()}
+  h.forEach(m=>{if(m.t){const d=zd0(m.t);if(d!==pd){pd=d;out+='<div class="zfds">'+zdl(m.t)+'</div>'}}out+=zbubble(m)});
+  if(PN[f]>0)out+='<div class="zfg me"><span class="zfpn">Mengirim…</span></div>';
+  P.querySelector(".zfb").innerHTML='<div class="zfm" id="zfm">'+(out||'<p class="zfe">Belum ada pesan</p>')+'</div>'+zbar();
+  const n=$("zfmi");if(n){n.value=v;if(fo)n.focus()}zgo();zrebind();
   const m=$("zfm");if(m)m.scrollTop=m.scrollHeight}
 function draw(force){
   if(CH){zhead();return force?drawChat():0}
@@ -4910,25 +5106,36 @@ function draw(force){
   zhead();
   const me=ME.code,R=DATA.rel,cl=ZM==="chat"?zcl():null,sig=JSON.stringify([R,DATA.names,DATA.on,UN,INV,ZM,cl&&cl.map(o=>[o.c,o.t,o.u,o.l&&o.l.x])]);if(!force&&sig===SIG)return;SIG=sig;
   if(ZM==="chat")return zlist(cl);
-  if(INV){P.querySelector(".zfb").innerHTML='<div class="zfs">Ajak '+esc(DATA.names[INV]||INV)+' main</div>'+Object.keys(GM).map(g=>B("go",GM[g][0],' data-g="'+g+'"',"zfgm")).join("")+B("back","Kembali","","zfreset");return}
+  if(INV){invDraw();return}
   const v=($("zfin")||{}).value||"",sec=(t,a,k)=>a.length?'<div class="zfs">'+t+'</div>'+a.map(r=>row(r,k)).join(""):"",fr=R.filter(r=>r.status==="accepted");
-  P.querySelector(".zfb").innerHTML='<div class="glass zfme"><span class="zfnm">'+esc(ME.name)+'</span><button type="button" class="zfpen" data-a="edit" aria-label="Ubah nama"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button><button type="button" class="chip on zfcd" data-a="copy" aria-label="Salin kode">'+me+'</button></div>'
+  P.querySelector(".zfb").innerHTML='<div class="glass zfme"><span class="zfnm">'+esc(ME.name)+'</span><button type="button" class="zfpen" data-a="edit" aria-label="Ubah nama"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button><div class="zfcw"><small>Kode akunmu</small><button type="button" class="chip on zfcd" data-a="copy" aria-label="Salin kode akunmu">'+me+'</button></div></div>'
     +'<div class="zfadd"><input id="zfin" maxlength="6" autocomplete="off" autocapitalize="characters" placeholder="Kode akun teman" value="'+esc(v)+'">'+B("add","Tambah","","on")+'</div>'
     +sec("Permintaan masuk",inc(),"in")+sec("Teman ("+fr.length+")",fr,"fr")+sec("Menunggu",R.filter(r=>r.status==="pending"&&r.from_code===me),"out")
     }
 async function refresh(force){try{await load();draw(force)}catch(e){}}
-async function act(a,id,x){
+async function act(a,id,x,bt){
   const R=DATA.rel,r=R.find(y=>String(y.id)===String(id));
   try{
     if(a==="copy"){try{await navigator.clipboard.writeText(ME.code);toast("Kode disalin",1600)}catch(e){toast("Kodemu: "+ME.code,2600)}return}
     if(a==="edit"){const n=await dlg({title:"Ubah nama",input:ME.name,ok:"Simpan"});const t=QT(n,16);if(!t||t===ME.name)return;
       ME.name=t;LS("zf-me",JSON.stringify(ME));await beat();draw(true);toast("Nama diubah",1600);return}
-    if(a==="back"){CH=null;INV=null;ZN=0;draw(true);return}
+    if(a==="pick"){const e=$("zff1");if(e)e.click();return}
+    if(a==="cam"){const e=$("zff2");if(e)e.click();return}
+    if(a==="mic"){recStart();return}
+    if(a==="rsend"){recStop(true);return}
+    if(a==="rcancel"){recStop(false);return}
+    if(a==="play"){zplay(x);return}
+    if(a==="view"){zview(x);return}
+    if(a==="back"){recStop(false);zstop();CH=null;INV=null;SEL=null;OPT={};INVP=0;ZN=0;draw(true);return}
     if(a==="new"){ZN=1;INV=null;CH=null;draw(true);return}
     if(a==="tofr"){ZM="fr";ZN=0;draw(true);return}
     if(a==="chat"){CH=x;ZN=0;delete UN[x];saveUN();dot();drawChat();return}
-    if(a==="inv"){INV=x;draw(true);return}
-    if(a==="go"){invite(INV,x);return}
+    if(a==="inv"){INV=x;SEL=null;OPT={};INVP=0;draw(true);return}
+    if(a==="pg"){if(!GM[x])return;if(SEL!==x){SEL=x;OPT={};GM[x].opt.forEach(o=>OPT[o.k]=o.d);sfx("click");invUpd()}return}
+    if(a==="op"){const g=SEL&&GM[SEL],o=g&&g.opt.find(y=>y.k===bt.dataset.o);if(!o)return;const v=o.v.find(y=>String(y[0])===bt.dataset.v);if(!v)return;OPT[o.k]=v[0];sfx("click");
+      bt.parentNode.querySelectorAll(".zoc").forEach(y=>y.classList.toggle("on",y===bt));return}
+    if(a==="send"){if(!SEL||!INV)return;const sb=P.querySelector(".zsend");if(sb){sb.disabled=true;sb.classList.add("ld")}
+      const ok=await invite(INV,SEL,Object.assign({},OPT));if(!ok){const b2=P.querySelector(".zsend");if(b2){b2.classList.remove("ld");b2.disabled=!SEL}}return}
     if(a==="send"){const i=$("zfmi"),t=QT2(i&&i.value,500);if(!t)return;
       try{await send(CH,{t:"m",x:t})}catch(e){return toast("Teman sedang offline atau belum membuka web",2600)}
       const h=hist(CH);h.push({me:1,x:t,t:Date.now()});saveH(CH,h);i.value="";drawChat();const n=$("zfmi");if(n)n.focus();return}
@@ -4945,14 +5152,15 @@ async function act(a,id,x){
     else if(a==="del"){await api("zg_friends?id=eq."+id,{m:"DELETE",p:"return=minimal"})}
     else if(a==="rm"){const c=r&&(r.from_code===ME.code?r.to_code:r.from_code);if(!await confirmX("Hapus teman",(DATA.names[c]||c)+" akan dihapus dari daftar temanmu.","Hapus",true))return;await api("zg_friends?id=eq."+id,{m:"DELETE",p:"return=minimal"})}
     await refresh(true)}catch(e){toast("Gagal, coba lagi",2200)}}
-function close(){clearInterval(tm);tm=0;CH=null;INV=null;ZN=0;if(P)P.classList.remove("show")}
+function close(){recStop(false);zstop();clearInterval(tm);tm=0;CH=null;INV=null;SEL=null;OPT={};INVP=0;ZN=0;if(P)P.classList.remove("show")}
 async function open(m){
   if(busy)return;busy=1;sfx("click");
-  try{if(!(await setup()))return;boot();ZM=m||"fr";CH=null;INV=null;ZN=0;
-    if(!P){P=document.createElement("div");P.id="zfp";P.innerHTML='<div class="zfh"><button type="button" class="hb sm" data-a="x" aria-label="Tutup"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><div class="zft" id="zft"><b>Teman</b></div><button type="button" class="zfpen zfnw" data-a="new" id="zfnw" aria-label="Chat baru" hidden><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div><div class="zfb"></div>';document.body.appendChild(P);
-      P.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;if(b.dataset.a==="x"){if(CH||INV||ZN)act("back");else close()}else act(b.dataset.a,b.dataset.id,b.dataset.f||b.dataset.g)});
+  try{if(!(await setup()))return;boot();ZM=m||"fr";CH=null;INV=null;SEL=null;OPT={};INVP=0;ZN=0;
+    if(!P){P=document.createElement("div");P.id="zfp";P.innerHTML='<div class="zfh"><button type="button" class="hb sm" data-a="x" aria-label="Tutup"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><div class="zft" id="zft"><b>Teman</b></div><button type="button" class="zfpen zfnw" data-a="new" id="zfnw" aria-label="Chat baru" hidden><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div><div class="zfb"></div><input type="file" id="zff1" accept="image/*" hidden><input type="file" id="zff2" accept="image/*" capture="environment" hidden>';document.body.appendChild(P);
+      P.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;if(b.dataset.a==="x"){if(CH||INV||ZN)act("back");else close()}else act(b.dataset.a,b.dataset.id,b.dataset.f||b.dataset.g||b.dataset.u,b)});
+      P.addEventListener("change",e=>{const t=e.target;if(t.id!=="zff1"&&t.id!=="zff2")return;const fl=t.files&&t.files[0];t.value="";if(fl)zsendImg(fl)});
       P.addEventListener("keydown",e=>{if(e.key!=="Enter")return;if(e.target.id==="zfin")act("add");else if(e.target.id==="zfmi")act("send");else if(e.target.classList&&e.target.classList.contains("zfc"))e.target.click()});
-      P.addEventListener("input",e=>{if(e.target.id!=="zfq")return;const q=e.target.value.trim().toLowerCase();P.querySelectorAll(".zfc[data-n]").forEach(r=>{r.style.display=r.dataset.n.includes(q)?"":"none"})})}
+      P.addEventListener("input",e=>{if(e.target.id==="zfmi"){zgo();return}if(e.target.id!=="zfq")return;const q=e.target.value.trim().toLowerCase();P.querySelectorAll(".zfc[data-n]").forEach(r=>{r.style.display=r.dataset.n.includes(q)?"":"none"})})}
     await refresh(true);P.classList.add("show");tm=setInterval(()=>refresh(),8000)}
   finally{busy=0}}
 const hk=$("hkey"),w=document.createElement("div"),fb=document.createElement("button");
