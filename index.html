@@ -1641,8 +1641,8 @@ html:not(:has(#bru.gfs:has(.un))):not(:has(#bru.gfs:has(.ures))) #gbar[data-g="u
 .zfq{display:flex;align-items:center;gap:13px;min-height:60px;padding:0 14px 0 16px;background:#fff;position:relative}
 .zfq+.zfq::before{content:"";position:absolute;left:65px;right:0;top:0;height:.5px;background:#e5e5ea}
 .zfa{position:relative;flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:#fff;font:600 16px/1 Inter,system-ui,sans-serif}
-.zfo{position:absolute;right:-1px;bottom:-1px;width:11px;height:11px;border-radius:50%;background:#c7c7cc;border:2px solid #fff;box-sizing:border-box}
-.zfo.on{background:#34c759}
+.zfa .zfo{position:absolute;right:-1px;bottom:-1px;margin:0;width:11px;height:11px;border-radius:50%;background:#c7c7cc;border:2px solid #fff;box-sizing:border-box}
+.zfa .zfo.on{background:#34c759}
 .zfq .zt{flex:1;min-width:0;padding:9px 0}
 .zfq .zt b{display:block;font-size:17px;line-height:1.2;font-weight:500;color:#1c1c1e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .zfq .zt em{display:block;font-size:13px;font-style:normal;color:#8e8e93}
@@ -4972,19 +4972,35 @@ async function api(path,o){o=o||{};const r=await fetch(CF.url.replace(/\/+$/,"")
   if(!r.ok){let g="";try{const j=await r.json();g=j.code||j.error_code||""}catch(_){}const er=new Error(r.status);er.pg=g;throw er}const t=await r.text();return t?JSON.parse(t):[]}
 const beat=()=>api("zg_profiles?on_conflict=code",{m:"POST",p:"resolution=merge-duplicates,return=minimal",b:{code:ME.code,name:ME.name,ts:Date.now()}});
 // ----- PeerJS: chat & undangan -----
-const PCF={config:{iceServers:[{urls:"stun:stun.l.google.com:19302"},{urls:"stun:stun.cloudflare.com:3478"}]}};
+const PCF={config:{iceServers:[{urls:"stun:stun.l.google.com:19302"},{urls:"stun:stun.cloudflare.com:3478"},{urls:["turn:openrelay.metered.ca:80","turn:openrelay.metered.ca:443","turn:openrelay.metered.ca:443?transport=tcp","turns:openrelay.metered.ca:443?transport=tcp"],username:"openrelayproject",credential:"openrelayproject"}]}};
 const lp=()=>window.Peer?Promise.resolve():new Promise((res,rej)=>{const u=["https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js","https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"];let i=0;const t=()=>{if(i>=u.length)return rej();const s=document.createElement("script");s.src=u[i++];s.onload=res;s.onerror=t;document.head.appendChild(s)};t()});
 function hook(c){const f=String(c.peer).slice(4).toUpperCase();CN[f]=c;c.on("data",d=>onData(f,d));c.on("close",()=>{if(CN[f]===c)delete CN[f]})}
 function peerUp(){if(PR||!ME||!window.Peer)return;const p=PR=new Peer("zcf-"+ME.code.toLowerCase(),PCF);
   p.on("connection",hook);p.on("disconnected",()=>{try{p.reconnect()}catch(e){}});
   p.on("error",e=>{if(e.type==="unavailable-id"||e.type==="network"||e.type==="server-error"){try{p.destroy()}catch(_){}if(PR===p)PR=null;setTimeout(peerUp,6000)}})}
-const conn=f=>new Promise((res,rej)=>{const o=CN[f];if(o&&o.open)return res(o);if(!PR)return rej();
-  const c=PR.connect("zcf-"+f.toLowerCase(),{reliable:true,serialization:"json"}),to=setTimeout(()=>{try{c.close()}catch(e){}rej()},6000);
-  c.on("open",()=>{clearTimeout(to);hook(c);res(c)});c.on("error",()=>{clearTimeout(to);rej()})});
-const send=async(f,o)=>(await conn(f)).send(o);
-function boot(){if(HB)return;HB=setInterval(()=>{if(!document.hidden){beat().catch(()=>{});if(!opn())refresh()}},30000);lp().then(peerUp).catch(()=>{})}
+const conn1=(f,ms)=>new Promise((res,rej)=>{const o=CN[f];if(o&&o.open)return res(o);if(!PR||PR.destroyed)return rej();
+  if(PR.disconnected){try{PR.reconnect()}catch(e){}}
+  const c=PR.connect("zcf-"+f.toLowerCase(),{reliable:true,serialization:"json"}),to=setTimeout(()=>{try{c.close()}catch(e){}rej()},ms);
+  c.on("open",()=>{clearTimeout(to);hook(c);res(c)});c.on("error",()=>{clearTimeout(to);rej()});c.on("close",()=>{clearTimeout(to)})});
+const conn=async f=>{try{return await conn1(f,9000)}catch(e){delete CN[f];return await conn1(f,12000)}};
+const send=async(f,o)=>{let c=await conn(f);try{c.send(o)}catch(e){try{c.close()}catch(_){}delete CN[f];c=await conn(f);c.send(o)}};
+// ----- pesan offline: titip di Supabase (tabel zg_msgs), diambil saat penerima online -----
+let LASTID=+(LS("zf-last")||0),PULLING=0;
+async function deliver(f,o){
+  if(DATA.on[f]){try{const c=await conn1(f,6000);c.send(o);return"p2p"}catch(e){delete CN[f]}}
+  await api("zg_msgs",{m:"POST",p:"return=minimal",b:{from_code:ME.code,to_code:f,body:o,ts:Date.now()}});
+  return"srv"}
+function dErr(e){const c=+(e&&e.message);return c===404||(e&&e.pg==="PGRST205")?"Tabel zg_msgs belum dibuat di Supabase. Jalankan SQL-nya dulu":c===401||c===403?"Akses ditolak ("+c+"). Cek RLS dan GRANT tabel zg_msgs":"Pesan gagal dikirim, coba lagi"}
+async function pull(){if(!ME||PULLING)return;PULLING=1;
+  try{const rows=await api("zg_msgs?select=id,from_code,body,ts&to_code=eq."+ME.code+"&id=gt."+LASTID+"&order=id.asc&limit=100");
+    if(!rows.length)return;
+    rows.forEach(r=>{LASTID=Math.max(LASTID,+r.id);if(r.body&&typeof r.body==="object"&&isFr(r.from_code))onData(r.from_code,Object.assign({},r.body,{_ts:+r.ts||Date.now()}))});
+    LS("zf-last",String(LASTID));
+    api("zg_msgs?id=in.("+rows.map(r=>r.id).join(",")+")",{m:"DELETE",p:"return=minimal"}).catch(()=>{})}
+  catch(e){}finally{PULLING=0}}
+function boot(){if(HB)return;setInterval(()=>{if(!document.hidden)pull()},10000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)refresh()});HB=setInterval(()=>{if(!document.hidden){beat().catch(()=>{});if(!opn())refresh()}},30000);lp().then(peerUp).catch(()=>{})}
 function onData(f,d){if(!d||typeof d!=="object"||!isFr(f))return;
-  if(d.t==="m"&&typeof d.x==="string"){const md=zin(d);if(md===false)return;const x=md?md.x:d.x.slice(0,500),a=hist(f);a.push(Object.assign({me:0,x,t:Date.now()},md||{}));saveH(f,a);sfx("recv");
+  if(d.t==="m"&&typeof d.x==="string"){const md=zin(d);if(md===false)return;const x=md?md.x:d.x.slice(0,500),a=hist(f);a.push(Object.assign({me:0,x,t:d._ts||Date.now()},md||{}));saveH(f,a);sfx("recv");
     if(opn()&&CH===f)drawChat();else{UN[f]=(UN[f]||0)+1;saveUN();dot();toast((DATA.names[f]||f)+": "+x.slice(0,40),2200);if(opn()&&!CH&&!INV&&!ZN)draw(true)}}
   else if(d.t==="inv"&&GM[d.g]&&/^[A-Z0-9]{5}$/.test(d.c))banner(f,d.g,d.c)
   else if(d.t==="invr"&&OUT&&OUT.c===d.c&&OUT.f===f){if(!d.ok){OUT=null;window.zfAbort&&zfAbort(d.c,(DATA.names[f]||f)+" menolak ajakan.")}}
@@ -5085,12 +5101,11 @@ async function zup(blob,mime,ext){
   if(!r.ok){let m="";try{const j=await r.json();m=j.message||j.error||""}catch(_){}const er=new Error(r.status);er.up=1;er.m=m;throw er}
   return CF.url+"/storage/v1/object/public/zg-chat/"+path}
 async function zsend(f,k,blob,mime,ext,extra){
-  try{await conn(f)}catch(e){return toast("Teman sedang offline atau belum membuka web",2600)}
   PN[f]=(PN[f]||0)+1;if(CH===f)drawChat();
   try{const u=await zup(blob,mime,ext),x=k==="img"?"📷 Foto":"🎤 Suara";
-    await send(f,Object.assign({t:"m",k,u,x},extra));
+    await deliver(f,Object.assign({t:"m",k,u,x},extra));
     const h=hist(f);h.push(Object.assign({me:1,x,t:Date.now(),k,u},extra));saveH(f,h)}
-  catch(e){toast(e&&e.up?"Gagal mengunggah ke Supabase ("+e.message+(e.m?": "+String(e.m).slice(0,60):"")+")":"Teman sedang offline atau belum membuka web",4200)}
+  catch(e){toast(e&&e.up?"Gagal mengunggah ke Supabase ("+e.message+(e.m?": "+String(e.m).slice(0,60):"")+")":dErr(e),4200)}
   finally{PN[f]=Math.max(0,(PN[f]||1)-1);if(opn()&&CH===f)drawChat()}}
 function zimg(file){return new Promise((res,rej)=>{const u=URL.createObjectURL(file),im=new Image();
   im.onload=()=>{URL.revokeObjectURL(u);const M=1280,r=Math.min(1,M/Math.max(im.naturalWidth,im.naturalHeight)),w=Math.max(1,Math.round(im.naturalWidth*r)),h=Math.max(1,Math.round(im.naturalHeight*r)),c=document.createElement("canvas");c.width=w;c.height=h;c.getContext("2d").drawImage(im,0,0,w,h);c.toBlob(b=>b?res({b,w,h}):rej(),"image/jpeg",.82)};
@@ -5158,7 +5173,7 @@ function draw(force){
     +'<div class="zfadd"><input id="zfin" maxlength="6" autocomplete="off" autocapitalize="characters" placeholder="Kode akun teman" value="'+esc(v)+'">'+B("add","Tambah","","on")+'</div>'
     +sec("Permintaan masuk",inc(),"in")+sec("Teman ("+fr.length+")",fr,"fr")+sec("Menunggu",R.filter(r=>r.status==="pending"&&r.from_code===me),"out")
     }
-async function refresh(force){try{await load();draw(force)}catch(e){}}
+async function refresh(force){try{await load();pull();draw(force)}catch(e){}}
 async function act(a,id,x,bt){
   const R=DATA.rel,r=R.find(y=>String(y.id)===String(id));
   try{
@@ -5184,7 +5199,7 @@ async function act(a,id,x,bt){
     if(a==="send"&&!CH){if(!SEL||!INV)return;const sb=P.querySelector(".zsend");if(sb){sb.disabled=true;sb.classList.add("ld")}
       const ok=await invite(INV,SEL,Object.assign({},OPT));if(!ok){const b2=P.querySelector(".zsend");if(b2){b2.classList.remove("ld");b2.disabled=!SEL}}return}
     if(a==="send"&&CH){const i=$("zfmi"),t=QT2(i&&i.value,500);if(!t)return;
-      try{await send(CH,{t:"m",x:t})}catch(e){return toast("Teman sedang offline atau belum membuka web",2600)}
+      try{const via=await deliver(CH,{t:"m",x:t});if(via==="srv"&&!DATA.on[CH])toast("Teman offline, pesan akan terbaca saat ia online",2200)}catch(e){return toast(dErr(e),3200)}
       const h=hist(CH);h.push({me:1,x:t,t:Date.now()});saveH(CH,h);i.value="";drawChat();const n=$("zfmi");if(n)n.focus();return}
     if(a==="add"){const c=(($("zfin")||{}).value||"").toUpperCase().replace(/[^A-Z0-9]/g,"");
       if(c.length<6)return toast("Masukkan 6 karakter kode teman",2000);if(c===ME.code)return toast("Itu kodemu sendiri",2000);
@@ -5202,7 +5217,7 @@ async function act(a,id,x,bt){
 function close(){recStop(false);zstop();clearInterval(tm);tm=0;CH=null;INV=null;SEL=null;OPT={};INVP=0;ZN=0;if(P)P.classList.remove("show")}
 async function open(m,t){
   if(busy)return;busy=1;sfx("click");
-  try{if(!(await setup()))return;boot();ZM=m||"fr";CH=null;INV=null;SEL=null;OPT={};INVP=0;ZN=0;
+  try{if(!(await setup()))return;boot();if(!PR||PR.destroyed){PR=null;lp().then(peerUp).catch(()=>{})}ZM=m||"fr";CH=null;INV=null;SEL=null;OPT={};INVP=0;ZN=0;
     if(t&&t.f&&isFr(t.f)){if(t.a==="chat"){CH=t.f;delete UN[t.f];saveUN();dot()}else if(t.a==="inv"){INV=t.f}}
     if(!P){P=document.createElement("div");P.id="zfp";P.innerHTML='<div class="zfh"><button type="button" class="hb sm" data-a="x" aria-label="Tutup"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><div class="zft" id="zft"><b>Teman</b></div><button type="button" class="zfpen zfnw" data-a="new" id="zfnw" aria-label="Chat baru" hidden><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div><div class="zfb"></div><input type="file" id="zff1" accept="image/*" hidden><input type="file" id="zff2" accept="image/*" capture="environment" hidden>';document.body.appendChild(P);
       P.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;if(b.dataset.a==="x"){if(CH||INV||ZN)act("back");else close()}else act(b.dataset.a,b.dataset.id,b.dataset.f||b.dataset.g||b.dataset.u,b)});
