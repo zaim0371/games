@@ -1634,6 +1634,28 @@ html:has(#bru.gfs:has(.un)) #gbar[data-g="u"] b,html:has(#bru.gfs:has(.ures)) #g
 html:not(:has(#bru.gfs:has(.un))):not(:has(#bru.gfs:has(.ures))) #gbar[data-g="u"] b{color:#1c1c1e}
 .uh .uc.no{filter:brightness(.55) saturate(.7)}
 .ut .udk{margin-left:16px}
+.tst{z-index:10000!important}
+
+/* ===== beranda: Main dengan teman ===== */
+.zfl{margin-bottom:6px}
+.zfq{display:flex;align-items:center;gap:13px;min-height:60px;padding:0 14px 0 16px;background:#fff;position:relative}
+.zfq+.zfq::before{content:"";position:absolute;left:65px;right:0;top:0;height:.5px;background:#e5e5ea}
+.zfa{position:relative;flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:#fff;font:600 16px/1 Inter,system-ui,sans-serif}
+.zfo{position:absolute;right:-1px;bottom:-1px;width:11px;height:11px;border-radius:50%;background:#c7c7cc;border:2px solid #fff;box-sizing:border-box}
+.zfo.on{background:#34c759}
+.zfq .zt{flex:1;min-width:0;padding:9px 0}
+.zfq .zt b{display:block;font-size:17px;line-height:1.2;font-weight:500;color:#1c1c1e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.zfq .zt em{display:block;font-size:13px;font-style:normal;color:#8e8e93}
+.zfb1{flex:none;display:inline-flex;align-items:center;gap:4px;height:30px;padding:0 10px 0 8px;border:0;border-radius:15px;background:#eaf3ff;color:#007aff;font:600 13px/1 Inter,system-ui,sans-serif;text-transform:none}
+.zfb1 svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.zfb1.on{background:#007aff;color:#fff}.zfb1.on svg{fill:currentColor;stroke-width:1.2}
+.zfb1:active{transform:scale(.96)}
+.zfq .zfb1{position:relative}
+.zi{position:relative}.zst{position:absolute;top:-6px;right:-6px;width:17px;height:17px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 1px 3px rgba(0,0,0,.28)}
+.zst svg{width:12px;height:12px;fill:#FFC400;stroke:#E39A00;stroke-width:1.2;stroke-linejoin:round}
+.zfub{min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:#ff3b30;color:#fff;font:700 11px/16px Inter,system-ui,sans-serif;text-align:center;box-sizing:border-box;margin-left:-1px}
+.zfq.zfe0{min-height:60px}
+.zfq.zfe0 .zt em{white-space:normal}
 </style>
 </head>
 <body>
@@ -1641,7 +1663,7 @@ html:not(:has(#bru.gfs:has(.un))):not(:has(#bru.gfs:has(.ures))) #gbar[data-g="u
 <div class="app">
   <section class="view show enter" id="vh">
     <div class="hd"><h1>Zaim’s Games</h1><button type="button" class="hb" id="hkey" aria-label="Pengaturan API key"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/></svg></button></div>
-    <div class="zhome"><div class="zs">Kartu &amp; papan</div><div class="zl"><button type="button" class="zr" data-w="uno"><span class="zi" style="background:#FF3B30"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2.5" width="14" height="19" rx="3"/><ellipse cx="12" cy="12" rx="4" ry="6.5" transform="rotate(30 12 12)"/></svg></span><span class="zt"><b>UNO</b><em>Lawan AI, teman, atau online</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button><button type="button" class="zr" data-w="chess"><span class="zi" style="background:#5856D6"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="6.5" r="3"/><path d="M9.5 21h5M8 17.5h8M10.5 17.5c0-4 .5-6 1.5-8.5 1 2.500 1.500 4.500 1.500 8.500"/></svg></span><span class="zt"><b>Catur</b><em>Lawan AI, teman, atau online</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button><button type="button" class="zr" data-w="sudoku"><span class="zi" style="background:#34C759"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3.5"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></svg></span><span class="zt"><b>Sudoku</b><em>Teka-teki angka</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button></div><div class="zs">Arcade</div><div class="zl"><button type="button" class="zr" data-w="pul"><span class="zi" style="background:#FF9500"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></span><span class="zt"><b>Pulse Tap</b><em>Tekan kotak menyala</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button><button type="button" class="zr" data-w="blast"><span class="zi" style="background:#007AFF"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg></span><span class="zt"><b>Block Blast</b><em>Susun &amp; hapus baris</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button></div></div>
+    <div class="zhome"><div class="zs">Main dengan teman</div><div class="zl zfl" id="zhfr"></div><div class="zs">Favorit</div><div class="zl"><button type="button" class="zr" data-w="blast"><span class="zi" style="background:#007AFF"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg><i class="zst"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 6.2 6.8.8-5 4.7 1.3 6.7-6-3.4-6 3.4 1.3-6.7-5-4.7 6.8-.8z"/></svg></i></span><span class="zt"><b>Block Blast</b><em>Susun &amp; hapus baris</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button><button type="button" class="zr" data-w="sudoku"><span class="zi" style="background:#34C759"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3.5"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></svg><i class="zst"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 6.2 6.8.8-5 4.7 1.3 6.7-6-3.4-6 3.4 1.3-6.7-5-4.7 6.8-.8z"/></svg></i></span><span class="zt"><b>Sudoku</b><em>Teka-teki angka</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button><button type="button" class="zr" data-w="uno"><span class="zi" style="background:#FF3B30"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2.5" width="14" height="19" rx="3"/><ellipse cx="12" cy="12" rx="4" ry="6.5" transform="rotate(30 12 12)"/></svg><i class="zst"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 6.2 6.8.8-5 4.7 1.3 6.7-6-3.4-6 3.4 1.3-6.7-5-4.7 6.8-.8z"/></svg></i></span><span class="zt"><b>UNO</b><em>Lawan AI, teman, atau online</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button></div><div class="zs">Kartu &amp; papan</div><div class="zl"><button type="button" class="zr" data-w="uno"><span class="zi" style="background:#FF3B30"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2.5" width="14" height="19" rx="3"/><ellipse cx="12" cy="12" rx="4" ry="6.5" transform="rotate(30 12 12)"/></svg></span><span class="zt"><b>UNO</b><em>Lawan AI, teman, atau online</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button><button type="button" class="zr" data-w="chess"><span class="zi" style="background:#5856D6"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="6.5" r="3"/><path d="M9.5 21h5M8 17.5h8M10.5 17.5c0-4 .5-6 1.5-8.5 1 2.500 1.500 4.500 1.500 8.500"/></svg></span><span class="zt"><b>Catur</b><em>Lawan AI, teman, atau online</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button><button type="button" class="zr" data-w="sudoku"><span class="zi" style="background:#34C759"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3.5"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></svg></span><span class="zt"><b>Sudoku</b><em>Teka-teki angka</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button></div><div class="zs">Arcade</div><div class="zl"><button type="button" class="zr" data-w="pul"><span class="zi" style="background:#FF9500"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></span><span class="zt"><b>Pulse Tap</b><em>Tekan kotak menyala</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button><button type="button" class="zr" data-w="blast"><span class="zi" style="background:#007AFF"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg></span><span class="zt"><b>Block Blast</b><em>Susun &amp; hapus baris</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button></div></div>
     <div class="hbody">
       <div class="hws">
         <button type="button" class="hw w-sd" data-w="sudoku" style="--i:0">
@@ -5017,7 +5039,7 @@ async function load(){
   if(cs.length)(await api("zg_profiles?select=code,name,ts&code=in.("+cs.join(",")+")")).forEach(p=>{names[p.code]=p.name;on[p.code]=Date.now()-(+p.ts||0)<75000});
   DATA={rel,names,on};dot();return DATA}
 const inc=()=>DATA.rel.filter(r=>r.status==="pending"&&r.to_code===ME.code);
-function dot(){const d=$("zfd"),c=$("zfd2");if(d)d.classList.toggle("on",!!(ME&&inc().length));if(c)c.classList.toggle("on",!!(ME&&Object.keys(UN).length))}
+function dot(){renderHome();const d=$("zfd"),c=$("zfd2");if(d)d.classList.toggle("on",!!(ME&&inc().length));if(c)c.classList.toggle("on",!!(ME&&Object.keys(UN).length))}
 const B=(a,t,x,c)=>'<button type="button" class="chip'+(c?" "+c:"")+'" data-a="'+a+'"'+(x||"")+'>'+t+'</button>';
 function row(r,k){const c=r.from_code===ME.code?r.to_code:r.from_code,n=esc(DATA.names[c]||c),id=' data-id="'+r.id+'"',f=' data-f="'+c+'"';
   const nm='<b>'+(k==="fr"?'<i class="zfo'+(DATA.on[c]?" on":"")+'"></i>':"")+n+'<small>'+c+'</small></b>';
@@ -5140,7 +5162,8 @@ async function refresh(force){try{await load();draw(force)}catch(e){}}
 async function act(a,id,x,bt){
   const R=DATA.rel,r=R.find(y=>String(y.id)===String(id));
   try{
-    if(a==="copy"){try{await navigator.clipboard.writeText(ME.code);toast("Kode disalin",1600)}catch(e){toast("Kodemu: "+ME.code,2600)}return}
+    if(a==="copy"){let ok=false;try{await navigator.clipboard.writeText(ME.code);ok=true}catch(e){try{const t=document.createElement("textarea");t.value=ME.code;t.setAttribute("readonly","");t.style.cssText="position:fixed;top:0;left:0;opacity:0";document.body.appendChild(t);t.select();t.setSelectionRange(0,99);ok=document.execCommand("copy");t.remove()}catch(_){}}
+      if(ok){sfx("ok");toast("Kode tersalin!!!",1800)}else toast("Kodemu: "+ME.code,2600);return}
     if(a==="edit"){const n=await dlg({title:"Ubah nama",input:ME.name,ok:"Simpan"});const t=QT(n,16);if(!t||t===ME.name)return;
       ME.name=t;LS("zf-me",JSON.stringify(ME));await beat();draw(true);toast("Nama diubah",1600);return}
     if(a==="pick"){const e=$("zff1");if(e)e.click();return}
@@ -5158,9 +5181,9 @@ async function act(a,id,x,bt){
     if(a==="pg"){if(!GM[x])return;if(SEL!==x){SEL=x;OPT={};GM[x].opt.forEach(o=>OPT[o.k]=o.d);sfx("click");invUpd()}return}
     if(a==="op"){const g=SEL&&GM[SEL],o=g&&g.opt.find(y=>y.k===bt.dataset.o);if(!o)return;const v=o.v.find(y=>String(y[0])===bt.dataset.v);if(!v)return;OPT[o.k]=v[0];sfx("click");
       bt.parentNode.querySelectorAll(".zoc").forEach(y=>y.classList.toggle("on",y===bt));return}
-    if(a==="send"){if(!SEL||!INV)return;const sb=P.querySelector(".zsend");if(sb){sb.disabled=true;sb.classList.add("ld")}
+    if(a==="send"&&!CH){if(!SEL||!INV)return;const sb=P.querySelector(".zsend");if(sb){sb.disabled=true;sb.classList.add("ld")}
       const ok=await invite(INV,SEL,Object.assign({},OPT));if(!ok){const b2=P.querySelector(".zsend");if(b2){b2.classList.remove("ld");b2.disabled=!SEL}}return}
-    if(a==="send"){const i=$("zfmi"),t=QT2(i&&i.value,500);if(!t)return;
+    if(a==="send"&&CH){const i=$("zfmi"),t=QT2(i&&i.value,500);if(!t)return;
       try{await send(CH,{t:"m",x:t})}catch(e){return toast("Teman sedang offline atau belum membuka web",2600)}
       const h=hist(CH);h.push({me:1,x:t,t:Date.now()});saveH(CH,h);i.value="";drawChat();const n=$("zfmi");if(n)n.focus();return}
     if(a==="add"){const c=(($("zfin")||{}).value||"").toUpperCase().replace(/[^A-Z0-9]/g,"");
@@ -5177,16 +5200,39 @@ async function act(a,id,x,bt){
     else if(a==="rm"){const c=r&&(r.from_code===ME.code?r.to_code:r.from_code);if(!await confirmX("Hapus teman",(DATA.names[c]||c)+" akan dihapus dari daftar temanmu.","Hapus",true))return;await api("zg_friends?id=eq."+id,{m:"DELETE",p:"return=minimal"})}
     await refresh(true)}catch(e){toast("Gagal, coba lagi",2200)}}
 function close(){recStop(false);zstop();clearInterval(tm);tm=0;CH=null;INV=null;SEL=null;OPT={};INVP=0;ZN=0;if(P)P.classList.remove("show")}
-async function open(m){
+async function open(m,t){
   if(busy)return;busy=1;sfx("click");
   try{if(!(await setup()))return;boot();ZM=m||"fr";CH=null;INV=null;SEL=null;OPT={};INVP=0;ZN=0;
+    if(t&&t.f&&isFr(t.f)){if(t.a==="chat"){CH=t.f;delete UN[t.f];saveUN();dot()}else if(t.a==="inv"){INV=t.f}}
     if(!P){P=document.createElement("div");P.id="zfp";P.innerHTML='<div class="zfh"><button type="button" class="hb sm" data-a="x" aria-label="Tutup"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><div class="zft" id="zft"><b>Teman</b></div><button type="button" class="zfpen zfnw" data-a="new" id="zfnw" aria-label="Chat baru" hidden><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div><div class="zfb"></div><input type="file" id="zff1" accept="image/*" hidden><input type="file" id="zff2" accept="image/*" capture="environment" hidden>';document.body.appendChild(P);
       P.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;if(b.dataset.a==="x"){if(CH||INV||ZN)act("back");else close()}else act(b.dataset.a,b.dataset.id,b.dataset.f||b.dataset.g||b.dataset.u,b)});
       P.addEventListener("change",e=>{const t=e.target;if(t.id!=="zff1"&&t.id!=="zff2")return;const fl=t.files&&t.files[0];t.value="";if(fl)zsendImg(fl)});
       P.addEventListener("keydown",e=>{if(e.key!=="Enter")return;if(e.target.id==="zfin")act("add");else if(e.target.id==="zfmi")act("send");else if(e.target.classList&&e.target.classList.contains("zfc"))e.target.click()});
       P.addEventListener("input",e=>{if(e.target.id==="zfmi"){zgo();return}if(e.target.id!=="zfq")return;const q=e.target.value.trim().toLowerCase();P.querySelectorAll(".zfc[data-n]").forEach(r=>{r.style.display=r.dataset.n.includes(q)?"":"none"})})}
-    await refresh(true);P.classList.add("show");tm=setInterval(()=>refresh(),8000)}
+    await refresh(true);if((CH||INV)&&!P.querySelector(".zfb").innerHTML)draw(true);P.classList.add("show");tm=setInterval(()=>refresh(),8000)}
   finally{busy=0}}
+
+// ----- beranda: kategori "Main dengan teman" -----
+let HSIG="";
+const HCH='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 3.5h9A4.5 4.5 0 0 1 21 8v5a4.5 4.5 0 0 1-4.5 4.5H13l-3.9 3.2a.6.6 0 0 1-1-.46V17.5H7.5A4.5 4.5 0 0 1 3 13V8a4.5 4.5 0 0 1 4.5-4.5z"/><circle cx="8.5" cy="10.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="12" cy="10.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="15.5" cy="10.5" r="1.2" fill="currentColor" stroke="none"/></svg>',
+  HPL='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"/></svg>';
+function renderHome(){const el=$("zhfr");if(!el)return;
+  let h,sig;
+  if(!ME){sig="nome";h='<div class="zfq zfe0"><span class="zt"><b>Teman</b><em>Masuk dulu untuk melihat dan mengajak temanmu</em></span><button type="button" class="zfb1 on" data-hf="open"><span>Mulai</span></button></div>'}
+  else{
+    const fr=zfrs().sort((a,b)=>(DATA.on[b]?1:0)-(DATA.on[a]?1:0)||(DATA.names[a]||a).localeCompare(DATA.names[b]||b));
+    sig=JSON.stringify([fr,DATA.names,DATA.on,UN]);
+    if(!fr.length)h='<div class="zfq zfe0"><span class="zt"><b>Belum ada teman</b><em>Tambahkan teman dengan kode akunnya</em></span><button type="button" class="zfb1 on" data-hf="open"><span>Tambah teman</span></button></div>';
+    else h=fr.map(c=>{const n=DATA.names[c]||c,on=!!DATA.on[c],u=UN[c]||0,i=[...c].reduce((a,ch)=>a+ch.charCodeAt(0),0);
+      return '<div class="zfq"><span class="zfa" style="background:'+ZC[i%ZC.length]+'">'+esc(Array.from(n.trim())[0]||"?").toUpperCase()+'<i class="zfo'+(on?" on":"")+'"></i></span>'
+        +'<span class="zt"><b>'+esc(n)+'</b><em>'+(on?"Online":"Offline")+'</em></span>'
+        +'<button type="button" class="zfb1" data-hf="chat" data-f="'+ea(c)+'" aria-label="Chat '+ea(n)+'">'+HCH+'<span>Chat</span>'+(u?'<i class="zfub">'+(u>9?"9+":u)+'</i>':'')+'</button>'
+        +'<button type="button" class="zfb1 on" data-hf="inv" data-f="'+ea(c)+'" aria-label="Ajak '+ea(n)+' main">'+HPL+'<span>Ajak main</span></button></div>'}).join("")}
+  if(sig===HSIG)return;HSIG=sig;el.innerHTML=h}
+(()=>{const el=$("zhfr");if(!el)return;
+  el.addEventListener("click",e=>{const b=e.target.closest("[data-hf]");if(!b)return;
+    const k=b.dataset.hf,f=b.dataset.f;
+    if(k==="open")open("fr");else open("fr",{a:k,f})})})();
 const hk=$("hkey"),w=document.createElement("div"),fb=document.createElement("button");
 w.className="zfw";fb.type="button";fb.className="hb";fb.id="zfbtn";fb.setAttribute("aria-label","Teman");
 fb.innerHTML='<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><i class="zfd" id="zfd"></i>';
