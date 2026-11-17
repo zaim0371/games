@@ -5080,19 +5080,35 @@ const isIOS=()=>/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform=
 const isApp=()=>!!(navigator.standalone||(window.matchMedia&&matchMedia("(display-mode: standalone)").matches));
 const needPush=()=>{try{return !!ME&&VAPID.length>40&&(!("Notification" in window)||Notification.permission!=="granted"||LS("zf-push")!==ME.code)}catch(e){return false}};
 // Menyimpan langganan push perangkat ini ke Supabase (tabel zg_push). Butuh sw.js sudah terdaftar.
-async function pushSync(ask){if(!ME||!pushOK())return false;
-  try{if(Notification.permission==="default"&&ask)await Notification.requestPermission();
-    if(Notification.permission!=="granted")return false;
-    const reg=await Promise.race([navigator.serviceWorker.ready,new Promise((_,r)=>setTimeout(r,6000))]);let sub=await reg.pushManager.getSubscription();
+async function pushSync(ask){
+  if(!ME)return{ok:0,why:"Masuk dulu"};
+  if(!pushOK())return{ok:0,why:"Browser ini belum mendukung push"};
+  let step="izin notifikasi";
+  try{
+    if(Notification.permission==="default"&&ask)await Notification.requestPermission();
+    if(Notification.permission!=="granted")return{ok:0,why:"izin notifikasi belum diberikan"};
+    step="service worker (sw.js)";
+    let reg=await navigator.serviceWorker.getRegistration();
+    if(!reg)reg=await navigator.serviceWorker.register("sw.js");
+    await Promise.race([navigator.serviceWorker.ready,new Promise((_,r)=>setTimeout(()=>r(new Error("tidak aktif, cek sw.js ada di GitHub")),8000))]);
+    reg=await navigator.serviceWorker.ready;
+    step="langganan push";
+    let sub=await reg.pushManager.getSubscription();
     if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64u(VAPID)});
+    step="simpan ke Supabase";
     const j=sub.toJSON();
     await api("zg_push?on_conflict=endpoint",{m:"POST",p:"resolution=merge-duplicates,return=minimal",b:{endpoint:j.endpoint,code:ME.code,p256dh:j.keys.p256dh,auth:j.keys.auth,ts:Date.now()}});
-    LS("zf-push",ME.code);return true}catch(e){return false}}
+    LS("zf-push",ME.code);return{ok:1}}
+  catch(e){const c=+(e&&e.message);let w=e&&e.message||String(e);
+    if(step==="simpan ke Supabase")w=(c===404||(e&&e.pg==="PGRST205"))?"tabel zg_push belum dibuat, jalankan SQL-nya":(c===401||c===403)?"akses ditolak ("+c+"), cek RLS/GRANT tabel zg_push":"error "+w;
+    else if(e&&e.name==="AbortError")w="layanan push browser gagal (cek internet/Google Play Services, jangan mode penyamaran)";
+    else if(e&&e.name&&e.name!=="Error")w=e.name+": "+w;
+    return{ok:0,why:step+": "+w}}}
 async function pushEnable(){
   if(isIOS()&&!isApp())return toast("iPhone/iPad: ketuk Bagikan → Tambah ke Layar Utama, buka web dari ikon itu, lalu aktifkan lagi",5200);
   if(!pushOK())return toast("Browser ini belum mendukung notifikasi",2600);
   if(Notification.permission==="denied")return toast("Notifikasi diblokir. Izinkan lewat pengaturan situs di browser",3800);
-  const ok=await pushSync(1);toast(ok?"Notifikasi aktif ✓":"Gagal mengaktifkan notifikasi",2200);HSIG="";renderHome()}
+  const r=await pushSync(1);toast(r.ok?"Notifikasi aktif ✓":"Gagal: "+r.why,r.ok?2200:7000);HSIG="";renderHome()}
 if("serviceWorker" in navigator)navigator.serviceWorker.addEventListener("message",e=>{const f=e.data&&e.data.zopen;if(f&&isFr(f))open("fr",{a:"chat",f})});
 // ----- PeerJS: chat & undangan -----
 const PCF={config:{iceServers:[{urls:"stun:stun.l.google.com:19302"},{urls:"stun:stun.cloudflare.com:3478"},{urls:["turn:openrelay.metered.ca:80","turn:openrelay.metered.ca:443","turn:openrelay.metered.ca:443?transport=tcp","turns:openrelay.metered.ca:443?transport=tcp"],username:"openrelayproject",credential:"openrelayproject"}]}};
@@ -5100,7 +5116,7 @@ const lp=()=>window.Peer?Promise.resolve():new Promise((res,rej)=>{const u=["htt
 function hook(c){const f=String(c.peer).slice(4).toUpperCase();CN[f]=c;c.on("data",d=>onData(f,d));c.on("close",()=>{if(CN[f]===c)delete CN[f]})}
 function peerUp(){if(PR||!ME||!window.Peer)return;const p=PR=new Peer("zcf-"+ME.code.toLowerCase(),PCF);
   p.on("connection",hook);p.on("call",onCall);p.on("disconnected",()=>{try{p.reconnect()}catch(e){}});
-  p.on("error",e=>{if(e.type==="peer-unavailable"&&CALL&&CALL.dir==="out"&&CALL.st==="ring"&&String(e.message||"").toLowerCase().includes("zcf-"+CALL.f.toLowerCase()))endCall("miss");if(e.type==="unavailable-id"||e.type==="network"||e.type==="server-error"){try{p.destroy()}catch(_){}if(PR===p)PR=null;setTimeout(peerUp,6000)}})}
+  p.on("error",e=>{if(e.type==="peer-unavailable"&&CALL&&CALL.dir==="out"&&CALL.st==="ring"&&String(e.message||"").toLowerCase().includes("zcf-"+CALL.f.toLowerCase())){const W=CALL;if(W.dl&&Date.now()<W.dl-1500){const o=W.call;W.call=null;W.wait=1;try{o&&o.close()}catch(_){}}else endCall("miss")}if(e.type==="unavailable-id"||e.type==="network"||e.type==="server-error"){try{p.destroy()}catch(_){}if(PR===p)PR=null;setTimeout(peerUp,6000)}})}
 const conn1=(f,ms)=>new Promise((res,rej)=>{const o=CN[f];if(o&&o.open)return res(o);if(!PR||PR.destroyed)return rej();
   if(PR.disconnected){try{PR.reconnect()}catch(e){}}
   const c=PR.connect("zcf-"+f.toLowerCase(),{reliable:true,serialization:"json"}),to=setTimeout(()=>{try{c.close()}catch(e){}rej()},ms);
@@ -5121,12 +5137,13 @@ async function pull(){if(!ME||PULLING)return;PULLING=1;
     LS("zf-last",String(LASTID));
     api("zg_msgs?id=in.("+rows.map(r=>r.id).join(",")+")",{m:"DELETE",p:"return=minimal"}).catch(()=>{})}
   catch(e){}finally{PULLING=0}}
-function boot(){if(HB)return;setInterval(()=>{if(!document.hidden)pull()},10000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)refresh()});HB=setInterval(()=>{if(!document.hidden){beat().catch(()=>{});if(!opn())refresh()}},30000);lp().then(peerUp).catch(()=>{})}
+function boot(){if(HB)return;setInterval(()=>{if(!document.hidden)pull()},10000);document.addEventListener("visibilitychange",()=>{if(!document.hidden){refresh();beat().catch(()=>{})}});HB=setInterval(()=>{if(!document.hidden){beat().catch(()=>{});if(!opn())refresh()}},30000);lp().then(peerUp).catch(()=>{})}
 function onData(f,d){if(!d||typeof d!=="object"||!isFr(f))return;
   if(d.t==="m"&&typeof d.x==="string"){const md=zin(d);if(md===false)return;const x=md?md.x:d.x.slice(0,500),a=hist(f);a.push(Object.assign({me:0,x,t:d._ts||Date.now()},md||{}));saveH(f,a);sfx("recv");
     if(opn()&&CH===f)drawChat();else{UN[f]=(UN[f]||0)+1;saveUN();dot();toast((DATA.names[f]||f)+": "+x.slice(0,40),2200);if(opn()&&!CH&&!INV&&!ZN)draw(true)}}
   else if(d.t==="inv"&&GM[d.g]&&/^[A-Z0-9]{5}$/.test(d.c))banner(f,d.g,d.c)
   else if(d.t==="invr"&&OUT&&OUT.c===d.c&&OUT.f===f){if(!d.ok){OUT=null;window.zfAbort&&zfAbort(d.c,(DATA.names[f]||f)+" menolak ajakan.")}}
+  else if(d.t==="rack"){const C=CALL;if(C&&C.f===f&&C.wait&&d.id===C.id&&!C.rg){C.rg=1;cRender();try{navigator.vibrate&&navigator.vibrate(120)}catch(e){}}}
   else if(d.t==="cx")onCx(f,d)
   else if(d.t==="cv")onCv(f,d)
   else if(d.t==="invx"&&BN&&BN.c===d.c&&BN.f===f){bannerOff();toast((DATA.names[f]||f)+" membatalkan ajakan",2200)}}
@@ -5282,10 +5299,18 @@ function zbar(){
 function zgo(){const g=$("zfgo"),i=$("zfmi");if(!g||!i)return;const t=i.value.trim()!=="";
   if((g.dataset.a==="send")===t)return;g.dataset.a=t?"send":"mic";g.setAttribute("aria-label",t?"Kirim":"Rekam suara");g.innerHTML=t?ZI(ZP.snd,20,2.6):ZI(ZP.mic,20,2.2)}
 function drawBar(){const b=P&&P.querySelector(".zfbar");if(b){b.outerHTML=zbar();zgo()}}
-function drawChat(){const f=CH,h=hist(f),old=$("zfmi"),v=old?old.value:"",fo=old&&document.activeElement===old;zhead();let pd=0,out="";
+function drawChat(){const f=CH,h=hist(f);zhead();let pd=0,out="";
   h.forEach(m=>{if(m.t){const d=zd0(m.t);if(d!==pd){pd=d;out+='<div class="zfds">'+zdl(m.t)+'</div>'}}out+=zbubble(m)});
   if(PN[f]>0)out+='<div class="zfg me"><span class="zfpn">Mengirim…</span></div>';
-  P.querySelector(".zfb").innerHTML='<div class="zfm" id="zfm">'+(out||'<p class="zfe">Belum ada pesan</p>')+'</div>'+zbar();
+  const html=out||'<p class="zfe">Belum ada pesan</p>',m0=$("zfm"),mi=$("zfmi");
+  // Update di tempat: hanya daftar pesan yang diganti. Kolom ketik TIDAK dibuat ulang, jadi keyboard HP tidak berkedip/muncul terus.
+  if(m0&&mi&&m0.dataset.f===f&&P.querySelector(".zfb").contains(m0)){
+    if(drawChat._l===f+"|"+html)return;drawChat._l=f+"|"+html;
+    const near=m0.scrollHeight-m0.scrollTop-m0.clientHeight<140,last=h[h.length-1];
+    m0.innerHTML=html;if(near||(last&&last.me))m0.scrollTop=m0.scrollHeight;zrebind();return}
+  const old=mi,v=old?old.value:"",fo=old&&document.activeElement===old;
+  drawChat._l=f+"|"+html;
+  P.querySelector(".zfb").innerHTML='<div class="zfm" id="zfm" data-f="'+ea(f)+'">'+html+'</div>'+zbar();
   const n=$("zfmi");if(n){n.value=v;if(fo)n.focus()}zgo();zrebind();
   const m=$("zfm");if(m)m.scrollTop=m.scrollHeight}
 function draw(force){
@@ -5317,7 +5342,7 @@ async function act(a,id,x,bt){
     if(a==="rcancel"){recStop(false);return}
     if(a==="play"){zplay(x);return}
     if(a==="view"){zview(x);return}
-    if(a==="back"){NAV.close("zfs");recStop(false);zstop();CH=null;INV=null;SEL=null;OPT={};INVP=0;ZN=0;draw(true);return}
+    if(a==="back"){drawChat._l="";NAV.close("zfs");recStop(false);zstop();CH=null;INV=null;SEL=null;OPT={};INVP=0;ZN=0;draw(true);return}
     if(a==="new"){ZN=1;INV=null;CH=null;NAV.push("zfs",()=>act("back"));draw(true);return}
     if(a==="tofr"){ZM="fr";ZN=0;draw(true);return}
     if(a==="chat"){CH=x;ZN=0;delete UN[x];saveUN();dot();NAV.push("zfs",()=>act("back"));drawChat();return}
@@ -5329,7 +5354,7 @@ async function act(a,id,x,bt){
       const ok=await invite(INV,SEL,Object.assign({},OPT));if(!ok){const b2=P.querySelector(".zsend");if(b2){b2.classList.remove("ld");b2.disabled=!SEL}}return}
     if(a==="send"&&CH){const i=$("zfmi"),t=QT2(i&&i.value,500);if(!t)return;
       try{const via=await deliver(CH,{t:"m",x:t});if(via==="srv"&&!DATA.on[CH])toast("Teman offline, pesan akan terbaca saat ia online",2200)}catch(e){return toast(dErr(e),3200)}
-      const h=hist(CH);h.push({me:1,x:t,t:Date.now()});saveH(CH,h);i.value="";drawChat();const n=$("zfmi");if(n)n.focus();return}
+      const h=hist(CH);h.push({me:1,x:t,t:Date.now()});saveH(CH,h);i.value="";drawChat();const n=$("zfmi");if(n&&document.activeElement!==n)n.focus();return}
     if(a==="add"){const c=(($("zfin")||{}).value||"").toUpperCase().replace(/[^A-Z0-9]/g,"");
       if(c.length<6)return toast("Masukkan 6 karakter kode teman",2000);if(c===ME.code)return toast("Itu kodemu sendiri",2000);
       const ex=R.find(y=>y.from_code===c||y.to_code===c);
@@ -5353,7 +5378,7 @@ async function open(m,t){
       P.addEventListener("change",e=>{const t=e.target;if(t.id!=="zff1"&&t.id!=="zff2")return;const fl=t.files&&t.files[0];t.value="";if(fl)zsendImg(fl)});
       P.addEventListener("keydown",e=>{if(e.key!=="Enter")return;if(e.target.id==="zfin")act("add");else if(e.target.id==="zfmi")act("send");else if(e.target.classList&&e.target.classList.contains("zfc"))e.target.click()});
       P.addEventListener("input",e=>{if(e.target.id==="zfmi"){zgo();return}if(e.target.id!=="zfq")return;const q=e.target.value.trim().toLowerCase();P.querySelectorAll(".zfc[data-n]").forEach(r=>{r.style.display=r.dataset.n.includes(q)?"":"none"})})}
-    await refresh(true);if((CH||INV)&&!P.querySelector(".zfb").innerHTML)draw(true);P.classList.add("show");DIRECT=(CH||INV)?1:0;NAV.push("zfp",close);tm=setInterval(()=>refresh(),8000)}
+    await refresh(true);if((CH||INV)&&!P.querySelector(".zfb").innerHTML)draw(true);drawChat._l="";P.classList.add("show");DIRECT=(CH||INV)?1:0;NAV.push("zfp",close);tm=setInterval(()=>refresh(),8000)}
   finally{busy=0}}
 
 // ----- beranda: kategori "Main dengan teman" -----
@@ -5407,7 +5432,7 @@ Object.assign(CIC,{
  fl:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/></svg>'});
 let PB=null;try{PB=JSON.parse(LS("zf-pb")||"null")}catch(e){}
 function cAvatar(f){const h=[...f].reduce((a,ch)=>a+ch.charCodeAt(0),0);return'<div class="zvav'+(CALL&&CALL.st!=="live"?" rg":"")+'" style="background:'+ZC[h%ZC.length]+'">'+esc(Array.from(cName(f).trim())[0]||"?").toUpperCase()+'</div>'}
-function cStatus(){const C=CALL;if(!C)return"";return C.st==="live"?(C.rc?"Menyambungkan ulang…":fmtD(Date.now()-C.t0)):C.st==="conn"?"Menyambungkan…":C.dir==="out"?"Berdering…":"Panggilan "+(C.vid?"video":"suara")+" masuk"}
+function cStatus(){const C=CALL;if(!C)return"";return C.st==="live"?(C.rc?"Menyambungkan ulang…":fmtD(Date.now()-C.t0)):C.st==="conn"?"Menyambungkan…":C.dir==="out"?(C.wait&&!C.rg?"Memanggil…":"Berdering…"):"Panggilan "+(C.vid?"video":"suara")+" masuk"}
 function cRender(){const o=$("zvl"),C=CALL;if(!o)return;
   if(!C){o.classList.remove("show","vv");return}
   const live=C.st==="live",V=!!C.vid&&(C.dir==="out"||C.st!=="ring");
@@ -5483,10 +5508,21 @@ async function startCall(f,vid){
   if(CALL){cMin(0);return toast("Kamu sedang dalam panggilan",1800)}
   if(!ME||!isFr(f))return;vid=vid?1:0;const ic=vid?"🎥 Panggilan video":"📞 Panggilan suara";
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)return toast("Browser ini tidak mendukung panggilan",3000);
-  if(!DATA.on[f]){addH(f,ic+" tidak dijawab",1);deliver(f,{t:"m",x:ic+" tidak terjawab"}).catch(()=>{});return toast(cName(f)+" sedang offline. Ia akan melihat panggilan tak terjawab",3000)}
   askNotif();let st;
   try{st=await mkMedia(vid)}catch(e){return toast(vid?"Izinkan akses kamera & mikrofon untuk video call":"Izinkan akses mikrofon untuk menelepon",3200)}
   if(CALL){st.getTracks().forEach(t=>t.stop());return}
+  if(!DATA.on[f]){ // teman offline: kirim push "telepon masuk", beri waktu 30 detik
+    const oid=mk(5);
+    try{await deliver(f,{t:"ring",id:oid,v:vid,n:ME.name})}catch(e){st.getTracks().forEach(t=>t.stop());return toast(dErr(e),3200)}
+    if(CALL){st.getTracks().forEach(t=>t.stop());return}
+    if(!PR||PR.destroyed)lp().then(peerUp).catch(()=>{});
+    CALL={f,id:oid,dir:"out",call:null,stream:st,st:"ring",t0:0,mute:0,min:0,vid,v0:vid,vst:vid?st:null,fm:"user",vused:vid,rcam:1,wait:1,rg:0,dl:Date.now()+30000};
+    cEnsure();cRender();cPill();ring("out");
+    const W=CALL;W.to=setTimeout(()=>{if(CALL===W&&W.st==="ring")endCall("miss")},30000);
+    W.pt=setInterval(async()=>{if(CALL!==W){clearInterval(W.pt);return}
+      try{await load()}catch(e){}try{await pull()}catch(e){}
+      if(CALL===W&&W.wait&&DATA.on[W.f]&&PR&&!PR.destroyed&&!PR.disconnected)dialNow(W)},2500);
+    return}
   if(!PR||PR.destroyed){st.getTracks().forEach(t=>t.stop());lp().then(peerUp).catch(()=>{});return toast("Belum tersambung ke server, coba lagi sebentar",2600)}
   if(PR.disconnected){try{PR.reconnect()}catch(e){}}
   const id=mk(5);let call;
@@ -5495,6 +5531,9 @@ async function startCall(f,vid){
   CALL={f,id,dir:"out",call,stream:st,st:"ring",t0:0,mute:0,min:0,vid,v0:vid,vst:vid?st:null,fm:"user",vused:vid,rcam:1};
   cEnsure();wireCall(call);cRender();cPill();ring("out");
   CALL.to=setTimeout(()=>{if(CALL&&CALL.id===id&&CALL.st==="ring")endCall("miss")},45000)}
+function dialNow(C){if(!C||!C.wait||!PR)return;let call;
+  try{call=PR.call("zcf-"+C.f.toLowerCase(),C.stream,{metadata:{n:ME.name,id:C.id,v:C.vid}})}catch(e){}
+  if(!call)return;C.call=call;C.wait=0;wireCall(call);cRender();clearTimeout(C.to);C.to=setTimeout(()=>{if(CALL===C&&C.st==="ring")endCall("miss")},30000)}
 function onCall(call){const f=String(call.peer).slice(4).toUpperCase(),id=String((call.metadata&&call.metadata.id)||"").slice(0,5),M=call.metadata||{};
   if(!isFr(f)){try{call.close()}catch(e){}return}
   if(M.vid){const C=CALL;if(C&&C.f===f&&C.id===id&&C.vp&&C.vst){C.vp=0;try{call.answer(C.vst)}catch(e){}wireVid(call)}else{try{call.close()}catch(e){}}return}
@@ -5545,13 +5584,13 @@ function onCv(f,d){const C=CALL;if(!C||C.f!==f||(d.id&&d.id!==C.id))return;
   else if(d.a==="off"){if(C.vid||C.vst){vStop(1);toast(cName(f)+" kembali ke suara",2000)}}
   else if(d.a==="cam"){C.rcam=d.on?1:0;cRender()}}
 function endCall(why,remote){const C=CALL;if(!C)return;CALL=null;
-  clearTimeout(C.to);clearTimeout(C.rct);clearTimeout(C.vqt);clearInterval(C.tm);stopRing();bannerC(0);vReqPop(0);
+  clearTimeout(C.to);clearTimeout(C.rct);clearTimeout(C.vqt);clearInterval(C.tm);clearInterval(C.pt);stopRing();bannerC(0);vReqPop(0);
   try{C.call.close()}catch(e){}try{C.vcall&&C.vcall.close()}catch(e){}
   try{C.stream&&C.stream.getTracks().forEach(t=>t.stop())}catch(e){}try{C.vst&&C.vst.getTracks().forEach(t=>t.stop())}catch(e){}
   const a=$("zva");if(a){a.pause();a.srcObject=null}
   wake(false);try{if(navigator.mediaSession)navigator.mediaSession.playbackState="none"}catch(e){}
   const f=C.f,live=!!C.t0,n=cName(f),ic=C.v0?"🎥 Panggilan video":"📞 Panggilan suara",ic2=C.v0?"🎥 Panggilan video":"📞 Panggilan";
-  if(!remote)send(f,{t:"cx",id:C.id,r:why}).catch(()=>{if(!live&&C.dir==="out"&&(why==="miss"||why==="cancel"))deliver(f,{t:"m",x:ic+" tidak terjawab"}).catch(()=>{})});
+  if(!remote&&C.wait){if(why==="miss"||why==="cancel")deliver(f,{t:"m",x:ic+" tidak terjawab"}).catch(()=>{})}else if(!remote)send(f,{t:"cx",id:C.id,r:why}).catch(()=>{if(!live&&C.dir==="out"&&(why==="miss"||why==="cancel"))deliver(f,{t:"m",x:ic+" tidak terjawab"}).catch(()=>{})});
   let msg="Panggilan berakhir";
   if(live){addH(f,(C.vused?"🎥 Panggilan video · ":"📞 Panggilan suara · ")+fmtD(Date.now()-C.t0),C.dir==="out")}
   else if(C.dir==="out"){
@@ -5582,11 +5621,16 @@ setTimeout(async()=>{const c=(new URLSearchParams(location.search).get("chat")||
 })();
 </script>
 
+
 <!--
 =====================================================================
-CATATAN SETUP NOTIFIKASI (semua ada di sini, tidak ikut tampil di web)
+CATATAN SETUP NOTIFIKASI & TELEPON OFFLINE (tidak tampil di web)
 =====================================================================
-Yang diunggah ke GitHub: index.html + sw.js (isi sw.js ada di bawah).
+Yang diunggah ke GitHub: index.html + sw.js (isi sw.js di bawah).
+Alur telepon ke teman offline: penelepon kirim baris {t:"ring"} ke tabel zg_msgs
+ -> Webhook memanggil Edge Function send-push -> push "telepon masuk" (getar) ke HP teman
+ -> sw.js membalas {t:"rack"} ke penelepon -> layar penelepon berubah "Memanggil" -> "Berdering".
+ Kalau tidak ada balasan (teman tanpa kuota/HP mati) layar tetap "Memanggil". Batas waktu 30 detik.
 
 [1] SQL (Supabase > SQL Editor > Run)
 create table if not exists public.zg_push (
@@ -5602,35 +5646,48 @@ drop policy if exists zg_push_all on public.zg_push;
 create policy zg_push_all on public.zg_push for all to anon using (true) with check (true);
 grant select, insert, update, delete on public.zg_push to anon;
 
-[2] sw.js (buat file baru bernama sw.js di repo, tempel isi ini)
+[2] sw.js (file terpisah di repo GitHub)
+// Service worker: menerima push walau browser/web tidak dibuka (chat & telepon masuk)
+const SB="https://ypdtaoccfxzquyfsiloy.supabase.co",KEY="sb_publishable_2crOjnp8Rf4zhCt2bdO_Ug_rH4enKGH";
 self.addEventListener("install",()=>self.skipWaiting());
 self.addEventListener("activate",e=>e.waitUntil(self.clients.claim()));
+
 self.addEventListener("push",e=>{
   let d={};try{d=e.data?e.data.json():{}}catch(_){d={}}
   e.waitUntil((async()=>{
+    if(d.call){
+      // telepon masuk: tampilkan + getar, lalu beri tahu penelepon "berdering"
+      await self.registration.showNotification(d.title||"Panggilan masuk",{
+        body:d.body||"Panggilan masuk",tag:"zcall",renotify:true,requireInteraction:true,
+        vibrate:[600,300,600,300,600,300,600,300,600],data:{from:d.from||"",call:1}});
+      try{await fetch(SB+"/rest/v1/zg_msgs",{method:"POST",
+        headers:{apikey:KEY,"Content-Type":"application/json",Prefer:"return=minimal"},
+        body:JSON.stringify({from_code:d.to,to_code:d.from,body:{t:"rack",id:d.id},ts:Date.now()})})}catch(_){}
+      return}
+    // chat: kalau web sedang terbuka & terlihat, tidak perlu notifikasi
     const cs=await self.clients.matchAll({type:"window",includeUncontrolled:true});
     if(cs.some(c=>c.visibilityState==="visible"))return;
-    await self.registration.showNotification(d.title||"Zaim’s Games",{body:d.body||"Pesan baru",tag:d.tag||"zg",renotify:true,data:{from:d.from||""}});
-  })());
-});
-self.addEventListener("notificationclick",e=>{
-  e.notification.close();
-  const from=(e.notification.data&&e.notification.data.from)||"";
-  e.waitUntil((async()=>{
-    const cs=await self.clients.matchAll({type:"window",includeUncontrolled:true});
-    if(cs.length){const c=cs[0];try{await c.focus()}catch(_){}if(from)c.postMessage({zopen:from});return}
-    await self.clients.openWindow("./"+(from?"?chat="+encodeURIComponent(from):""));
+    await self.registration.showNotification(d.title||"Zaim’s Games",{
+      body:d.body||"Pesan baru",tag:d.tag||"zg",renotify:true,data:{from:d.from||""}});
   })());
 });
 
-[3] Edge Function (Supabase > Edge Functions > Deploy a new function > Via Editor, nama: send-push)
-// Edge Function: dipanggil Database Webhook tiap ada baris baru di zg_msgs,
-// lalu mengirim Web Push ke semua perangkat penerima.
+self.addEventListener("notificationclick",e=>{
+  e.notification.close();
+  const dt=e.notification.data||{},from=dt.from||"";
+  e.waitUntil((async()=>{
+    const cs=await self.clients.matchAll({type:"window",includeUncontrolled:true});
+    if(cs.length){const c=cs[0];try{await c.focus()}catch(_){}if(from&&!dt.call)c.postMessage({zopen:from});return}
+    await self.clients.openWindow("./"+(from&&!dt.call?"?chat="+encodeURIComponent(from):""));
+  })());
+});
+
+[3] Edge Function send-push (Supabase > Edge Functions, tempel ulang lalu Deploy)
 import webpush from "npm:web-push@3.6.7";
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 webpush.setVapidDetails(
-  Deno.env.get("VAPID_SUBJECT")!,   // mis. mailto:kamu@email.com
+  Deno.env.get("VAPID_SUBJECT")!,
   Deno.env.get("VAPID_PUBLIC")!,
   Deno.env.get("VAPID_PRIVATE")!,
 );
@@ -5643,7 +5700,10 @@ Deno.serve(async (req) => {
   try {
     const { record } = await req.json();
     const b = record?.body;
-    if (!record || !b || b.t !== "m" || typeof b.x !== "string") return new Response("skip");
+    if (!record || !b) return new Response("skip");
+    const isRing = b.t === "ring";
+    const isMsg = b.t === "m" && typeof b.x === "string";
+    if (!isRing && !isMsg) return new Response("skip");
 
     const [{ data: from }, { data: subs }] = await Promise.all([
       db.from("zg_profiles").select("name").eq("code", record.from_code).maybeSingle(),
@@ -5651,21 +5711,32 @@ Deno.serve(async (req) => {
     ]);
     if (!subs?.length) return new Response("no subs");
 
-    const payload = JSON.stringify({
-      title: from?.name || "Pesan baru",
-      body: b.x.slice(0, 140),
-      from: record.from_code,
-      tag: "chat-" + record.from_code,
-    });
+    let payload: string, opt: Record<string, unknown>;
+    if (isRing) {
+      payload = JSON.stringify({
+        title: from?.name || "Panggilan masuk",
+        body: b.v ? "🎥 Panggilan video masuk" : "📞 Panggilan suara masuk",
+        from: record.from_code, to: record.to_code, id: String(b.id || ""), call: 1,
+      });
+      opt = { TTL: 30, urgency: "high" };   // telepon basi setelah 30 detik
+    } else {
+      const missed = /^(📞|🎥)/.test(b.x);   // "tidak terjawab" menggantikan notif telepon
+      payload = JSON.stringify({
+        title: from?.name || "Pesan baru",
+        body: b.x.slice(0, 140),
+        from: record.from_code,
+        tag: missed ? "zcall" : "chat-" + record.from_code,
+      });
+      opt = { TTL: 86400, urgency: "high" };
+    }
 
     await Promise.all(subs.map(async (s) => {
       try {
         await webpush.sendNotification(
           { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },
-          payload, { TTL: 86400, urgency: "high" },
+          payload, opt,
         );
       } catch (e) {
-        // langganan sudah tidak berlaku → hapus
         if (e?.statusCode === 404 || e?.statusCode === 410)
           await db.from("zg_push").delete().eq("endpoint", s.endpoint);
       }
@@ -5676,8 +5747,8 @@ Deno.serve(async (req) => {
   }
 });
 
-Secrets (Edge Functions > Secrets): VAPID_PUBLIC, VAPID_PRIVATE, VAPID_SUBJECT (mis. mailto:emailmu@gmail.com)
-[4] Webhook (Database > Webhooks > Create): tabel zg_msgs, event Insert, tipe Supabase Edge Function, pilih send-push
+Secrets: VAPID_PUBLIC, VAPID_PRIVATE, VAPID_SUBJECT
+[4] Webhook: tabel zg_msgs, event Insert, Edge Function send-push
 =====================================================================
 -->
 </body>
