@@ -1516,6 +1516,18 @@ body,button,input{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF
 .zfiv{position:fixed;inset:0;z-index:9600;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center}.zfiv img{max-width:100%;max-height:100%;object-fit:contain}
 .zfivx{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:14px;border:0;background:none;color:#fff;font-size:28px;cursor:pointer}
 .zfgm{width:100%;padding:14px;font-size:16px;flex:none}
+.zfg{position:relative;touch-action:pan-y;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;transition:transform .18s}.zfg.sw{transition:none}
+.zfg.hl{animation:zfhl 1.4s}@keyframes zfhl{0%,60%{box-shadow:0 0 0 3px rgba(20,121,196,.55)}100%{box-shadow:0 0 0 3px transparent}}
+.zfri{position:absolute;left:-34px;top:50%;margin-top:-13px;width:26px;height:26px;border-radius:50%;background:#e3e2dc;color:#555;display:flex;align-items:center;justify-content:center;opacity:0;font-size:14px;pointer-events:none}
+.zfq{display:flex;gap:6px;align-items:center;background:rgba(0,0,0,.07);border-left:4px solid #1479c4;border-radius:8px;padding:5px 8px;margin:0 0 5px;cursor:pointer;text-align:left}.zfq.me{border-left-color:#1ea04b}
+.zfq>div{min-width:0;flex:1}.zfq b{display:block;font-size:12px}.zfq span{display:block;font-size:13px;opacity:.8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:220px}.zfq img{width:38px;height:38px;border-radius:6px;object-fit:cover;flex:none}
+.zfdel{font-style:italic;opacity:.6}
+.zfrp{display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid #e1dfd7;border-left:4px solid #1479c4;border-radius:12px;padding:6px 6px 6px 10px;margin-bottom:6px;flex:none}
+.zfrp>div{flex:1;min-width:0}.zfrp b{display:block;font-size:12px}.zfrp span{display:block;font-size:13px;opacity:.75;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.zfrp button{border:0;background:none;font-size:18px;padding:4px 8px;cursor:pointer;color:inherit}
+.zfsh{position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,.35);display:flex;align-items:flex-end;justify-content:center}
+.zfsh>div{width:min(480px,100%);background:#fff;border-radius:18px 18px 0 0;padding:8px 8px calc(10px + env(safe-area-inset-bottom));display:flex;flex-direction:column}
+.zfsh button{border:0;background:none;font:600 16px inherit;font-family:inherit;padding:14px;text-align:left;border-radius:10px;cursor:pointer;color:var(--tx)}.zfsh button:active{background:#f0efe9}.zfsh .d{color:#d92d20}
+
 .zfn{position:fixed;left:12px;right:12px;top:calc(12px + env(safe-area-inset-top,0px));z-index:9500;display:flex;align-items:center;gap:8px;padding:10px 12px;background:#fff;border:1.5px solid #e1dfd7;border-radius:18px;box-shadow:0 8px 24px rgba(0,0,0,.18)}.zfn span{flex:1;min-width:0}
 /* ===== Ajak teman: pilih game ===== */
 .zim{--s1:#c7c7cc;--s2:#aeaeb2;display:flex;flex-direction:column;gap:14px;flex:1;min-height:0;padding:2px 8px 4px}
@@ -5052,7 +5064,7 @@ const GM={
  pul:{n:"Pulse Tap",k:"pt",d:"Adu refleks, kejar target skor",c:["#ffb340","#ff8a00"],i:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',opt:[{k:"lv",t:"Tingkat",v:LVO,d:"sedang"},{k:"tg",t:"Target skor",v:[[300,"300"],[600,"600"],[1000,"1.000"]],d:600}]},
  blast:{n:"Block Blast",k:"bb",d:"Susun blok, balapan skor",c:["#4da3ff","#007aff"],i:'<rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="14" y="14" width="6" height="6" rx="1.5"/>',opt:[{k:"tg",t:"Target skor",v:[[20000,"20.000"],[50000,"50.000"],[100000,"100.000"]],d:20000}]}};
 const AL="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",mk=n=>Array.from({length:n},()=>AL[zR(AL.length)]).join("");
-const hist=f=>{try{return JSON.parse(LS("zf-h-"+f)||"[]")}catch(e){return[]}},saveH=(f,a)=>LS("zf-h-"+f,JSON.stringify(a.slice(-100)));
+const hist=f=>{try{return JSON.parse(LS("zf-h-"+f)||"[]")}catch(e){return[]}},saveH=(f,a)=>LS("zf-h-"+f,JSON.stringify(a.slice(-200)));
 const isFr=f=>DATA.rel.some(r=>r.status==="accepted"&&(r.from_code===f||r.to_code===f)),opn=()=>!!(P&&P.classList.contains("show"));
 window.zfAuto=k=>{const R=window.zfRoom;if(R&&R.k===k&&Date.now()-R.t<3e5){window.zfRoom=null;return R}return null};
 window.zfCancel=()=>{const o=OUT;OUT=null;if(o)send(o.f,{t:"invx",c:o.c}).catch(()=>{})};
@@ -5144,10 +5156,11 @@ async function pull(){if(!ME||PULLING)return;PULLING=1;
     LS("zf-last",String(LASTID));
     api("zg_msgs?id=in.("+rows.map(r=>r.id).join(",")+")",{m:"DELETE",p:"return=minimal"}).catch(()=>{})}
   catch(e){}finally{PULLING=0}}
-function boot(){if(HB)return;setInterval(()=>{if(!document.hidden)pull()},10000);document.addEventListener("visibilitychange",()=>{if(!document.hidden){refresh();beat().catch(()=>{})}});HB=setInterval(()=>{if(!document.hidden){beat().catch(()=>{});if(!opn())refresh()}},30000);lp().then(peerUp).catch(()=>{})}
+function boot(){if(HB)return;setInterval(()=>{if(!document.hidden){pull();if(opn())zsync(CH||undefined)}},10000);document.addEventListener("visibilitychange",()=>{if(!document.hidden){refresh();beat().catch(()=>{})}});HB=setInterval(()=>{if(!document.hidden){beat().catch(()=>{});if(!opn())refresh()}},30000);lp().then(peerUp).catch(()=>{})}
 function onData(f,d){if(!d||typeof d!=="object"||!isFr(f))return;
-  if(d.t==="m"&&typeof d.x==="string"){const md=zin(d);if(md===false)return;const x=md?md.x:d.x.slice(0,500),a=hist(f);a.push(Object.assign({me:0,x,t:d._ts||Date.now()},md||{}));saveH(f,a);sfx("recv");
+  if(d.t==="m"&&typeof d.x==="string"){const md=zin(d);if(md===false)return;const x=md?md.x:d.x.slice(0,500),a=hist(f);const mi=zid(d.i);if(mi&&(a.some(y=>y.i===mi)||DM[mi]))return;const rp=zrep(d.r);a.push(Object.assign({me:0,x,t:d._ts||Date.now()},md||{},mi?{i:mi}:{},rp?{r:rp}:{}));saveH(f,a);sfx("recv");
     if(opn()&&CH===f)drawChat();else{UN[f]=(UN[f]||0)+1;saveUN();dot();toast((DATA.names[f]||f)+": "+x.slice(0,40),2200);if(opn()&&!CH&&!INV&&!ZN)draw(true)}}
+  else if(d.t==="del"){const mi=zid(d.i),a=hist(f),m=mi&&a.find(y=>y.i===mi&&!y.me);if(m){zwipe(m);saveH(f,a);if(opn()&&CH===f)drawChat()}}
   else if(d.t==="inv"&&GM[d.g]&&/^[A-Z0-9]{5}$/.test(d.c))banner(f,d.g,d.c)
   else if(d.t==="invr"&&OUT&&OUT.c===d.c&&OUT.f===f){if(!d.ok){OUT=null;window.zfAbort&&zfAbort(d.c,(DATA.names[f]||f)+" menolak ajakan.")}}
   else if(d.t==="rack"){const C=CALL;if(C&&C.f===f&&C.wait&&d.id===C.id&&!C.rg){C.rg=1;cRender();try{navigator.vibrate&&navigator.vibrate(120)}catch(e){}}}
@@ -5254,8 +5267,8 @@ async function zup(blob,mime,ext){
 async function zsend(f,k,blob,mime,ext,extra){
   PN[f]=(PN[f]||0)+1;if(CH===f)drawChat();
   try{const u=await zup(blob,mime,ext),x=k==="img"?"📷 Foto":"🎤 Suara";
-    await deliver(f,Object.assign({t:"m",k,u,x},extra));
-    const h=hist(f);h.push(Object.assign({me:1,x,t:Date.now(),k,u},extra));saveH(f,h)}
+    const M=zmk(f);await deliver(f,Object.assign({t:"m",k,u,x},extra,M));
+    const ts=Date.now(),h=hist(f);h.push(Object.assign({me:1,x,t:ts,k,u},extra,M));saveH(f,h);zsv(f,M.i,Object.assign({x,k,u},extra,{r:M.r}),ts);if(RP&&RP.f===f){RP=null;zrpDraw()}}
   catch(e){toast(e&&e.up?"Gagal mengunggah ke Supabase ("+e.message+(e.m?": "+String(e.m).slice(0,60):"")+")":dErr(e),4200)}
   finally{PN[f]=Math.max(0,(PN[f]||1)-1);if(opn()&&CH===f)drawChat()}}
 function zimg(file){return new Promise((res,rej)=>{const u=URL.createObjectURL(file),im=new Image();
@@ -5294,19 +5307,79 @@ function zplay(u){const b=[...P.querySelectorAll(".zfpl")].find(x=>x.dataset.u==
 function zrebind(){if(!AU)return;const nb=[...P.querySelectorAll(".zfpl")].find(b=>b.dataset.u===AU.u);
   if(!nb)return zstop();AU.b=nb;nb.classList.toggle("on",!AU.a.paused);const p=nb.parentNode.querySelector(".zfpf");if(p&&AU.a.duration)p.style.width=(AU.a.currentTime/AU.a.duration*100)+"%"}
 function zview(u){if(!ZOK(u))return;const o=document.createElement("div");o.className="zfiv";o.innerHTML='<img alt="Foto" src="'+u+'"><button type="button" class="zfivx" aria-label="Tutup">✕</button>';o.onclick=()=>o.remove();document.body.appendChild(o)}
-function zbubble(m){const c="zfg "+(m.me?"me":"op"),tm=m.t?"<i>"+zhm(m.t)+"</i>":"";
+// ----- balas (swipe), hapus, dan simpan riwayat chat ke Supabase (tabel zg_chat) -----
+let RP=null,DM={};try{DM=JSON.parse(LS("zf-dm")||"{}")||{}}catch(e){}
+const zid=x=>typeof x==="string"&&/^[A-Za-z0-9]{8,40}$/.test(x)?x:"",zmid=()=>ME.code+Date.now().toString(36)+mk(4).toLowerCase();
+function zrep(r){if(!r||typeof r!=="object")return null;const i=zid(r.i),a=String(r.a||"");if(!i||!/^[A-Z0-9]{6}$/.test(a))return null;
+  const o={i,a,x:String(r.x==null?"":r.x).slice(0,100)};if(r.k==="img"||r.k==="aud")o.k=r.k;if(o.k==="img"&&ZOK(r.u))o.u=r.u;return o}
+function zmk(f){const M={i:zmid()};if(RP&&RP.f===f)M.r={i:RP.i,a:RP.a,x:RP.x,k:RP.k,u:RP.u};return M}
+function zwipe(m){m.dl=1;m.x="🚫 Pesan ini dihapus";delete m.k;delete m.u;delete m.r;delete m.w;delete m.h;delete m.d}
+function zsv(f,mid,body,ts){api("zg_chat?on_conflict=mid",{m:"POST",p:"resolution=merge-duplicates,return=minimal",b:{mid,from_code:ME.code,to_code:f,body,ts}})
+  .catch(()=>{if(!zsv.w){zsv.w=1;toast("Pesan terkirim, tapi gagal disimpan ke Supabase. Cek tabel zg_chat",4200)}})}
+async function zdelSrv(mid,mine){try{await api("zg_chat?mid=eq."+mid,{m:"PATCH",p:"return=minimal",b:mine?{del_from:true}:{del_to:true}});delete DM[mid];LS("zf-dm",JSON.stringify(DM))}catch(e){}}
+function zrow2(r){const b=r.body||{},me=r.from_code===ME.code?1:0;if(r.del_all)return{me,x:"🚫 Pesan ini dihapus",t:+r.ts,i:r.mid,dl:1};
+  const md=zin(b);if(md===false||(!md&&typeof b.x!=="string"))return null;const rp=zrep(b.r);
+  return Object.assign({me,x:md?md.x:b.x.slice(0,500),t:+r.ts,i:r.mid},md||{},rp?{r:rp}:{})}
+async function zsync(f){if(!ME||zsync.b||(f&&!isFr(f)))return;zsync.b=1;const me=ME.code;
+  try{const rows=await api("zg_chat?select=mid,from_code,to_code,body,ts,del_all,del_from,del_to&"+(f?"or=(and(from_code.eq."+me+",to_code.eq."+f+"),and(from_code.eq."+f+",to_code.eq."+me+"))&order=ts.desc&limit=150":"or=(from_code.eq."+me+",to_code.eq."+me+")&order=ts.desc&limit=300")),G={};
+    rows.forEach(r=>{const o=r.from_code===me?r.to_code:r.from_code;if(isFr(o))(G[o]=G[o]||[]).push(r)});
+    Object.keys(G).forEach(o=>{let a=hist(o),ch=0;const by={};a.forEach(m=>{if(m.i)by[m.i]=m});
+      G[o].forEach(r=>{const mine=r.from_code===me,gone=mine?r.del_from:r.del_to;
+        if(DM[r.mid]&&!gone)zdelSrv(r.mid,mine);
+        if(gone||DM[r.mid]){if(by[r.mid]){a=a.filter(m=>m.i!==r.mid);ch=1}return}
+        const x=by[r.mid];if(x){if(r.del_all&&!x.dl){zwipe(x);ch=1}return}
+        const n=zrow2(r);if(n){a.push(n);ch=1}});
+      if(ch){a.sort((p,q)=>p.t-q.t);saveH(o,a);if(opn()){if(CH===o)drawChat();else if(!CH&&!INV&&!ZN)draw(true)}}})}
+  catch(e){}finally{zsync.b=0}}
+async function zdel(f,i,all){const a=hist(f),m=a.find(y=>y.i===i);if(!m)return;
+  if(all){try{await api("zg_chat?mid=eq."+i+"&from_code=eq."+ME.code,{m:"PATCH",p:"return=minimal",b:{del_all:true,body:{}}})}catch(e){return toast("Gagal menghapus untuk semua. Cek koneksi dan tabel zg_chat",3200)}
+    deliver(f,{t:"del",i}).catch(()=>{});zwipe(m)}
+  else{DM[i]=1;LS("zf-dm",JSON.stringify(DM));a.splice(a.indexOf(m),1);if(!/^L/.test(i))zdelSrv(i,m.me)}
+  saveH(f,a);drawChat()}
+function zrpDraw(){const w=$("zfrw");if(!w)return;const r=RP&&RP.f===CH?RP:null;
+  w.innerHTML=r?'<div class="zfrp"><div><b>'+esc(r.a===ME.code?"Kamu":DATA.names[r.a]||r.a)+'</b><span>'+esc(r.x)+'</span></div><button type="button" data-a="rpx" aria-label="Batal balas">✕</button></div>':""}
+function zreply(f,m){if(!m||m.dl||!m.i)return;RP={f,i:m.i,a:m.me?ME.code:f,x:(m.x||"").slice(0,100),k:m.k,u:m.k==="img"?m.u:undefined};zrpDraw();const n=$("zfmi");if(n)n.focus()}
+function zjump(i){const e=[...P.querySelectorAll(".zfg[data-i]")].find(b=>b.dataset.i===i);if(!e)return toast("Pesan asli tidak ditemukan",1800);
+  e.scrollIntoView({block:"center",behavior:"smooth"});e.classList.remove("hl");void e.offsetWidth;e.classList.add("hl")}
+function zmenu(i){if($("zfsh")||!CH)return;const f=CH,m=hist(f).find(y=>y.i===i);if(!m)return;
+  const o=document.createElement("div");o.id="zfsh";o.className="zfsh";
+  const bt=(k,t,c)=>'<button type="button" data-k="'+k+'"'+(c?' class="'+c+'"':"")+'>'+t+'</button>';
+  o.innerHTML='<div>'+(m.dl?"":bt("rp","↩ Balas")+(m.k?"":bt("cp","⧉ Salin")))+bt("dm","🗑 Hapus untuk saya","d")+(m.me&&!m.dl&&!/^L/.test(i)?bt("da","🗑 Hapus untuk semua","d"):"")+bt("x","Batal")+'</div>';
+  o.addEventListener("click",async e=>{const k=e.target.closest("[data-k]");if(!k&&e.target!==o)return;const a=k&&k.dataset.k;o.remove();
+    if(a==="rp")zreply(f,m);
+    else if(a==="cp"){try{await navigator.clipboard.writeText(m.x);toast("Tersalin",1400)}catch(_){toast("Gagal menyalin",1600)}}
+    else if(a==="dm"){if(await confirmX("Hapus pesan","Pesan ini hanya dihapus dari chat-mu.","Hapus",true))zdel(f,i,0)}
+    else if(a==="da"){if(await confirmX("Hapus untuk semua","Pesan akan dihapus dari chat kalian berdua.","Hapus",true))zdel(f,i,1)}});
+  document.body.appendChild(o)}
+function zgest(P){let S=null,LT=0;const clr=()=>{clearTimeout(LT);LT=0};
+  P.addEventListener("pointerdown",e=>{const b=e.target.closest&&e.target.closest(".zfg[data-i]");if(!b||!CH||(e.pointerType==="mouse"&&e.button))return;
+    S={b,x:e.clientX,y:e.clientY,dx:0,go:0,id:e.pointerId};
+    LT=setTimeout(()=>{if(S&&!S.go){const bb=S.b;S=null;try{navigator.vibrate&&navigator.vibrate(15)}catch(_){}zmenu(bb.dataset.i)}},480)});
+  P.addEventListener("pointermove",e=>{if(!S||e.pointerId!==S.id)return;const dx=e.clientX-S.x,dy=e.clientY-S.y;
+    if(!S.go){if(Math.abs(dy)>10||dx<-10){clr();S=null;return}if(dx>10&&dx>Math.abs(dy)*1.5){S.go=1;clr();S.b.classList.add("sw");try{S.b.setPointerCapture(e.pointerId)}catch(_){}}else return}
+    S.dx=Math.min(70,Math.max(0,dx));S.b.style.transform="translateX("+S.dx+"px)";const ic=S.b.querySelector(".zfri");if(ic)ic.style.opacity=Math.min(1,S.dx/50)});
+  const end=e=>{if(!S)return;clr();const o=S;S=null;if(!o.go)return;o.b.classList.remove("sw");o.b.style.transform="";const ic=o.b.querySelector(".zfri");if(ic)ic.style.opacity=0;
+    if(e.type==="pointerup"&&o.dx>=50){try{navigator.vibrate&&navigator.vibrate(10)}catch(_){}zreply(CH,hist(CH).find(y=>y.i===o.b.dataset.i))}zgest.k=Date.now()};
+  P.addEventListener("pointerup",end);P.addEventListener("pointercancel",end);
+  P.addEventListener("click",e=>{if(Date.now()-(zgest.k||0)<350){e.stopPropagation();e.preventDefault()}},true);
+  P.addEventListener("contextmenu",e=>{const b=e.target.closest&&e.target.closest(".zfg[data-i]");if(b&&CH){e.preventDefault();zmenu(b.dataset.i)}})}
+function zq(r){if(!r)return"";const me=r.a===ME.code,n=me?"Kamu":DATA.names[r.a]||r.a;
+  return '<div class="zfq'+(me?" me":"")+'" data-a="qj" data-u="'+ea(r.i)+'">'+(r.k==="img"&&ZOK(r.u)?'<img src="'+r.u+'" alt="">':"")+'<div><b>'+esc(n)+'</b><span>'+esc(r.x)+'</span></div></div>'}
+function zbubble(m){const c="zfg "+(m.me?"me":"op"),tm=m.t?"<i>"+zhm(m.t)+"</i>":"",d=m.i?' data-i="'+ea(m.i)+'"':"",ri='<span class="zfri">↩</span>';
+  if(m.dl)return '<div class="'+c+'"'+d+'>'+ri+'<span class="zfdel">🚫 Pesan ini telah dihapus</span>'+tm+"</div>";
+  const q=zq(m.r);
   if(m.k==="img"&&ZOK(m.u)){const ar=m.w>0&&m.h>0?' style="aspect-ratio:'+(+m.w)+"/"+(+m.h)+'"':"";
-    return '<div class="'+c+' zfmd"><img class="zfim" src="'+m.u+'" data-a="view" data-u="'+m.u+'" alt="Foto"'+ar+'>'+tm+"</div>"}
-  if(m.k==="aud"&&ZOK(m.u)){const d=Math.max(0,+m.d||0);
-    return '<div class="'+c+'"><div class="zfau"><button type="button" class="zfpl" data-a="play" data-u="'+m.u+'" aria-label="Putar">'+ZPL+'</button><div class="zfpg"><span class="zfpf"></span></div><small>'+Math.floor(d/60)+":"+z2(d%60)+"</small></div>"+tm+"</div>"}
-  return '<div class="'+c+'">'+esc(m.x)+tm+"</div>"}
+    return '<div class="'+c+' zfmd"'+d+'>'+ri+q+'<img class="zfim" src="'+m.u+'" data-a="view" data-u="'+m.u+'" alt="Foto"'+ar+'>'+tm+"</div>"}
+  if(m.k==="aud"&&ZOK(m.u)){const du=Math.max(0,+m.d||0);
+    return '<div class="'+c+'"'+d+'>'+ri+q+'<div class="zfau"><button type="button" class="zfpl" data-a="play" data-u="'+m.u+'" aria-label="Putar">'+ZPL+'</button><div class="zfpg"><span class="zfpf"></span></div><small>'+Math.floor(du/60)+":"+z2(du%60)+"</small></div>"+tm+"</div>"}
+  return '<div class="'+c+'"'+d+'>'+ri+q+esc(m.x)+tm+"</div>"}
 function zbar(){
   if(REC)return '<div class="zfbar zfrec"><button type="button" class="zfsd zfx" data-a="rcancel" aria-label="Batal">'+ZI(ZP.del,20)+'</button><span class="zfrd"></span><b id="zfrt">0:00</b><span class="zfrs">Merekam</span><button type="button" class="zfsd" data-a="rsend" aria-label="Kirim">'+ZI(ZP.snd,20,2.6)+'</button></div>';
   return '<div class="zfbar"><div class="zfpill"><button type="button" class="zfic" data-a="pick" aria-label="Kirim foto">'+ZI(ZP.img,22,2)+'</button><input id="zfmi" maxlength="500" autocomplete="off" placeholder="Pesan"><button type="button" class="zfic" data-a="cam" aria-label="Buka kamera">'+ZI(ZP.cam,22,2)+'</button></div><button type="button" class="zfsd" id="zfgo" data-a="mic" aria-label="Rekam suara">'+ZI(ZP.mic,20,2.2)+'</button></div>'}
 function zgo(){const g=$("zfgo"),i=$("zfmi");if(!g||!i)return;const t=i.value.trim()!=="";
   if((g.dataset.a==="send")===t)return;g.dataset.a=t?"send":"mic";g.setAttribute("aria-label",t?"Kirim":"Rekam suara");g.innerHTML=t?ZI(ZP.snd,20,2.6):ZI(ZP.mic,20,2.2)}
 function drawBar(){const b=P&&P.querySelector(".zfbar");if(b){b.outerHTML=zbar();zgo()}}
-function drawChat(){const f=CH,h=hist(f);zhead();let pd=0,out="";
+function drawChat(){const f=CH,h=hist(f);zhead();let pd=0,out="",lc=0;h.forEach(m=>{if(!m.i){m.i="L"+(+m.t||0).toString(36)+(m.me?"a":"b");lc=1}});if(lc)saveH(f,h);
   h.forEach(m=>{if(m.t){const d=zd0(m.t);if(d!==pd){pd=d;out+='<div class="zfds">'+zdl(m.t)+'</div>'}}out+=zbubble(m)});
   if(PN[f]>0)out+='<div class="zfg me"><span class="zfpn">Mengirim…</span></div>';
   const html=out||'<p class="zfe">Belum ada pesan</p>',m0=$("zfm"),mi=$("zfmi");
@@ -5317,8 +5390,8 @@ function drawChat(){const f=CH,h=hist(f);zhead();let pd=0,out="";
     m0.innerHTML=html;if(near||(last&&last.me))m0.scrollTop=m0.scrollHeight;zrebind();return}
   const old=mi,v=old?old.value:"",fo=old&&document.activeElement===old;
   drawChat._l=f+"|"+html;
-  P.querySelector(".zfb").innerHTML='<div class="zfm" id="zfm" data-f="'+ea(f)+'">'+html+'</div>'+zbar();
-  const n=$("zfmi");if(n){n.value=v;if(fo)n.focus()}zgo();zrebind();
+  P.querySelector(".zfb").innerHTML='<div class="zfm" id="zfm" data-f="'+ea(f)+'">'+html+'</div><div id="zfrw"></div>'+zbar();
+  const n=$("zfmi");if(n){n.value=v;if(fo)n.focus()}zgo();zrebind();zrpDraw();
   const m=$("zfm");if(m)m.scrollTop=m.scrollHeight}
 function draw(force){
   if(CH){zhead();return force?drawChat():0}
@@ -5347,12 +5420,14 @@ async function act(a,id,x,bt){
     if(a==="mic"){recStart();return}
     if(a==="rsend"){recStop(true);return}
     if(a==="rcancel"){recStop(false);return}
+    if(a==="qj"){zjump(x);return}
+    if(a==="rpx"){RP=null;zrpDraw();return}
     if(a==="play"){zplay(x);return}
     if(a==="view"){zview(x);return}
-    if(a==="back"){drawChat._l="";NAV.close("zfs");recStop(false);zstop();CH=null;INV=null;SEL=null;OPT={};INVP=0;ZN=0;draw(true);return}
+    if(a==="back"){RP=null;drawChat._l="";NAV.close("zfs");recStop(false);zstop();CH=null;INV=null;SEL=null;OPT={};INVP=0;ZN=0;draw(true);return}
     if(a==="new"){ZN=1;INV=null;CH=null;NAV.push("zfs",()=>act("back"));draw(true);return}
     if(a==="tofr"){ZM="fr";ZN=0;draw(true);return}
-    if(a==="chat"){CH=x;ZN=0;delete UN[x];saveUN();dot();NAV.push("zfs",()=>act("back"));drawChat();return}
+    if(a==="chat"){CH=x;ZN=0;delete UN[x];saveUN();dot();NAV.push("zfs",()=>act("back"));drawChat();zsync(x);return}
     if(a==="inv"){INV=x;SEL=null;OPT={};INVP=0;NAV.push("zfs",()=>act("back"));draw(true);return}
     if(a==="pg"){if(!GM[x])return;if(SEL!==x){SEL=x;OPT={};GM[x].opt.forEach(o=>OPT[o.k]=o.d);sfx("click");invUpd()}return}
     if(a==="op"){const g=SEL&&GM[SEL],o=g&&g.opt.find(y=>y.k===bt.dataset.o);if(!o)return;const v=o.v.find(y=>String(y[0])===bt.dataset.v);if(!v)return;OPT[o.k]=v[0];sfx("click");
@@ -5360,8 +5435,8 @@ async function act(a,id,x,bt){
     if(a==="send"&&!CH){if(!SEL||!INV)return;const sb=P.querySelector(".zsend");if(sb){sb.disabled=true;sb.classList.add("ld")}
       const ok=await invite(INV,SEL,Object.assign({},OPT));if(!ok){const b2=P.querySelector(".zsend");if(b2){b2.classList.remove("ld");b2.disabled=!SEL}}return}
     if(a==="send"&&CH){const i=$("zfmi"),t=QT2(i&&i.value,500);if(!t)return;
-      try{const via=await deliver(CH,{t:"m",x:t});if(via==="srv"&&!DATA.on[CH])toast("Teman offline, pesan akan terbaca saat ia online",2200)}catch(e){return toast(dErr(e),3200)}
-      const h=hist(CH);h.push({me:1,x:t,t:Date.now()});saveH(CH,h);i.value="";drawChat();const n=$("zfmi");if(n&&document.activeElement!==n)n.focus();return}
+      const M=zmk(CH);try{const via=await deliver(CH,Object.assign({t:"m",x:t},M));if(via==="srv"&&!DATA.on[CH])toast("Teman offline, pesan akan terbaca saat ia online",2200)}catch(e){return toast(dErr(e),3200)}
+      const ts=Date.now(),h=hist(CH);h.push(Object.assign({me:1,x:t,t:ts},M));saveH(CH,h);zsv(CH,M.i,{x:t,r:M.r},ts);RP=null;i.value="";drawChat();zrpDraw();const n=$("zfmi");if(n&&document.activeElement!==n)n.focus();return}
     if(a==="add"){const c=(($("zfin")||{}).value||"").toUpperCase().replace(/[^A-Z0-9]/g,"");
       if(c.length<6)return toast("Masukkan 6 karakter kode teman",2000);if(c===ME.code)return toast("Itu kodemu sendiri",2000);
       const ex=R.find(y=>y.from_code===c||y.to_code===c);
@@ -5375,17 +5450,17 @@ async function act(a,id,x,bt){
     else if(a==="del"){await api("zg_friends?id=eq."+id,{m:"DELETE",p:"return=minimal"})}
     else if(a==="rm"){const c=r&&(r.from_code===ME.code?r.to_code:r.from_code);if(!await confirmX("Hapus teman",(DATA.names[c]||c)+" akan dihapus dari daftar temanmu.","Hapus",true))return;await api("zg_friends?id=eq."+id,{m:"DELETE",p:"return=minimal"})}
     await refresh(true)}catch(e){toast("Gagal, coba lagi",2200)}}
-function close(){recStop(false);zstop();clearInterval(tm);tm=0;CH=null;INV=null;SEL=null;OPT={};INVP=0;ZN=0;DIRECT=0;if(P)P.classList.remove("show");NAV.close("zfs","zfp")}
+function close(){RP=null;recStop(false);zstop();clearInterval(tm);tm=0;CH=null;INV=null;SEL=null;OPT={};INVP=0;ZN=0;DIRECT=0;if(P)P.classList.remove("show");NAV.close("zfs","zfp")}
 async function open(m,t){
   if(busy)return;busy=1;sfx("click");
   try{if(!(await setup()))return;boot();if(!PR||PR.destroyed){PR=null;lp().then(peerUp).catch(()=>{})}ZM=m||"fr";CH=null;INV=null;SEL=null;OPT={};INVP=0;ZN=0;
     if(t&&t.f&&isFr(t.f)){if(t.a==="chat"){CH=t.f;delete UN[t.f];saveUN();dot()}else if(t.a==="inv"){INV=t.f}}
     if(!P){P=document.createElement("div");P.id="zfp";P.innerHTML='<div class="zfh"><button type="button" class="hb sm" data-a="x" aria-label="Tutup"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><div class="zft" id="zft"><b>Teman</b></div><button type="button" class="zfpen zfnw" data-a="new" id="zfnw" aria-label="Chat baru" hidden><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button type="button" class="zfpen zfcl" data-a="call" id="zfcall" aria-label="Telepon" hidden><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></button><button type="button" class="zfpen zfcl" data-a="vcall" id="zfvcall" aria-label="Video call" hidden><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="13" height="12" rx="3"/><path d="M15 10.5l6-3.5v10l-6-3.5z"/></svg></button></div><div class="zfb"></div><input type="file" id="zff1" accept="image/*" hidden><input type="file" id="zff2" accept="image/*" capture="environment" hidden>';document.body.appendChild(P);
       P.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;if(b.dataset.a==="x"){if(!DIRECT&&(CH||INV||ZN))act("back");else close()}else act(b.dataset.a,b.dataset.id,b.dataset.f||b.dataset.g||b.dataset.u,b)});
-      P.addEventListener("change",e=>{const t=e.target;if(t.id!=="zff1"&&t.id!=="zff2")return;const fl=t.files&&t.files[0];t.value="";if(fl)zsendImg(fl)});
+      zgest(P);P.addEventListener("change",e=>{const t=e.target;if(t.id!=="zff1"&&t.id!=="zff2")return;const fl=t.files&&t.files[0];t.value="";if(fl)zsendImg(fl)});
       P.addEventListener("keydown",e=>{if(e.key!=="Enter")return;if(e.target.id==="zfin")act("add");else if(e.target.id==="zfmi")act("send");else if(e.target.classList&&e.target.classList.contains("zfc"))e.target.click()});
       P.addEventListener("input",e=>{if(e.target.id==="zfmi"){zgo();return}if(e.target.id!=="zfq")return;const q=e.target.value.trim().toLowerCase();P.querySelectorAll(".zfc[data-n]").forEach(r=>{r.style.display=r.dataset.n.includes(q)?"":"none"})})}
-    await refresh(true);if((CH||INV)&&!P.querySelector(".zfb").innerHTML)draw(true);drawChat._l="";P.classList.add("show");DIRECT=(CH||INV)?1:0;NAV.push("zfp",close);tm=setInterval(()=>refresh(),8000)}
+    await refresh(true);if((CH||INV)&&!P.querySelector(".zfb").innerHTML)draw(true);drawChat._l="";P.classList.add("show");DIRECT=(CH||INV)?1:0;zsync(CH||undefined);NAV.push("zfp",close);tm=setInterval(()=>refresh(),8000)}
   finally{busy=0}}
 
 // ----- beranda: kategori "Main dengan teman" -----
@@ -5652,6 +5727,25 @@ alter table public.zg_push enable row level security;
 drop policy if exists zg_push_all on public.zg_push;
 create policy zg_push_all on public.zg_push for all to anon using (true) with check (true);
 grant select, insert, update, delete on public.zg_push to anon;
+
+-- Riwayat chat permanen + balas/hapus (jalankan juga)
+create table if not exists public.zg_chat (
+  mid text primary key,
+  from_code text not null,
+  to_code text not null,
+  body jsonb not null default '{}'::jsonb,
+  ts bigint not null,
+  del_all boolean not null default false,
+  del_from boolean not null default false,
+  del_to boolean not null default false
+);
+create index if not exists zg_chat_from_idx on public.zg_chat (from_code, ts);
+create index if not exists zg_chat_to_idx on public.zg_chat (to_code, ts);
+alter table public.zg_chat enable row level security;
+drop policy if exists zg_chat_all on public.zg_chat;
+create policy zg_chat_all on public.zg_chat for all to anon using (true) with check (true);
+grant select, insert, update, delete on public.zg_chat to anon;
+notify pgrst, 'reload schema';
 
 [2] sw.js (file terpisah di repo GitHub)
 // Service worker: menerima push walau browser/web tidak dibuka (chat & telepon masuk)
