@@ -4839,7 +4839,7 @@ const hist=f=>{try{return JSON.parse(LS("zf-h-"+f)||"[]")}catch(e){return[]}},sa
 const isFr=f=>DATA.rel.some(r=>r.status==="accepted"&&(r.from_code===f||r.to_code===f)),opn=()=>!!(P&&P.classList.contains("show"));
 window.zfTake=k=>{const R=window.zfRoom;if(R&&R.k===k&&Date.now()-R.t<3e5){window.zfRoom=null;return R.c}return null};
 async function api(path,o){o=o||{};const r=await fetch(CF.url.replace(/\/+$/,"")+"/rest/v1/"+path,{method:o.m||"GET",headers:Object.assign({apikey:CF.key,"Content-Type":"application/json",Prefer:o.p||"return=representation"},CF.key.startsWith("sb_")?{}:{Authorization:"Bearer "+CF.key}),body:o.b?JSON.stringify(o.b):undefined});
-  if(!r.ok)throw new Error(r.status);const t=await r.text();return t?JSON.parse(t):[]}
+  if(!r.ok){let g="";try{const j=await r.json();g=j.code||j.error_code||""}catch(_){}const er=new Error(r.status);er.pg=g;throw er}const t=await r.text();return t?JSON.parse(t):[]}
 const beat=()=>api("zg_profiles?on_conflict=code",{m:"POST",p:"resolution=merge-duplicates,return=minimal",b:{code:ME.code,name:ME.name,ts:Date.now()}});
 // ----- PeerJS: chat & undangan -----
 const PCF={config:{iceServers:[{urls:"stun:stun.l.google.com:19302"},{urls:"stun:stun.cloudflare.com:3478"}]}};
@@ -4868,7 +4868,7 @@ async function invite(f,g){const c=mk(5);
 async function setup(){
   if(!ME){const n=await dlg({title:"Nama kamu",text:"Nama yang dilihat temanmu",input:LS("zc-chname")||"",ok:"Simpan"});if(!n||!n.trim())return false;
     const m=n.trim().match(/^([A-Za-z0-9]{6})\s+(.+)$/);ME={code:m?m[1].toUpperCase():mk(6),name:QT(m?m[2]:n,16)};LS("zf-me",JSON.stringify(ME))}
-  try{await beat();return true}catch(e){const c=+(e&&e.message);toast(c===404?"Tabel Supabase belum dibuat (404)":c===401||c===403?"Akses Supabase ditolak ("+c+"). Cek RLS dan key":c?"Supabase error "+c:"Tidak ada koneksi internet",4200);return false}}
+  try{await beat();return true}catch(e){const c=+(e&&e.message),g=e&&e.pg?" "+e.pg:"";toast(c===404?"Tabel tidak ditemukan (404"+g+"). Cek project dan schema cache":c===401||c===403?"Akses ditolak ("+c+g+"). Cek RLS dan GRANT":c?"Supabase error "+c+g:"Tidak ada koneksi internet",5200);return false}}
 async function load(){
   const me=ME.code,rel=await api("zg_friends?select=id,from_code,to_code,status&or=(from_code.eq."+me+",to_code.eq."+me+")");
   const cs=[...new Set(rel.map(r=>r.from_code===me?r.to_code:r.from_code))],names={},on={};
