@@ -1347,7 +1347,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",Inter,system-ui,
 .zi{width:46px;height:46px;border-radius:11px;background:linear-gradient(#4da3ff,#007aff);display:grid;place-items:center;flex:none}
 .zi svg{width:26px;height:26px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .zt{flex:1}.zt b{display:block;font-size:17px;font-weight:600}.zt em{font-style:normal;font-size:13px;color:var(--tx2)}.zr u{text-decoration:none;color:#c7c7cc;font-size:24px}
-.ap{--c1:#5ac8fa!important;--c2:#007aff!important}
 .chip.on,.pkst.on{background:#007aff!important;color:#fff!important;border-color:#007aff!important}
 .sqt{background:rgba(0,122,255,.12)!important}.sqt.hint{background:#007aff!important;box-shadow:0 0 24px rgba(0,122,255,.6)!important}
 
@@ -1456,6 +1455,8 @@ body,button,input{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF
 .bbvs{display:flex;flex-direction:column;align-items:flex-start;color:#fff;font-weight:800;font-size:19px;line-height:1.05;font-variant-numeric:tabular-nums;text-shadow:0 1px 3px rgba(40,70,100,.75),0 0 1px rgba(40,70,100,.9)}
 .bbvs i{font-style:normal;opacity:.7;font-size:.65em;margin:0 6px;font-weight:600}.bbvs small{font-size:10px;opacity:.75;font-weight:600;margin-top:2px}
 .bbhr{display:flex;gap:8px}.bbhr .bbun{background:rgba(50,85,120,.5)}
+.ai{aspect-ratio:1.45!important;border-radius:24px!important;background:linear-gradient(160deg,var(--c1),var(--c2))!important;box-shadow:0 8px 16px -8px var(--c2),inset 0 1px 0 rgba(255,255,255,.4)!important}
+.ag svg{width:36%!important;max-height:60%!important;color:#fff!important;stroke:#fff!important;stroke-width:1.7!important;filter:drop-shadow(0 2px 3px rgba(0,0,0,.22))!important}
 .o6s.n3{display:flex!important}.o6s.n3>button{flex:1 1 0!important}
 .bbpkl{display:none;position:absolute;top:-12px;left:50%;transform:translateX(-50%);z-index:6;padding:3px 12px;border-radius:999px;background:rgba(0,0,0,.65);color:#fff;font:600 12px system-ui,sans-serif;pointer-events:none;white-space:nowrap}
 #brb.bbpk .bbpkl{display:block}#brb.bbpk .bbt{opacity:.6;pointer-events:none}#brb.bbpk #bbpk{background:rgba(255,255,255,.7);color:#333}
@@ -3275,13 +3276,13 @@ const CATS={
   {n:"Direction Rush",s:"Tekan arah panah",c:["#7db4ff","#2f66ee"],g:G.dir,pick:1,pd:()=>rxPd("dir"),pf:l=>{brPlay("brr");brR("dir",l)}},
   {n:"Stroop Test",s:"Pilih warna tinta",c:["#ffa468","#e8520c"],g:G.str,pick:1,pd:()=>rxPd("str"),pf:l=>{brPlay("brr");brR("str",l)}},
   {n:"Number Hunter",s:"Cari angka target",c:["#5fe09a","#0f9a4c"],g:G.num,pick:1,pd:()=>rxPd("num"),pf:l=>{brPlay("brr");brR("num",l)}},
-  {n:"Pulse Tap",s:"Klasik · Pola · Alir",c:["#ffe066","#e6a100"],g:G.tap,pick:1,pd:()=>rxPd("pul"),pf:l=>{brPlay("brr");brR("pul",l)}}]},
+  {n:"Pulse Tap",s:"Klasik · Pola · Alir",c:["#ffb340","#ff9500"],g:G.tap,pick:1,pd:()=>rxPd("pul"),pf:l=>{brPlay("brr");brR("pul",l)}}]},
  logic:{t:"Logic",items:[
-  {n:"Sudoku",s:"Solo atau online",c:["#7db4ff","#2f66ee"],g:G.sdk,pick:1,pd:()=>[["bebas","Bebas","Tanpa batas","#7b61ff"],["mudah","Mudah","40 petunjuk","#0f9a4c"],["sedang","Sedang","32 petunjuk","#ee8f06"],["sulit","Sulit","26 petunjuk","#d9283a"],["online","Main online","Beda device · 2 pemain","#1479c4"]]},
-  {n:"Catur",s:"Lawan AI atau teman",c:["#ffd866","#ee8f06"],g:G.chs,pick:1,sd:1,ti:"Pilih lawan",pd:()=>[["mudah","Mudah","AI pemula","#0f9a4c"],["sedang","Sedang","AI menengah","#ee8f06"],["sulit","Sulit","AI kuat","#d9283a"],["friend","1v1 Teman","Tanpa AI","#7b61ff"],["online","Main online","Beda device · 2 pemain","#1479c4"]],pf:(l,sd)=>{brPlay("brc");brC(l,sd)}},
+  {n:"Sudoku",s:"Solo atau online",c:["#5fe08a","#34c759"],g:G.sdk,pick:1,pd:()=>[["bebas","Bebas","Tanpa batas","#7b61ff"],["mudah","Mudah","40 petunjuk","#0f9a4c"],["sedang","Sedang","32 petunjuk","#ee8f06"],["sulit","Sulit","26 petunjuk","#d9283a"],["online","Main online","Beda device · 2 pemain","#1479c4"]]},
+  {n:"Catur",s:"Lawan AI atau teman",c:["#7d7aff","#5856d6"],g:G.chs,pick:1,sd:1,ti:"Pilih lawan",pd:()=>[["mudah","Mudah","AI pemula","#0f9a4c"],["sedang","Sedang","AI menengah","#ee8f06"],["sulit","Sulit","AI kuat","#d9283a"],["friend","1v1 Teman","Tanpa AI","#7b61ff"],["online","Main online","Beda device · 2 pemain","#1479c4"]],pf:(l,sd)=>{brPlay("brc");brC(l,sd)}},
   {n:"Nonogram",s:"Isi kotak dari angka",c:["#5fe0b0","#0f9c74"],g:G.nng,pick:1,pd:()=>[["mudah","Mudah","5×5","#0f9a4c"],["sedang","Sedang","8×8","#ee8f06"],["sulit","Sulit","10×10","#d9283a"]],pf:l=>{brPlay("brn");brN(l)}},
-  {n:"Block Blast",get s(){const b=bbBest();return b?"Rekor "+b:"Susun & hapus baris"},c:["#ff9a9a","#e5484d"],g:G.blk,pick:1,ti:"Mode permainan",pd:()=>[["solo","Main sendiri","Kejar rekor tertinggi","#e5484d"],["online","Main online","Beda device · 2 pemain","#1479c4"]],pf:l=>{brPlay("brb");l==="online"?brBO():brB()}},
-  {n:"UNO",get s(){let w=0,g=0;try{const o=JSON.parse(localStorage.getItem("zc-uno")||"{}");w=+o.wins||0;g=+o.games||0}catch(e){}return g?"Menang "+w+" dari "+g:"Lawan AI atau teman"},c:["#ff8a8a","#d9283a"],g:G.uno,pick:1,ti:"Pilih mode",pd:()=>[["1","1 Lawan AI","Duel 2 pemain","#0f9a4c"],["2","2 Lawan AI","3 pemain","#ee8f06"],["3","3 Lawan AI","4 pemain","#d9283a"],["friend","Main dengan teman","Offline · 2–5 pemain","#7b61ff"],["online","Main online","Beda device · 2–5 pemain","#1479c4"]],pf:l=>{brPlay("bru");brU(l)}}]}};
+  {n:"Block Blast",get s(){const b=bbBest();return b?"Rekor "+b:"Susun & hapus baris"},c:["#4da3ff","#007aff"],g:G.blk,pick:1,ti:"Mode permainan",pd:()=>[["solo","Main sendiri","Kejar rekor tertinggi","#e5484d"],["online","Main online","Beda device · 2 pemain","#1479c4"]],pf:l=>{brPlay("brb");l==="online"?brBO():brB()}},
+  {n:"UNO",get s(){let w=0,g=0;try{const o=JSON.parse(localStorage.getItem("zc-uno")||"{}");w=+o.wins||0;g=+o.games||0}catch(e){}return g?"Menang "+w+" dari "+g:"Lawan AI atau teman"},c:["#ff6b60","#ff3b30"],g:G.uno,pick:1,ti:"Pilih mode",pd:()=>[["1","1 Lawan AI","Duel 2 pemain","#0f9a4c"],["2","2 Lawan AI","3 pemain","#ee8f06"],["3","3 Lawan AI","4 pemain","#d9283a"],["friend","Main dengan teman","Offline · 2–5 pemain","#7b61ff"],["online","Main online","Beda device · 2–5 pemain","#1479c4"]],pf:l=>{brPlay("bru");brU(l)}}]}};
 CATS.logic.items=CATS.logic.items.filter(x=>x.n!=="Nonogram");CATS.reaction.items=CATS.reaction.items.filter(x=>x.n==="Pulse Tap");CATS.logic.t=CATS.reaction.t="Games";
 const CN=["br","brm","bri","brs","brr","brc","brn","brb","bru"];
 window.brPlay=id=>{$("brl").style.display="none";CN.forEach(x=>$(x).style.display=x===id?"":"none")};
