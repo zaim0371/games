@@ -1519,8 +1519,8 @@ body,button,input{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF
 .zfg{position:relative;touch-action:pan-y;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;transition:transform .18s}.zfg.sw{transition:none}
 .zfg.hl{animation:zfhl 1.4s}@keyframes zfhl{0%,60%{box-shadow:0 0 0 3px rgba(20,121,196,.55)}100%{box-shadow:0 0 0 3px transparent}}
 .zfri{position:absolute;left:-34px;top:50%;margin-top:-13px;width:26px;height:26px;border-radius:50%;background:#e3e2dc;color:#555;display:flex;align-items:center;justify-content:center;opacity:0;font-size:14px;pointer-events:none}
-.zfq{display:flex;gap:6px;align-items:center;background:rgba(0,0,0,.07);border-left:4px solid #1479c4;border-radius:8px;padding:5px 8px;margin:0 0 5px;cursor:pointer;text-align:left}.zfq.me{border-left-color:#1ea04b}
-.zfq>div{min-width:0;flex:1}.zfq b{display:block;font-size:12px}.zfq span{display:block;font-size:13px;opacity:.8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:220px}.zfq img{width:38px;height:38px;border-radius:6px;object-fit:cover;flex:none}
+.zfq[data-a]{display:flex;gap:6px;align-items:center;background:rgba(0,0,0,.07);border-left:4px solid #1479c4;border-radius:8px;padding:5px 8px;margin:0 0 5px;cursor:pointer;text-align:left}.zfq[data-a].me{border-left-color:#1ea04b}
+.zfq[data-a]>div{min-width:0;flex:1}.zfq[data-a] b{display:block;font-size:12px}.zfq[data-a] span{display:block;font-size:13px;opacity:.8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:220px}.zfq[data-a] img{width:38px;height:38px;border-radius:6px;object-fit:cover;flex:none}
 .zfdel{font-style:italic;opacity:.6}
 .zfrp{display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid #e1dfd7;border-left:4px solid #1479c4;border-radius:12px;padding:6px 6px 6px 10px;margin-bottom:6px;flex:none}
 .zfrp>div{flex:1;min-width:0}.zfrp b{display:block;font-size:12px}.zfrp span{display:block;font-size:13px;opacity:.75;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.zfrp button{border:0;background:none;font-size:18px;padding:4px 8px;cursor:pointer;color:inherit}
@@ -1660,21 +1660,21 @@ html:not(:has(#bru.gfs:has(.un))):not(:has(#bru.gfs:has(.ures))) #gbar[data-g="u
 
 /* ===== beranda: Main dengan teman ===== */
 .zfl{margin-bottom:6px}
-.zfq{display:flex;align-items:center;gap:13px;min-height:60px;padding:0 14px 0 16px;background:#fff;position:relative}
-.zfq+.zfq::before{content:"";position:absolute;left:65px;right:0;top:0;height:.5px;background:#e5e5ea}
+.zfl .zfq{display:flex;align-items:center;gap:13px;min-height:60px;padding:0 14px 0 16px;background:#fff;position:relative}
+.zfl .zfq+.zfq::before{content:"";position:absolute;left:65px;right:0;top:0;height:.5px;background:#e5e5ea}
 .zfa{position:relative;flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:#fff;font:600 16px/1 Inter,system-ui,sans-serif}
 .zfa .zfo{position:absolute;right:-1px;bottom:-1px;margin:0;width:11px;height:11px;border-radius:50%;background:#c7c7cc;border:2px solid #fff;box-sizing:border-box}
 .zfa .zfo.on{background:#34c759}
-.zfq .zt{flex:1;min-width:0;padding:9px 0}
-.zfq .zt b{display:block;font-size:17px;line-height:1.2;font-weight:500;color:#1c1c1e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.zfq .zt em{display:block;font-size:13px;font-style:normal;color:#8e8e93}
+.zfl .zfq .zt{flex:1;min-width:0;padding:9px 0}
+.zfl .zfq .zt b{display:block;font-size:17px;line-height:1.2;font-weight:500;color:#1c1c1e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.zfl .zfq .zt em{display:block;font-size:13px;font-style:normal;color:#8e8e93}
 .zfb1{flex:none;display:inline-flex;align-items:center;gap:4px;height:30px;padding:0 10px 0 8px;border:0;border-radius:15px;background:#eaf3ff;color:#007aff;font:600 13px/1 Inter,system-ui,sans-serif;text-transform:none}
 .zfb1 svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .zfb1.on{background:#007aff;color:#fff}.zfb1.on svg{fill:currentColor;stroke-width:1.2}
 .zfb1:active{transform:scale(.96)}
 
 /* ===== panggilan suara (gaya WhatsApp iOS) ===== */
-.zfcl{color:#34c759!important;padding:8px}.zfcl[hidden]{display:none}
+.zfpen.zfcl{color:#34c759!important;padding:8px}.zfpen.zfcl[hidden]{display:none}
 .zfbs{flex:none;display:flex;align-items:center;gap:6px}.zfb1.ic{width:32px;height:32px;padding:0;justify-content:center}.zfb1.zfph{background:#e6f8ec;color:#1fa850}.zfb1.zfph svg{width:15px;height:15px}
 #zvl{position:fixed;inset:0;z-index:9600;display:none;flex-direction:column;align-items:center;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",Inter,system-ui,sans-serif;background:radial-gradient(130% 75% at 50% 0%,#2f5a52 0%,#173331 42%,#0a1618 100%);padding-top:calc(10px + env(safe-area-inset-top,0px))}
 #zvl.show{display:flex;animation:zvIn .28s ease-out}
@@ -1739,12 +1739,12 @@ html:not(:has(#bru.gfs:has(.un))):not(:has(#bru.gfs:has(.ures))) #gbar[data-g="u
 #zvb .zvq{flex:none;width:46px;height:46px;border:0;border-radius:50%;display:grid;place-items:center;color:#fff}
 #zvb .zvq.no{background:#ff3b30}#zvb .zvq.ok{background:#34c759}
 #zvb .zvq svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.zfq .zfb1{position:relative}
+.zfl .zfq .zfb1{position:relative}
 .zi{position:relative}.zst{position:absolute;top:-6px;right:-6px;width:17px;height:17px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 1px 3px rgba(0,0,0,.28)}
 .zst svg{width:12px;height:12px;fill:#FFC400;stroke:#E39A00;stroke-width:1.2;stroke-linejoin:round}
 .zfub{position:absolute;top:-5px;right:-5px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:#ff3b30;color:#fff;font:700 11px/16px Inter,system-ui,sans-serif;text-align:center;box-sizing:border-box;}
-.zfq.zfe0{min-height:60px}
-.zfq.zfe0 .zt em{white-space:normal}
+.zfl .zfq.zfe0{min-height:60px}
+.zfl .zfq.zfe0 .zt em{white-space:normal}
 </style>
 </head>
 <body>
