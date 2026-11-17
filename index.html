@@ -1476,6 +1476,22 @@ body,button,input{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF
 .zfo{display:inline-block;width:9px;height:9px;border-radius:50%;background:#c9c7bf;margin-right:6px;vertical-align:middle}.zfo.on{background:var(--ok)}
 .zfm{flex:1;min-height:120px;overflow:auto;display:flex;flex-direction:column;gap:6px;padding:4px 0}
 .zfg{max-width:80%;padding:8px 12px;border-radius:16px;font-size:15px;word-break:break-word;background:#fff;border:1.5px solid #e6e4dc}.zfg.me{align-self:flex-end;background:var(--lime);border-color:var(--lime)}.zfg.op{align-self:flex-start}
+.zfw .hb{min-width:48px!important}.zfw .zfd{right:2px}
+.zfh .zft{flex:1;min-width:0;display:flex;align-items:center;gap:10px}.zfth{display:flex;flex-direction:column;min-width:0;line-height:1.2}.zfth b{font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.zfth small{font-size:12px;font-weight:600;opacity:.6}
+.zfpen[hidden]{display:none}.zfnw{opacity:1;color:#007AFF;padding:8px}
+.zfav{position:relative;flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font:800 18px inherit;font-family:inherit;font-style:normal;color:#fff}.zft .zfav{width:38px;height:38px;font-size:16px}
+.zfav u{position:absolute;right:0;bottom:0;width:12px;height:12px;border-radius:50%;background:var(--ok);border:2px solid #fff;text-decoration:none}
+.zfls{background:#fff;border-radius:14px;overflow:hidden;flex:none}.zfc{display:flex;align-items:center;gap:12px;padding:10px 14px;cursor:pointer}.zfc+.zfc{border-top:.5px solid rgba(0,0,0,.12)}.zfc:active{background:#f0efea}
+.zfcm{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}.zfct,.zfcl{display:flex;align-items:center;gap:8px}
+.zfct b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:16px}.zfct small{flex:none;font-size:12px;opacity:.55}.zfct small.un{color:var(--ok);opacity:1;font-weight:700}
+.zfcl span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;opacity:.6}
+.zfbg{flex:none;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:var(--ok);color:#fff;font-size:12px;font-weight:700;line-height:20px;text-align:center;font-style:normal}
+.zfem{display:flex;flex-direction:column;align-items:center;gap:12px;padding-top:48px}
+.zfsr{width:100%;box-sizing:border-box;padding:10px 14px;border-radius:12px;border:0;background:#e3e2dc;font:500 16px inherit;font-family:inherit;color:var(--tx);flex:none}
+.zfds{align-self:center;flex:none;font-size:12px;font-weight:700;opacity:.75;background:#e3e2dc;padding:4px 12px;border-radius:10px;margin:6px 0}
+.zfg i{display:block;font-style:normal;font-size:10.5px;opacity:.55;text-align:right;margin-top:2px}
+.zfbar{display:flex;gap:8px;align-items:center;flex:none}.zfbar input{flex:1;min-width:0;padding:11px 16px;border-radius:22px;border:1.5px solid #e1dfd7;font:500 16px inherit;font-family:inherit;background:#fff;color:var(--tx)}
+.zfsd{flex:none;width:42px;height:42px;border-radius:50%;border:0;background:#007AFF;color:#fff;display:grid;place-items:center;cursor:pointer}
 .zfgm{width:100%;padding:14px;font-size:16px;flex:none}
 .zfn{position:fixed;left:12px;right:12px;top:calc(12px + env(safe-area-inset-top,0px));z-index:9500;display:flex;align-items:center;gap:8px;padding:10px 12px;background:#fff;border:1.5px solid #e1dfd7;border-radius:18px;box-shadow:0 8px 24px rgba(0,0,0,.18)}.zfn span{flex:1;min-width:0}
 </style>
@@ -4814,8 +4830,9 @@ homeData();
 (()=>{
 const LS=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);v===null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){return null}};
 const CF={url:"https://sgidwhniyoxskrsuevcb.supabase.co",key:"sb_publishable_FTZd5Hwi4TOBlwFJ_85lDw_PLcxs28k"};
-let ME=null,DATA={rel:[],names:{},on:{}},SIG="",tm=0,HB=0,busy=0,P=null,PR=null,CN={},CH=null,INV=null,UN={};
-try{ME=JSON.parse(LS("zf-me")||"null")}catch(e){}
+let ZM="fr",ZN=0,ME=null,DATA={rel:[],names:{},on:{}},SIG="",tm=0,HB=0,busy=0,P=null,PR=null,CN={},CH=null,INV=null,UN={};
+try{ME=JSON.parse(LS("zf-me")||"null");UN=JSON.parse(LS("zf-un")||"{}")||{}}catch(e){}
+const saveUN=()=>LS("zf-un",JSON.stringify(UN));
 const GM={sudoku:["Sudoku","sdk"],chess:["Catur","chs"],uno:["UNO","uno"],pul:["Pulse Tap","pt"],blast:["Block Blast","bb"]};
 const AL="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",mk=n=>Array.from({length:n},()=>AL[zR(AL.length)]).join("");
 const hist=f=>{try{return JSON.parse(LS("zf-h-"+f)||"[]")}catch(e){return[]}},saveH=(f,a)=>LS("zf-h-"+f,JSON.stringify(a.slice(-100)));
@@ -4837,8 +4854,8 @@ const conn=f=>new Promise((res,rej)=>{const o=CN[f];if(o&&o.open)return res(o);i
 const send=async(f,o)=>(await conn(f)).send(o);
 function boot(){if(HB)return;HB=setInterval(()=>{if(!document.hidden){beat().catch(()=>{});if(!opn())refresh()}},30000);lp().then(peerUp).catch(()=>{})}
 function onData(f,d){if(!d||typeof d!=="object"||!isFr(f))return;
-  if(d.t==="m"&&typeof d.x==="string"){const a=hist(f);a.push({me:0,x:d.x.slice(0,500)});saveH(f,a);sfx("recv");
-    if(opn()&&CH===f)drawChat();else{UN[f]=(UN[f]||0)+1;dot();toast((DATA.names[f]||f)+": "+d.x.slice(0,40),2200);if(opn()&&!CH&&!INV)draw(true)}}
+  if(d.t==="m"&&typeof d.x==="string"){const a=hist(f);a.push({me:0,x:d.x.slice(0,500),t:Date.now()});saveH(f,a);sfx("recv");
+    if(opn()&&CH===f)drawChat();else{UN[f]=(UN[f]||0)+1;saveUN();dot();toast((DATA.names[f]||f)+": "+d.x.slice(0,40),2200);if(opn()&&!CH&&!INV&&!ZN)draw(true)}}
   else if(d.t==="inv"&&GM[d.g]&&/^[A-Z0-9]{5}$/.test(d.c))banner(f,d.g,d.c)}
 function banner(f,g,c){const o=$("zfn");if(o)o.remove();const b=document.createElement("div");b.id="zfn";b.className="zfn";
   b.innerHTML='<span>'+esc(DATA.names[f]||f)+' mengajak main <b>'+GM[g][0]+'</b></span><button type="button" class="chip on" data-a="join">Gabung</button><button type="button" class="chip" data-a="no">✕</button>';
@@ -4858,17 +4875,41 @@ async function load(){
   if(cs.length)(await api("zg_profiles?select=code,name,ts&code=in.("+cs.join(",")+")")).forEach(p=>{names[p.code]=p.name;on[p.code]=Date.now()-(+p.ts||0)<75000});
   DATA={rel,names,on};dot();return DATA}
 const inc=()=>DATA.rel.filter(r=>r.status==="pending"&&r.to_code===ME.code);
-function dot(){const d=$("zfd");if(d)d.classList.toggle("on",!!(ME&&(inc().length||Object.keys(UN).length)))}
+function dot(){const d=$("zfd"),c=$("zfd2");if(d)d.classList.toggle("on",!!(ME&&inc().length));if(c)c.classList.toggle("on",!!(ME&&Object.keys(UN).length))}
 const B=(a,t,x,c)=>'<button type="button" class="chip'+(c?" "+c:"")+'" data-a="'+a+'"'+(x||"")+'>'+t+'</button>';
 function row(r,k){const c=r.from_code===ME.code?r.to_code:r.from_code,n=esc(DATA.names[c]||c),id=' data-id="'+r.id+'"',f=' data-f="'+c+'"';
   const nm='<b>'+(k==="fr"?'<i class="zfo'+(DATA.on[c]?" on":"")+'"></i>':"")+n+'<small>'+c+'</small></b>';
   return '<div class="zfr">'+nm+(k==="in"?B("ok","Terima",id,"on")+B("del","Tolak",id):k==="out"?B("del","Batal",id):B("chat","Chat"+(UN[c]?" ("+UN[c]+")":""),f)+B("inv","Ajak",f,"on")+B("rm","✕",id))+'</div>'}
-function drawChat(){const f=CH,h=hist(f);
-  P.querySelector(".zfb").innerHTML='<div class="zfs">Chat dengan '+esc(DATA.names[f]||f)+(DATA.on[f]?" · online":" · offline")+'</div><div class="zfm" id="zfm">'+(h.map(m=>'<div class="zfg '+(m.me?"me":"op")+'">'+esc(m.x)+'</div>').join("")||'<p class="zfe">Belum ada pesan.</p>')+'</div><div class="zfadd"><input id="zfmi" maxlength="500" autocomplete="off" placeholder="Tulis pesan">'+B("send","Kirim","","on")+'</div>'+B("back","Kembali","","zfreset");
+const ZC=["#e5252c","#f08a24","#1ea04b","#1479c4","#8e44ad","#16a085","#d6336c"],z2=n=>(n<10?"0":"")+n,
+  zhm=t=>{const d=new Date(t);return z2(d.getHours())+":"+z2(d.getMinutes())},
+  zd0=t=>{const d=new Date(t);d.setHours(0,0,0,0);return d.getTime()},
+  zdf=t=>Math.round((zd0(Date.now())-zd0(t))/864e5),
+  zdl=t=>{const k=zdf(t);return k<=0?"Hari ini":k===1?"Kemarin":new Date(t).toLocaleDateString("id-ID",{day:"numeric",month:"short",year:"numeric"})},
+  zlt=t=>{if(!t)return"";const k=zdf(t);return k<=0?zhm(t):k===1?"Kemarin":new Date(t).toLocaleDateString("id-ID",{day:"numeric",month:"numeric",year:"2-digit"})},
+  zav=c=>{const n=DATA.names[c]||c,h=[...c].reduce((a,ch)=>a+ch.charCodeAt(0),0);return '<i class="zfav" style="background:'+ZC[h%ZC.length]+'">'+esc(Array.from(n.trim())[0]||"?")+(DATA.on[c]?"<u></u>":"")+'</i>'},
+  zfrs=()=>[...new Set(DATA.rel.filter(r=>r.status==="accepted").map(r=>r.from_code===ME.code?r.to_code:r.from_code))],
+  zcl=()=>zfrs().map(c=>{const h=hist(c),l=h[h.length-1];return{c,l,t:l&&l.t||0,u:UN[c]||0}}).filter(o=>o.l||o.u).sort((a,b)=>b.t-a.t);
+function zhead(){const t=$("zft"),n=$("zfnw");if(!t||!n)return;
+  if(CH){t.innerHTML=zav(CH)+'<div class="zfth"><b>'+esc(DATA.names[CH]||CH)+'</b><small>'+(DATA.on[CH]?"online":"offline")+'</small></div>';n.hidden=true}
+  else if(ZN){t.innerHTML='<b>Chat baru</b>';n.hidden=true}
+  else if(ZM==="chat"&&!INV){t.innerHTML='<b>Chat</b>';n.hidden=false}
+  else{t.innerHTML='<b>Teman</b>';n.hidden=true}}
+function zrow(c,sub,tm,u,nm){return '<div class="zfc" role="button" tabindex="0" data-a="chat" data-f="'+c+'"'+(nm?' data-n="'+esc((DATA.names[c]||c).toLowerCase())+'"':'')+'>'+zav(c)+'<div class="zfcm"><div class="zfct"><b>'+esc(DATA.names[c]||c)+'</b>'+(tm?'<small'+(u?' class="un"':'')+'>'+tm+'</small>':'')+'</div><div class="zfcl"><span>'+esc(sub)+'</span>'+(u?'<em class="zfbg">'+u+'</em>':'')+'</div></div></div>'}
+function zlist(cl){P.querySelector(".zfb").innerHTML=cl.length?'<div class="zfls">'+cl.map(o=>zrow(o.c,o.l?o.l.x:"",zlt(o.t),o.u)).join("")+'</div>':'<div class="zfem"><p class="zfe">Belum ada chat</p>'+B("new","Chat baru","","on")+'</div>'}
+function znew(){const fr=zfrs().sort((a,b)=>(DATA.names[a]||a).localeCompare(DATA.names[b]||b));
+  P.querySelector(".zfb").innerHTML=fr.length?'<input id="zfq" class="zfsr" placeholder="Cari teman" autocomplete="off"><div class="zfls">'+fr.map(c=>zrow(c,DATA.on[c]?"online":"offline","",0,1)).join("")+'</div>':'<div class="zfem"><p class="zfe">Belum ada teman</p>'+B("tofr","Tambah teman","","on")+'</div>'}
+function drawChat(){const f=CH,h=hist(f),old=$("zfmi"),v=old?old.value:"",fo=old&&document.activeElement===old;zhead();let pd=0,out="";
+  h.forEach(m=>{if(m.t){const d=zd0(m.t);if(d!==pd){pd=d;out+='<div class="zfds">'+zdl(m.t)+'</div>'}}
+    out+='<div class="zfg '+(m.me?"me":"op")+'">'+esc(m.x)+(m.t?'<i>'+zhm(m.t)+'</i>':'')+'</div>'});
+  P.querySelector(".zfb").innerHTML='<div class="zfm" id="zfm">'+(out||'<p class="zfe">Belum ada pesan</p>')+'</div><div class="zfbar"><input id="zfmi" maxlength="500" autocomplete="off" placeholder="Pesan"><button type="button" class="zfsd" data-a="send" aria-label="Kirim"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg></button></div>';
+  const n=$("zfmi");if(n){n.value=v;if(fo)n.focus()}
   const m=$("zfm");if(m)m.scrollTop=m.scrollHeight}
 function draw(force){
-  if(CH)return force?drawChat():0;
-  const me=ME.code,R=DATA.rel,sig=JSON.stringify([R,DATA.names,DATA.on,UN,INV]);if(!force&&sig===SIG)return;SIG=sig;
+  if(CH){zhead();return force?drawChat():0}
+  if(ZN){zhead();return force?znew():0}
+  zhead();
+  const me=ME.code,R=DATA.rel,cl=ZM==="chat"?zcl():null,sig=JSON.stringify([R,DATA.names,DATA.on,UN,INV,ZM,cl&&cl.map(o=>[o.c,o.t,o.u,o.l&&o.l.x])]);if(!force&&sig===SIG)return;SIG=sig;
+  if(ZM==="chat")return zlist(cl);
   if(INV){P.querySelector(".zfb").innerHTML='<div class="zfs">Ajak '+esc(DATA.names[INV]||INV)+' main</div>'+Object.keys(GM).map(g=>B("go",GM[g][0],' data-g="'+g+'"',"zfgm")).join("")+B("back","Kembali","","zfreset");return}
   const v=($("zfin")||{}).value||"",sec=(t,a,k)=>a.length?'<div class="zfs">'+t+'</div>'+a.map(r=>row(r,k)).join(""):"",fr=R.filter(r=>r.status==="accepted");
   P.querySelector(".zfb").innerHTML='<div class="glass zfme"><span class="zfnm">'+esc(ME.name)+'</span><button type="button" class="zfpen" data-a="edit" aria-label="Ubah nama"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button><button type="button" class="chip on zfcd" data-a="copy" aria-label="Salin kode">'+me+'</button></div>'
@@ -4882,13 +4923,15 @@ async function act(a,id,x){
     if(a==="copy"){try{await navigator.clipboard.writeText(ME.code);toast("Kode disalin",1600)}catch(e){toast("Kodemu: "+ME.code,2600)}return}
     if(a==="edit"){const n=await dlg({title:"Ubah nama",input:ME.name,ok:"Simpan"});const t=QT(n,16);if(!t||t===ME.name)return;
       ME.name=t;LS("zf-me",JSON.stringify(ME));await beat();draw(true);toast("Nama diubah",1600);return}
-    if(a==="back"){CH=null;INV=null;draw(true);return}
-    if(a==="chat"){CH=x;delete UN[x];dot();drawChat();return}
+    if(a==="back"){CH=null;INV=null;ZN=0;draw(true);return}
+    if(a==="new"){ZN=1;INV=null;CH=null;draw(true);return}
+    if(a==="tofr"){ZM="fr";ZN=0;draw(true);return}
+    if(a==="chat"){CH=x;ZN=0;delete UN[x];saveUN();dot();drawChat();return}
     if(a==="inv"){INV=x;draw(true);return}
     if(a==="go"){invite(INV,x);return}
     if(a==="send"){const i=$("zfmi"),t=QT2(i&&i.value,500);if(!t)return;
       try{await send(CH,{t:"m",x:t})}catch(e){return toast("Teman sedang offline atau belum membuka web",2600)}
-      const h=hist(CH);h.push({me:1,x:t});saveH(CH,h);drawChat();const n=$("zfmi");if(n)n.focus();return}
+      const h=hist(CH);h.push({me:1,x:t,t:Date.now()});saveH(CH,h);i.value="";drawChat();const n=$("zfmi");if(n)n.focus();return}
     if(a==="add"){const c=(($("zfin")||{}).value||"").toUpperCase().replace(/[^A-Z0-9]/g,"");
       if(c.length<6)return toast("Masukkan 6 karakter kode teman",2000);if(c===ME.code)return toast("Itu kodemu sendiri",2000);
       const ex=R.find(y=>y.from_code===c||y.to_code===c);
@@ -4902,20 +4945,23 @@ async function act(a,id,x){
     else if(a==="del"){await api("zg_friends?id=eq."+id,{m:"DELETE",p:"return=minimal"})}
     else if(a==="rm"){const c=r&&(r.from_code===ME.code?r.to_code:r.from_code);if(!await confirmX("Hapus teman",(DATA.names[c]||c)+" akan dihapus dari daftar temanmu.","Hapus",true))return;await api("zg_friends?id=eq."+id,{m:"DELETE",p:"return=minimal"})}
     await refresh(true)}catch(e){toast("Gagal, coba lagi",2200)}}
-function close(){clearInterval(tm);tm=0;CH=null;INV=null;if(P)P.classList.remove("show")}
-async function open(){
+function close(){clearInterval(tm);tm=0;CH=null;INV=null;ZN=0;if(P)P.classList.remove("show")}
+async function open(m){
   if(busy)return;busy=1;sfx("click");
-  try{if(!(await setup()))return;boot();
-    if(!P){P=document.createElement("div");P.id="zfp";P.innerHTML='<div class="zfh"><button type="button" class="hb sm" data-a="x" aria-label="Tutup"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><b>Teman</b></div><div class="zfb"></div>';document.body.appendChild(P);
-      P.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;if(b.dataset.a==="x"){if(CH||INV)act("back");else close()}else act(b.dataset.a,b.dataset.id,b.dataset.f||b.dataset.g)});
-      P.addEventListener("keydown",e=>{if(e.key!=="Enter")return;if(e.target.id==="zfin")act("add");else if(e.target.id==="zfmi")act("send")})}
+  try{if(!(await setup()))return;boot();ZM=m||"fr";CH=null;INV=null;ZN=0;
+    if(!P){P=document.createElement("div");P.id="zfp";P.innerHTML='<div class="zfh"><button type="button" class="hb sm" data-a="x" aria-label="Tutup"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><div class="zft" id="zft"><b>Teman</b></div><button type="button" class="zfpen zfnw" data-a="new" id="zfnw" aria-label="Chat baru" hidden><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div><div class="zfb"></div>';document.body.appendChild(P);
+      P.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;if(b.dataset.a==="x"){if(CH||INV||ZN)act("back");else close()}else act(b.dataset.a,b.dataset.id,b.dataset.f||b.dataset.g)});
+      P.addEventListener("keydown",e=>{if(e.key!=="Enter")return;if(e.target.id==="zfin")act("add");else if(e.target.id==="zfmi")act("send");else if(e.target.classList&&e.target.classList.contains("zfc"))e.target.click()});
+      P.addEventListener("input",e=>{if(e.target.id!=="zfq")return;const q=e.target.value.trim().toLowerCase();P.querySelectorAll(".zfc[data-n]").forEach(r=>{r.style.display=r.dataset.n.includes(q)?"":"none"})})}
     await refresh(true);P.classList.add("show");tm=setInterval(()=>refresh(),8000)}
   finally{busy=0}}
 const hk=$("hkey"),w=document.createElement("div"),fb=document.createElement("button");
 w.className="zfw";fb.type="button";fb.className="hb";fb.id="zfbtn";fb.setAttribute("aria-label","Teman");
 fb.innerHTML='<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><i class="zfd" id="zfd"></i>';
-hk.parentNode.insertBefore(w,hk);w.append(fb,hk);fb.onclick=open;
-if(ME){refresh();beat().catch(()=>{});boot()}
+const cb=document.createElement("button");cb.type="button";cb.className="hb";cb.id="zfcbtn";cb.setAttribute("aria-label","Chat");
+cb.innerHTML='<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg><i class="zfd" id="zfd2"></i>';
+hk.parentNode.insertBefore(w,hk);w.append(fb,cb,hk);fb.onclick=()=>open("fr");cb.onclick=()=>open("chat");
+if(ME){refresh();beat().catch(()=>{});boot()}dot();
 })();
 </script>
 </body>
