@@ -1613,6 +1613,27 @@ body,button,input{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF
 @keyframes zRing{0%{box-shadow:0 0 0 0 var(--rc)}100%{box-shadow:0 0 0 20px transparent}}
 @keyframes zTx{50%{opacity:.4}}
 @media (prefers-reduced-motion:reduce){.zim *,.zlb *,.zfi,.zfi *{animation:none!important;transition:none!important}}
+
+/* ===== tombol Intip & Chat berlabel ===== */
+.sdi.lb{grid-auto-flow:row;align-content:center;gap:3px}
+.sdi.lb svg{width:23px;height:23px}
+.sdi.lb::before{height:50px;margin-top:-25px}
+.sdlb{position:relative;max-width:88px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:600 10.5px/1.1 Outfit,system-ui,sans-serif;letter-spacing:.01em}
+.sdi.lb .sdbd{top:2px;right:calc(50% - 30px)}
+.rxib.lb,.bbun.lb{width:auto;max-width:156px;height:36px;padding:0 13px 0 10px;gap:6px;display:inline-flex;align-items:center;justify-content:center;border-radius:18px;font:600 13px/1 Inter,system-ui,sans-serif;white-space:nowrap}
+.rxib.lb svg,.bbun.lb svg{flex:none;width:19px;height:19px}
+.rxib.lb span,.bbun.lb span{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.rxnb{flex-wrap:wrap}
+.zcf svg{width:23px;height:23px}
+.sdlb,.rxib.lb,.bbun.lb,.rxib.lb span,.bbun.lb span{text-transform:none!important;letter-spacing:0!important}
+
+/* ===== UNO: meja gelap saat bermain (lobi tetap terang) ===== */
+#bru.gfs:has(.un),#bru.gfs:has(.ures){background:radial-gradient(90% 46% at 50% 47%,color-mix(in srgb,var(--t) 46%,transparent),transparent 72%),radial-gradient(130% 60% at 50% 118%,color-mix(in srgb,var(--t) 28%,transparent),transparent 70%),radial-gradient(100% 40% at 50% -8%,rgba(255,255,255,.08),transparent 62%),#0d0f17!important}
+html:has(#bru.gfs:has(.un)) #gbar[data-g="u"] .chip,html:has(#bru.gfs:has(.ures)) #gbar[data-g="u"] .chip{background:rgba(255,255,255,.14)!important;color:#fff!important}
+html:has(#bru.gfs:has(.un)) #gbar[data-g="u"] b,html:has(#bru.gfs:has(.ures)) #gbar[data-g="u"] b{color:#fff}
+html:not(:has(#bru.gfs:has(.un))):not(:has(#bru.gfs:has(.ures))) #gbar[data-g="u"] b{color:#1c1c1e}
+.uh .uc.no{filter:brightness(.55) saturate(.7)}
+.ut .udk{margin-left:16px}
 </style>
 </head>
 <body>
@@ -2728,14 +2749,17 @@ setup();
 zGame.reg("m",el,()=>B,()=>setup());
 })();
 // ---------- Chat online bersama (Sudoku, Catur, UNO) ----------
+window.zea=s=>esc(s).replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+window.ZI={chat:'<svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round"><path style="fill:none" d="M7.5 3.5h9A4.5 4.5 0 0 1 21 8v5a4.5 4.5 0 0 1-4.5 4.5H13l-3.9 3.2a.6.6 0 0 1-1-.46V17.5H7.5A4.5 4.5 0 0 1 3 13V8a4.5 4.5 0 0 1 4.5-4.5z"/><circle cx="8.5" cy="10.5" r="1.2" style="fill:currentColor;stroke:none"/><circle cx="12" cy="10.5" r="1.2" style="fill:currentColor;stroke:none"/><circle cx="15.5" cy="10.5" r="1.2" style="fill:currentColor;stroke:none"/></svg>',
+eye:'<svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round"><path style="fill:none" d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/><circle style="fill:none" cx="12" cy="12" r="3"/></svg>'};
 window.ZC=(()=>{
 const CH=[],MEDIA_RE=/^data:(image|audio)\/[\w.+;=-]+;base64,[A-Za-z0-9+\/=]+$/,pz=n=>String(n).padStart(2,"0");
 let bd=null,isOpen=0,unread=0,rec=null,fab=null,ban=null,bt=0;
-const ICON='<svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.6-.8L3 21l1.9-5.3A8.4 8.4 0 1 1 21 11.5z"/></svg>';
+const ICON=ZI.chat;
 const snd=n=>{try{sfx(n)}catch(e){}};
 function badge(){if(fab)fab.dataset.n=unread?(unread>9?"9+":unread):"";document.dispatchEvent(new Event("zc-badge"))}
 function paintFab(){
- if(!fab){fab=document.createElement("button");fab.type="button";fab.className="zcf";fab.setAttribute("aria-label","Chat");fab.innerHTML=ICON;fab.onclick=()=>api.open();document.body.appendChild(fab);badge()}
+ if(!fab){fab=document.createElement("button");fab.type="button";fab.className="zcf";fab.setAttribute("aria-label","Chat");fab.title="Chat";fab.innerHTML=ICON;fab.onclick=()=>api.open();document.body.appendChild(fab);badge()}
  const on=bd&&bd.fab!==false&&bd.el&&bd.el.offsetParent!==null&&!isOpen&&bd.ok();fab.style.display=on?"":"none"}
 setInterval(paintFab,700);
 const valid=m=>!!m&&typeof m.d==="string"&&(m.k==="txt"||((m.k==="img"||m.k==="aud")&&m.d.length<3.5e6&&m.d.startsWith("data:"+(m.k==="img"?"image":"audio")+"/")&&MEDIA_RE.test(m.d)));
@@ -2944,11 +2968,11 @@ function loadPeer(){if(window.Peer)return Promise.resolve();const U=["https://cd
 const CHRc="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",OL={role:"",peer:null,conn:null,code:"",name:"",tab:"host",err:"",st:"",busy:0,lv:"sedang",opp:""};
 try{OL.name=localStorage.getItem("zc-chname")||""}catch(e){}
 
-const CHI='<svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round"><path style="fill:none" d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.6-.8L3 21l1.9-5.3A8.4 8.4 0 1 1 21 11.5z"/></svg>';
+const CHI=ZI.chat;
 function chatBadge(){const b=$("sdch");if(!b)return;let e=b.querySelector(".sdbd");const u=ZC.unread();if(u){if(!e){e=document.createElement("em");e.className="sdbd";b.appendChild(e)}e.textContent=u>9?"9+":u}else if(e)e.remove()}
 document.addEventListener("zc-badge",chatBadge);
 const p2=n=>String(n).padStart(2,"0");
-const EYE='<svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round"><path style="fill:none" d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/><circle style="fill:none" cx="12" cy="12" r="3"/></svg>';
+const EYE=ZI.eye;
 function netSend(o){try{OL.conn&&OL.conn.open&&OL.conn.send(o)}catch(e){}}
 function netLeave(){const p=OL.peer;try{OL.conn&&OL.conn.close()}catch(e){}try{p&&p.destroy()}catch(e){}OL.peer=null;OL.conn=null;OL.role="";OL.code="";OL.busy=0;OL.st="";OL.err="";OL.opp="";ZC.unbind()}
 const blank=()=>({ph:"setup",gen:false,p:[],f:[],sel:-1,t0:0,tm:0});
@@ -2982,8 +3006,8 @@ function deco(){
  const q=el.querySelector(".sdq");if(!q)return;q.classList.toggle("sdpkv",!!B.pk);
  B.sc=myScore();
  const lv=q.querySelector(".sdlv");if(lv){lv.classList.add("sdvs");lv.id="sdvs";lv.removeAttribute("aria-label");lv.innerHTML=vsHtml()}
- const hi=$("sdhi");if(hi){hi.id="sdpk";hi.setAttribute("aria-label","Intip papan lawan");hi.classList.toggle("on",!!B.pk);hi.innerHTML=EYE}
- const rs=$("sdrs");if(rs){rs.id="sdch";rs.setAttribute("aria-label","Chat");rs.style.position="relative";rs.innerHTML=CHI;chatBadge()}
+ const hi=$("sdhi");if(hi){const t="Intip "+(OL.opp||"lawan");hi.id="sdpk";hi.setAttribute("aria-label",t);hi.title=t;hi.classList.add("lb");hi.classList.toggle("on",!!B.pk);hi.innerHTML=EYE+'<span class="sdlb">'+esc(t)+'</span>'}
+ const rs=$("sdrs");if(rs){rs.id="sdch";rs.setAttribute("aria-label","Chat");rs.title="Chat";rs.classList.add("lb");rs.style.position="relative";rs.innerHTML=CHI+'<span class="sdlb">Chat</span>';chatBadge()}
  if(B.pk)peekPaint();
  netSync()}
 function fin(win,why){
@@ -3353,12 +3377,12 @@ function loadPeer(){if(window.Peer)return Promise.resolve();const U=["https://cd
  return one(U[0]).catch(()=>one(U[1]))}
 const CHRc="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",OL={role:"",peer:null,conn:null,code:"",name:"",tab:"host",err:"",st:"",busy:0,tg:600,tgm:0,lv:"sedang",opp:""};
 try{OL.name=localStorage.getItem("zc-chname")||""}catch(e){}
-const fmtN=n=>(n|0).toLocaleString("id-ID"),NEYE='<svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path style="fill:none" d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/><circle style="fill:none" cx="12" cy="12" r="3"/></svg>',NCHI='<svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path style="fill:none" d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.6-.8L3 21l1.9-5.3A8.4 8.4 0 1 1 21 11.5z"/></svg>';
+const fmtN=n=>(n|0).toLocaleString("id-ID"),NEYE=ZI.eye,NCHI=ZI.chat;
 let NT=null;
 function netSend(o){try{OL.conn&&OL.conn.open&&OL.conn.send(o)}catch(e){}}
 function netLeave(){const p=OL.peer;try{OL.conn&&OL.conn.close()}catch(e){}try{p&&p.destroy()}catch(e){}OL.peer=null;OL.conn=null;OL.role="";OL.code="";OL.busy=0;OL.st="";OL.err="";OL.opp="";try{ZC.unbind()}catch(e){}}
 function exitNet(){netLeave();setup()}
-function netHd(){return'<div class="rxvs" id="rxvs"></div><div class="rxnb"><button type="button" class="rxib" id="rxch" aria-label="Chat">'+NCHI+'</button><button type="button" class="rxib" id="rxpk" aria-label="Intip lawan">'+NEYE+'</button></div>'}
+function netHd(){return'<div class="rxvs" id="rxvs"></div><div class="rxnb"><button type="button" class="rxib lb" id="rxch" title="Chat" aria-label="Chat">'+NCHI+'<span>Chat</span></button><button type="button" class="rxib lb" id="rxpk" title="Intip '+zea(OL.opp||"lawan")+'" aria-label="Intip '+zea(OL.opp||"lawan")+'">'+NEYE+'<span>Intip '+esc(OL.opp||"lawan")+'</span></button></div>'}
 function vsPaint(){const e=$("rxvs");if(!e||!B.net)return;const t="<i>/"+fmtN(B.tg)+"</i>",sc=$("rxsc"),cur=sc?sc.textContent:"0";e.style.fontSize="30px";e.innerHTML='<span><b id="rxsc">'+cur+'</b>'+t+'</span><em>vs</em><span><b id="rxos">'+fmtN(B.os)+'</b>'+t+'</span>';const k=e.clientWidth/(e.scrollWidth||1);if(k<1)e.style.fontSize=Math.max(11,Math.floor(30*k))+"px"}
 function chatBadge(){const b=$("rxch");if(!b)return;let e=b.querySelector(".sdbd");const u=ZC.unread();if(u){if(!e){e=document.createElement("em");e.className="sdbd";b.appendChild(e)}e.textContent=u>9?"9+":u}else if(e)e.remove()}
 document.addEventListener("zc-badge",chatBadge);
@@ -4289,11 +4313,11 @@ function loadPeer(){if(window.Peer)return Promise.resolve();const U=["https://cd
  return one(U[0]).catch(()=>one(U[1]))}
 const CHRc="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",OL={role:"",peer:null,conn:null,code:"",name:"",tab:"host",err:"",st:"",busy:0,tg:20000,tgm:0,opp:""};
 try{OL.name=localStorage.getItem("zc-chname")||""}catch(e){}
-const BCHI='<svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path style="fill:none" d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.6-.8L3 21l1.9-5.3A8.4 8.4 0 1 1 21 11.5z"/></svg>';
-const BEYE='<svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path style="fill:none" d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/><circle style="fill:none" cx="12" cy="12" r="3"/></svg>';
+const BCHI=ZI.chat;
+const BEYE=ZI.eye;
 const fmtN=n=>(n|0).toLocaleString("id-ID");
 const vsHtml=()=>{const t='<i>/'+fmtN(B.tg||0)+'</i>';return'<span class="bbvi"><span><b>'+fmtN(B.shown||0)+'</b>'+t+'</span><em>vs</em><span><b>'+fmtN(B.os||0)+'</b>'+t+'</span></span>'};
-const bbHead=()=>'<div class="bbhr"><button type="button" class="bbun" id="bbch" aria-label="Chat">'+BCHI+'</button><button type="button" class="bbun" id="bbpk" aria-label="Intip papan lawan">'+BEYE+'</button></div>';
+const bbHead=()=>'<div class="bbhr"><button type="button" class="bbun lb" id="bbch" title="Chat" aria-label="Chat">'+BCHI+'<span>Chat</span></button><button type="button" class="bbun lb" id="bbpk" title="Intip '+zea(OL.opp||"lawan")+'" aria-label="Intip '+zea(OL.opp||"lawan")+'">'+BEYE+'<span>Intip '+esc(OL.opp||"lawan")+'</span></button></div>';
 const paintVs=()=>{const e=$("bbs");if(!e||!B.net)return;e.innerHTML=vsHtml();const i=e.firstChild;i.style.fontSize="38px";const k=e.clientWidth/i.getBoundingClientRect().width;if(k<1)i.style.fontSize=Math.max(10,Math.floor(38*k))+"px"};
 function chatBadge(){const b=$("bbch");if(!b)return;let e=b.querySelector(".sdbd");const u=ZC.unread();if(u){if(!e){e=document.createElement("em");e.className="sdbd";b.appendChild(e)}e.textContent=u>9?"9+":u}else if(e)e.remove()}
 document.addEventListener("zc-badge",chatBadge);
