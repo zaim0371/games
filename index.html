@@ -1419,13 +1419,14 @@ body,button,input{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF
 .olm,.o6m{margin:12px 16px 0;font-size:14px;line-height:1.4;color:#8E8E93!important;opacity:1!important}.olm.er,.o6m.er{color:#FF3B30!important}.o6m.sm{font-size:12px}.olw{color:#8E8E93!important;opacity:1}
 </style>
 <style id="sdol-css">
-.sdvs{display:flex!important;align-items:center;justify-content:center;gap:6px;font-variant-numeric:tabular-nums;font-weight:700}
+.sdlv.sdvs{display:flex!important;align-items:center;justify-content:center;gap:7px;font-variant-numeric:tabular-nums;font-weight:700;font-size:17px;left:50%;top:calc(50% + 12px);transform:translateX(-50%);white-space:nowrap;color:var(--sd-fg);transition:opacity .25s,transform .34s cubic-bezier(.2,.9,.25,1)}
+.sdtop.rlo .sdlv.sdvs{transform:translateX(calc(-50% - 40px))}
 .sdvs b{font-weight:800;font-size:1.05em;min-width:1.4em;text-align:center}
 .sdvs i{font-style:normal;font-size:.72em;opacity:.6;font-weight:600}
-.sdq.pk .sdvs b:last-of-type{color:var(--sd-ac)}
-.sdq.pk .sdp{opacity:.3;pointer-events:none}
-.sdq.pk .sdrl{display:none}
-.sdq.pk #sdpk{color:var(--sd-ac)}
+.sdq.sdpkv .sdvs b:last-of-type{color:var(--sd-ac)}
+.sdq.sdpkv .sdp{opacity:.3;pointer-events:none}
+.sdq.sdpkv .sdrl{display:none}
+.sdq.sdpkv #sdpk,.sdq.sdpkv #sdpk svg{color:#fff!important}
 .sdbd{position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:#ff3b30;color:#fff;font:700 10px/16px system-ui,sans-serif;font-style:normal;text-align:center;box-sizing:border-box}
 .sdcov{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.4);display:flex;align-items:flex-end;justify-content:center}
 .sdcs{width:100%;max-width:480px;height:min(78vh,560px);background:#f2f2f7;color:#1c1c1e;border-radius:18px 18px 0 0;display:flex;flex-direction:column;overflow:hidden;font-family:system-ui,-apple-system,sans-serif}
@@ -1445,6 +1446,13 @@ body,button,input{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF
 .sdcb button.go{background:#0a84ff;color:#fff}.sdcb button.rec{background:#ff3b30;color:#fff;animation:sdrec 1s infinite}
 @keyframes sdrec{50%{opacity:.55}}
 .sdcb input{flex:1;min-width:0;height:38px;border:0;border-radius:19px;background:#f2f2f7;padding:0 14px;font-size:16px;color:#1c1c1e;outline:none}
+.zcf{position:fixed;z-index:80;right:10px;top:calc(env(safe-area-inset-top,0px) + 8px);width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.92);color:#1c1c1e;box-shadow:0 2px 10px rgba(0,0,0,.18);display:grid;place-items:center;padding:0}
+.zcf svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.zcf[data-n]:not([data-n=""])::after{content:attr(data-n);position:absolute;top:-3px;right:-3px;min-width:17px;height:17px;padding:0 4px;box-sizing:border-box;border-radius:9px;background:#ff3b30;color:#fff;font:700 10px/17px system-ui,sans-serif;text-align:center}
+.zcn{position:fixed;z-index:9500;left:10px;right:10px;top:calc(env(safe-area-inset-top,0px) + 10px);max-width:460px;margin:0 auto;max-height:42vh;overflow-y:auto;padding:12px 14px;border-radius:16px;background:rgba(28,28,30,.96);color:#fff;box-shadow:0 8px 28px rgba(0,0,0,.35);font-family:system-ui,-apple-system,sans-serif;transform:translateY(-140%);opacity:0;transition:transform .32s cubic-bezier(.2,.9,.25,1),opacity .25s}
+.zcn.in{transform:none;opacity:1}.zcn b{display:block;font-size:13px;opacity:.7;margin-bottom:2px;font-weight:600}
+.zcn div{font-size:15px;line-height:1.4;white-space:pre-wrap;word-break:break-word}.zcn img{height:44px;width:44px;object-fit:cover;border-radius:8px;vertical-align:middle;margin-right:8px}
+.sdcg small{display:block;font-size:11px;font-weight:600;opacity:.6;margin:0 4px 2px}
 .sdcv{position:fixed;inset:0;z-index:9100;background:rgba(0,0,0,.92);display:grid;place-items:center}.sdcv img{max-width:96vw;max-height:92vh;object-fit:contain}
 </style>
 </head>
@@ -2560,6 +2568,83 @@ window.brM=op=>start(op);
 setup();
 zGame.reg("m",el,()=>B,()=>setup());
 })();
+// ---------- Chat online bersama (Sudoku, Catur, UNO) ----------
+window.ZC=(()=>{
+const CH=[],MEDIA_RE=/^data:(image|audio)\/[\w.+;=-]+;base64,[A-Za-z0-9+\/=]+$/,pz=n=>String(n).padStart(2,"0");
+let bd=null,isOpen=0,unread=0,rec=null,fab=null,ban=null,bt=0;
+const ICON='<svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.6-.8L3 21l1.9-5.3A8.4 8.4 0 1 1 21 11.5z"/></svg>';
+const snd=n=>{try{sfx(n)}catch(e){}};
+function badge(){if(fab)fab.dataset.n=unread?(unread>9?"9+":unread):"";document.dispatchEvent(new Event("zc-badge"))}
+function paintFab(){
+ if(!fab){fab=document.createElement("button");fab.type="button";fab.className="zcf";fab.setAttribute("aria-label","Chat");fab.innerHTML=ICON;fab.onclick=()=>api.open();document.body.appendChild(fab);badge()}
+ const on=bd&&bd.fab!==false&&bd.el&&bd.el.offsetParent!==null&&!isOpen&&bd.ok();fab.style.display=on?"":"none"}
+setInterval(paintFab,700);
+const valid=m=>!!m&&typeof m.d==="string"&&(m.k==="txt"||((m.k==="img"||m.k==="aud")&&m.d.length<3.5e6&&m.d.startsWith("data:"+(m.k==="img"?"image":"audio")+"/")&&MEDIA_RE.test(m.d)));
+function bub(m){let c;if(m.k==="img")c='<img class="sdcim" alt="gambar" src="'+m.d+'">';else if(m.k==="aud")c='<audio controls preload="metadata" src="'+m.d+'"></audio>';else c=esc(m.d);
+ return '<div class="sdcg '+(m.me?"me":"op")+(m.k!=="txt"?" md":"")+'">'+(!m.me&&bd&&bd.group&&m.from?'<small>'+esc(m.from)+'</small>':'')+c+'</div>'}
+const L=()=>document.getElementById("sdcl"),scroll=()=>{const l=L();if(l)l.scrollTop=l.scrollHeight};
+function push(m){CH.push(m);if(isOpen){const l=L();if(l){const e=l.querySelector(".sdce");if(e)e.remove();l.insertAdjacentHTML("beforeend",bub(m));scroll()}}}
+const label=m=>m.k==="img"?"📷 Gambar":m.k==="aud"?"🎤 Voice note":m.d;
+function banner(m){
+ if(ban)ban.remove();clearTimeout(bt);
+ const e=document.createElement("div");e.className="zcn";e.setAttribute("role","status");
+ e.innerHTML='<b>'+esc(m.from||"Pesan baru")+'</b><div>'+(m.k==="img"?'<img alt="" src="'+m.d+'"> Gambar':m.k==="aud"?"🎤 Voice note":esc(m.d))+'</div>';
+ e.onclick=()=>{e.remove();ban=null;api.open()};document.body.appendChild(e);ban=e;requestAnimationFrame(()=>requestAnimationFrame(()=>e.classList.add("in")));
+ bt=setTimeout(()=>{e.classList.remove("in");setTimeout(()=>e.remove(),300)},Math.min(12000,3500+(m.k==="txt"?m.d.length*40:0)))}
+function sys(m){if(!document.hidden||!window.Notification||Notification.permission!=="granted")return;try{new Notification(m.from||"Pesan baru",{body:label(m),tag:"zc-chat"})}catch(e){}}
+function recv(m){
+ if(!valid(m))return false;
+ const g={me:0,k:m.k,d:m.k==="txt"?m.d.slice(0,500):m.d,from:m.from?String(m.from).slice(0,12):(bd&&bd.name?bd.name():"")};
+ push(g);snd("recv");
+ if(isOpen&&!document.hidden)return true;
+ if(!isOpen){unread++;badge();banner(g)}
+ sys(g);return true}
+function sendRaw(k,d){
+ if(!bd||!bd.ok()){toast("Tidak ada lawan yang terhubung",1500);return}
+ if(d.length>3e6){toast("File terlalu besar",1500);return}
+ bd.send({t:"chat",k,d});push({me:1,k,d})}
+function sendTxt(){const i=document.getElementById("sdci");if(!i)return;const v=i.value.trim().slice(0,500);if(!v)return;sendRaw("txt",v);i.value="";i.focus()}
+function pic(file){return new Promise((ok,no)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{const M=900,r=Math.min(1,M/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.max(1,Math.round(im.width*r));c.height=Math.max(1,Math.round(im.height*r));c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);ok(c.toDataURL("image/jpeg",.72))};im.onerror=()=>{URL.revokeObjectURL(u);no()};im.src=u})}
+function recUI(){const b=document.getElementById("sdcmic"),i=document.getElementById("sdci");if(!b||!i)return;b.classList.toggle("rec",!!rec);if(rec){const t=Math.floor((Date.now()-rec.t0)/1000);i.value="";i.placeholder="● Merekam "+Math.floor(t/60)+":"+pz(t%60)+" · ketuk mic untuk kirim";i.disabled=true}else{i.disabled=false;i.placeholder="Ketik pesan…"}}
+function stopRec(send){if(!rec)return;rec.send=send;try{rec.mr.stop()}catch(e){}}
+async function mic(){
+ if(rec){stopRec(true);return}
+ if(!navigator.mediaDevices||!window.MediaRecorder){toast("Rekam suara tidak didukung di browser ini",2000);return}
+ let st;try{st=await navigator.mediaDevices.getUserMedia({audio:true})}catch(e){toast("Izin mikrofon ditolak",1800);return}
+ const mt=["audio/webm;codecs=opus","audio/webm","audio/mp4","audio/ogg"].find(t=>MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(t));
+ let mr;try{mr=mt?new MediaRecorder(st,{mimeType:mt}):new MediaRecorder(st)}catch(e){st.getTracks().forEach(t=>t.stop());toast("Rekam suara gagal",1800);return}
+ const ch=[];rec={mr,send:true,t0:Date.now(),tm:0};
+ mr.ondataavailable=e=>{if(e.data&&e.data.size)ch.push(e.data)};
+ mr.onstop=()=>{const r=rec;if(!r)return;clearInterval(r.tm);st.getTracks().forEach(t=>t.stop());rec=null;recUI();
+  if(!r.send||!ch.length)return;if(Date.now()-r.t0<700){toast("Terlalu pendek",1000);return}
+  const fr=new FileReader();fr.onload=()=>sendRaw("aud",fr.result);fr.readAsDataURL(new Blob(ch,{type:(mr.mimeType||"audio/webm").split(";")[0]}))};
+ mr.start();rec.tm=setInterval(()=>{if(!rec)return;recUI();if(Date.now()-rec.t0>=60000)stopRec(true)},400);recUI()}
+function close(){stopRec(false);const m=document.getElementById("sdcov");if(m)m.remove();isOpen=0;paintFab()}
+const api={
+ unread:()=>unread,
+ bind(o){bd=o;paintFab()},
+ unbind(){close();CH.length=0;unread=0;bd=null;if(ban){ban.remove();ban=null}badge();paintFab()},
+ recv,valid,
+ open(){
+  if(isOpen||!bd)return;isOpen=1;unread=0;badge();paintFab();
+  if(ban){ban.remove();ban=null}
+  try{if(window.Notification&&Notification.permission==="default")Notification.requestPermission()}catch(e){}
+  const m=document.createElement("div");m.id="sdcov";m.className="sdcov";
+  m.innerHTML='<div class="sdcs"><div class="sdch0"><b>'+esc(bd.title?bd.title():"Chat")+'</b><button type="button" id="sdcx" aria-label="Tutup">✕</button></div><div class="sdcl" id="sdcl">'+(CH.length?CH.map(bub).join(""):'<p class="sdce">Belum ada pesan. Sapa duluan!</p>')+'</div>'
+   +'<div class="sdcb"><button type="button" id="sdcc" aria-label="Buka kamera"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.4"/></svg></button><button type="button" id="sdcg" aria-label="Kirim gambar"><svg viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="15" rx="2.5"/><circle cx="8.5" cy="10" r="1.6"/><path d="m4 18 5.5-5.5 4 4 2.5-2.5L20 18"/></svg></button><input id="sdci" maxlength="500" autocomplete="off" placeholder="Ketik pesan…"><button type="button" id="sdcmic" aria-label="Voice note"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3"/></svg></button><button type="button" id="sdcs_" class="go" aria-label="Kirim"><svg viewBox="0 0 24 24"><path d="M4 12 20 4l-4 16-4.5-6.5z"/></svg></button></div>'
+   +'<input type="file" accept="image/*" capture="environment" id="sdcf1" hidden><input type="file" accept="image/*" id="sdcf2" hidden></div>';
+  document.body.appendChild(m);scroll();
+  m.addEventListener("click",e=>{const g=x=>e.target.closest(x);
+   if(e.target===m||g("#sdcx")){close();return}
+   if(g("#sdcc")){document.getElementById("sdcf1").click();return}if(g("#sdcg")){document.getElementById("sdcf2").click();return}
+   if(g("#sdcs_")){sendTxt();return}if(g("#sdcmic")){mic();return}
+   const im=g(".sdcim");if(im){const v=document.createElement("div");v.className="sdcv";v.innerHTML='<img alt="" src="'+im.src+'">';v.onclick=()=>v.remove();document.body.appendChild(v)}});
+  m.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id==="sdci"){e.preventDefault();sendTxt()}});
+  m.addEventListener("change",async e=>{const t=e.target;if(t.id!=="sdcf1"&&t.id!=="sdcf2")return;const fl=t.files&&t.files[0];t.value="";if(!fl)return;
+   try{sendRaw("img",await pic(fl))}catch(_){toast("Gambar tidak bisa dibaca",1600)}})}};
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&isOpen){unread=0;badge()}});
+return api})();
+
 // ---------- Logic: Sudoku ----------
 (()=>{
 const K="zc-sdk",el=$("brs"),LN={bebas:"Bebas",mudah:"Mudah",sedang:"Sedang",sulit:"Sulit"},CL={mudah:40,sedang:32,sulit:26,bebas:36},LV={mudah:5,sedang:3,sulit:2,bebas:1};
@@ -2700,56 +2785,13 @@ function loadPeer(){if(window.Peer)return Promise.resolve();const U=["https://cd
 const CHRc="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",OL={role:"",peer:null,conn:null,code:"",name:"",tab:"host",err:"",st:"",busy:0,lv:"sedang",opp:""};
 try{OL.name=localStorage.getItem("zc-chname")||""}catch(e){}
 
-// ----- chat (teks, gambar, kamera, voice note) -----
-const CH=[];let chatOpen=0,unread=0,rec=null;
 const CHI='<svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round"><path style="fill:none" d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.6-.8L3 21l1.9-5.3A8.4 8.4 0 1 1 21 11.5z"/></svg>';
-const MEDIA_RE=/^data:(image|audio)\/[\w.+;=-]+;base64,[A-Za-z0-9+\/=]+$/;
-function chatBadge(){const b=$("sdch");if(!b)return;let e=b.querySelector(".sdbd");if(unread){if(!e){e=document.createElement("em");e.className="sdbd";b.appendChild(e)}e.textContent=unread>9?"9+":unread}else if(e)e.remove()}
-function bub(m){let c;if(m.k==="img")c='<img class="sdcim" alt="gambar" src="'+m.d+'">';else if(m.k==="aud")c='<audio controls preload="metadata" src="'+m.d+'"></audio>';else c=esc(m.d);
- return '<div class="sdcg '+(m.me?"me":"op")+(m.k!=="txt"?" md":"")+'">'+c+'</div>'}
-function chatScroll(){const l=$("sdcl");if(l)l.scrollTop=l.scrollHeight}
-function addMsg(me,k,d){const m={me,k,d};CH.push(m);
- if(chatOpen){const l=$("sdcl");if(l){l.insertAdjacentHTML("beforeend",bub(m));chatScroll()}}
- else if(!me){unread++;chatBadge();sfx("click");toast("Pesan baru dari "+(OL.opp||"lawan"),1200)}}
-function gotChat(m){if(typeof m.d!=="string")return;
- if(m.k==="txt")addMsg(0,"txt",m.d.slice(0,500));
- else if((m.k==="img"||m.k==="aud")&&m.d.length<3.5e6&&m.d.startsWith("data:"+(m.k==="img"?"image":"audio")+"/")&&MEDIA_RE.test(m.d))addMsg(0,m.k,m.d)}
-function sendMedia(k,d){if(!OL.conn||!OL.conn.open){toast("Lawan tidak terhubung",1500);return}if(d.length>3e6){toast("File terlalu besar",1500);return}netSend({t:"chat",k,d});addMsg(1,k,d)}
-function sendTxt(){const i=$("sdci");if(!i)return;const v=i.value.trim().slice(0,500);if(!v)return;if(!OL.conn||!OL.conn.open){toast("Lawan tidak terhubung",1500);return}netSend({t:"chat",k:"txt",d:v});addMsg(1,"txt",v);i.value="";i.focus()}
-function pic(file){return new Promise((ok,no)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{const M=900,r=Math.min(1,M/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.max(1,Math.round(im.width*r));c.height=Math.max(1,Math.round(im.height*r));c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);ok(c.toDataURL("image/jpeg",.72))};im.onerror=()=>{URL.revokeObjectURL(u);no()};im.src=u})}
-function recUI(){const b=$("sdcmic"),i=$("sdci");if(!b||!i)return;b.classList.toggle("rec",!!rec);if(rec){const t=Math.floor((Date.now()-rec.t0)/1000);i.value="";i.placeholder="● Merekam "+Math.floor(t/60)+":"+p2(t%60)+" · ketuk mic untuk kirim";i.disabled=true}else{i.disabled=false;i.placeholder="Ketik pesan…"}}
-function stopRec(send){if(!rec)return;rec.send=send;try{rec.mr.stop()}catch(e){}}
-async function micToggle(){
- if(rec){stopRec(true);return}
- if(!navigator.mediaDevices||!window.MediaRecorder){toast("Rekam suara tidak didukung di browser ini",2000);return}
- let st;try{st=await navigator.mediaDevices.getUserMedia({audio:true})}catch(e){toast("Izin mikrofon ditolak",1800);return}
- const mt=["audio/webm;codecs=opus","audio/webm","audio/mp4","audio/ogg"].find(t=>MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(t));
- let mr;try{mr=mt?new MediaRecorder(st,{mimeType:mt}):new MediaRecorder(st)}catch(e){st.getTracks().forEach(t=>t.stop());toast("Rekam suara gagal",1800);return}
- const ch=[];rec={mr,send:true,t0:Date.now(),tm:0};
- mr.ondataavailable=e=>{if(e.data&&e.data.size)ch.push(e.data)};
- mr.onstop=()=>{const r=rec;if(!r)return;clearInterval(r.tm);st.getTracks().forEach(t=>t.stop());rec=null;recUI();
-  if(!r.send||!ch.length)return;if(Date.now()-r.t0<700){toast("Terlalu pendek",1000);return}
-  const fr=new FileReader();fr.onload=()=>sendMedia("aud",fr.result);fr.readAsDataURL(new Blob(ch,{type:(mr.mimeType||"audio/webm").split(";")[0]}))};
- mr.start();rec.tm=setInterval(()=>{if(!rec)return;recUI();if(Date.now()-rec.t0>=60000)stopRec(true)},400);recUI()}
-function closeChat(){stopRec(false);const m=$("sdcov");if(m)m.remove();chatOpen=0}
-function openChat(){if($("sdcov"))return;chatOpen=1;unread=0;chatBadge();
- const m=document.createElement("div");m.id="sdcov";m.className="sdcov";
- m.innerHTML='<div class="sdcs"><div class="sdch0"><b>'+esc(OL.opp||"Lawan")+'</b><button type="button" id="sdcx" aria-label="Tutup">✕</button></div><div class="sdcl" id="sdcl">'+(CH.length?CH.map(bub).join(""):'<p class="sdce">Belum ada pesan. Sapa lawanmu!</p>')+'</div>'
-  +'<div class="sdcb"><button type="button" id="sdcc" aria-label="Buka kamera"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.4"/></svg></button><button type="button" id="sdcg" aria-label="Kirim gambar"><svg viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="15" rx="2.5"/><circle cx="8.5" cy="10" r="1.6"/><path d="m4 18 5.5-5.5 4 4 2.5-2.5L20 18"/></svg></button><input id="sdci" maxlength="500" autocomplete="off" placeholder="Ketik pesan…"><button type="button" id="sdcmic" aria-label="Voice note"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3"/></svg></button><button type="button" id="sdcs_" class="go" aria-label="Kirim"><svg viewBox="0 0 24 24"><path d="M4 12 20 4l-4 16-4.5-6.5z"/></svg></button></div>'
-  +'<input type="file" accept="image/*" capture="environment" id="sdcf1" hidden><input type="file" accept="image/*" id="sdcf2" hidden></div>';
- document.body.appendChild(m);chatScroll();
- m.addEventListener("click",e=>{const g=x=>e.target.closest(x);
-  if(e.target===m||g("#sdcx")){closeChat();return}
-  if(g("#sdcc")){$("sdcf1").click();return}if(g("#sdcg")){$("sdcf2").click();return}
-  if(g("#sdcs_")){sendTxt();return}if(g("#sdcmic")){micToggle();return}
-  const im=g(".sdcim");if(im){const v=document.createElement("div");v.className="sdcv";v.innerHTML='<img alt="" src="'+im.src+'">';v.onclick=()=>v.remove();document.body.appendChild(v)}});
- m.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id==="sdci"){e.preventDefault();sendTxt()}});
- m.addEventListener("change",async e=>{const t=e.target;if(t.id!=="sdcf1"&&t.id!=="sdcf2")return;const fl=t.files&&t.files[0];t.value="";if(!fl)return;
-  try{sendMedia("img",await pic(fl))}catch(_){toast("Gambar tidak bisa dibaca",1600)}})}
+function chatBadge(){const b=$("sdch");if(!b)return;let e=b.querySelector(".sdbd");const u=ZC.unread();if(u){if(!e){e=document.createElement("em");e.className="sdbd";b.appendChild(e)}e.textContent=u>9?"9+":u}else if(e)e.remove()}
+document.addEventListener("zc-badge",chatBadge);
 const p2=n=>String(n).padStart(2,"0");
 const EYE='<svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round"><path style="fill:none" d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/><circle style="fill:none" cx="12" cy="12" r="3"/></svg>';
 function netSend(o){try{OL.conn&&OL.conn.open&&OL.conn.send(o)}catch(e){}}
-function netLeave(){const p=OL.peer;try{OL.conn&&OL.conn.close()}catch(e){}try{p&&p.destroy()}catch(e){}OL.peer=null;OL.conn=null;OL.role="";OL.code="";OL.busy=0;OL.st="";OL.err="";OL.opp="";closeChat();CH.length=0;unread=0}
+function netLeave(){const p=OL.peer;try{OL.conn&&OL.conn.close()}catch(e){}try{p&&p.destroy()}catch(e){}OL.peer=null;OL.conn=null;OL.role="";OL.code="";OL.busy=0;OL.st="";OL.err="";OL.opp="";ZC.unbind()}
 const blank=()=>({ph:"setup",gen:false,p:[],f:[],sel:-1,t0:0,tm:0});
 function exitNet(){stop();netLeave();B=blank();setup()}
 // jumlah solusi (maks lim) untuk memastikan puzzle punya jawaban tunggal
@@ -2778,7 +2820,7 @@ function peekPaint(){el.querySelectorAll(".sdc").forEach(b=>{const i=+b.dataset.
  b.className="sdc"+(B.o[i]?" f":"")+(i===B.osel?" sel":"")+(i%9===0?" fc":"")+(i>=72?" lr":"");
  b.innerHTML='<span class="cv">'+(v||"")+'</span>'+(!v&&B.on[i]?nt(B.on[i]):"")})}
 function deco(){
- const q=el.querySelector(".sdq");if(!q)return;q.classList.toggle("pk",!!B.pk);
+ const q=el.querySelector(".sdq");if(!q)return;q.classList.toggle("sdpkv",!!B.pk);
  B.sc=myScore();
  const lv=q.querySelector(".sdlv");if(lv){lv.classList.add("sdvs");lv.id="sdvs";lv.removeAttribute("aria-label");lv.innerHTML=vsHtml()}
  const hi=$("sdhi");if(hi){hi.id="sdpk";hi.setAttribute("aria-label","Intip papan lawan");hi.classList.toggle("on",!!B.pk);hi.innerHTML=EYE}
@@ -2794,9 +2836,9 @@ function onMsg(m){if(!m||typeof m!=="object")return;
  else if(m.t==="st"&&B.net&&typeof m.p==="string"&&m.p.length===81){B.op=m.p.split("").map(c=>+c||0);if(Array.isArray(m.n)&&m.n.length===81)B.on=m.n.map(x=>x|0);B.os=Math.max(0,Math.min(100,m.s|0));B.osel=m.sel==null?-1:m.sel|0;
   if(B.ph==="play"){if(B.pk)draw();else{const v=$("sdvs");if(v)v.innerHTML=vsHtml()}}}
  else if(m.t==="win"&&B.net&&B.ph==="play")fin(false)
- else if(m.t==="chat"&&(B.net||B.onl))gotChat(m)
+ else if(m.t==="chat"&&(B.net||B.onl))ZC.recv(m)
  else if(m.t==="rq"&&OL.role==="host")netGo()}
-function wire(c){OL.conn=c;c.on("data",onMsg);c.on("close",()=>{if(OL.conn!==c)return;OL.conn=null;if(B.net&&B.ph==="play")fin(true,"Lawan keluar dari room.");else if(B.onl&&OL.role){OL.err="Teman keluar dari room.";onlDraw()}})}
+function wire(c){OL.conn=c;ZC.bind({el,fab:false,title:()=>OL.opp||"Lawan",name:()=>OL.opp||"Lawan",send:o=>netSend(o),ok:()=>!!(OL.conn&&OL.conn.open)});c.on("data",onMsg);c.on("close",()=>{if(OL.conn!==c)return;OL.conn=null;if(B.net&&B.ph==="play")fin(true,"Lawan keluar dari room.");else if(B.onl&&OL.role){OL.err="Teman keluar dari room.";onlDraw()}})}
 function cfgOnline(){netLeave();stop();B={...blank(),onl:1};onlDraw()}
 function cbox(v,big){let r="";for(let i=0;i<5;i++)r+="<span"+(big?"":v[i]?' class="f"':"")+">"+(v[i]?esc(v[i]):"")+"</span>";return r}
 function onlDraw(){if(!B.onl)return;const h=OL.role==="host",bz=!!OL.busy;let s='<div class="o6"><div class="o6h"><i>▦</i><div><b>Sudoku online</b><small>'+(OL.role?(h?"Kamu host":"Tersambung"):"Lewat internet, beda perangkat")+'</small></div></div>';
@@ -2831,9 +2873,9 @@ function netClick(e){const g=s=>e.target.closest(s);
   else if(g("#sdosh")){const t="Ayo main Sudoku online bareng! Kode room: "+OL.code;try{if(navigator.share)navigator.share({text:t}).catch(()=>{});else navigator.clipboard.writeText(t).then(()=>toast("Kode disalin",1500))}catch(_){}}
   return true}
  if(!B.net)return false;
- if(B.ph==="res"){if(g("#sdolc")){openChat();return true}if(g("#sdolx")){exitNet();return true}if(g("#sdorm")){rematch();return true}return false}
+ if(B.ph==="res"){if(g("#sdolc")){ZC.open();return true}if(g("#sdolx")){exitNet();return true}if(g("#sdorm")){rematch();return true}return false}
  if(B.ph==="play"){
-  if(g("#sdch")){openChat();return true}
+  if(g("#sdch")){ZC.open();return true}
   if(g("#sdpk")){B.pk=!B.pk;sfx("click");if(B.pk)toast("Mengintip papan "+(OL.opp||"lawan"),1400);draw();return true}
   if(B.pk&&(g(".sdc")||g(".sdk")||g(".sdi")))return true}
  return false}
@@ -3543,7 +3585,7 @@ function loadPeer(){if(window.Peer)return Promise.resolve();const U=["https://cd
 const CHRc="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",OL={role:"",peer:null,conn:null,code:"",name:"",tab:"host",err:"",st:"",busy:0,sd:"acak",opp:""};
 try{OL.name=localStorage.getItem("zc-chname")||""}catch(e){}
 function netSend(o){try{OL.conn&&OL.conn.open&&OL.conn.send(o)}catch(e){}}
-function netLeave(){const p=OL.peer;try{OL.conn&&OL.conn.close()}catch(e){}try{p&&p.destroy()}catch(e){}OL.peer=null;OL.conn=null;OL.role="";OL.code="";OL.busy=0;OL.st="";OL.err=""}
+function netLeave(){const p=OL.peer;try{OL.conn&&OL.conn.close()}catch(e){}try{p&&p.destroy()}catch(e){}OL.peer=null;OL.conn=null;OL.role="";OL.code="";OL.busy=0;OL.st="";OL.err="";ZC.unbind()}
 function begin(me){const P=newP();B={ph:"play",gen:false,tm:0,tok:(B.tok||0)+1,lv:"online",sd:null,fr:false,net:1,me,fl:me===-1,P,sel:-1,L:null,busy:false,last:null,keys:[keyOf(P)],stack:[],cap:{w:[],b:[]},hint:0,hintMv:null,promo:null,st:null,mv:[],anim:null,pos:[P.b.slice()],vw:null};B.st=status(P,B.keys);B.L=B.st.L;draw()}
 function netGo(me){netSend({t:"go",you:-me,hn:OL.name||"Host"});begin(me)}
 function netRematch(){if(OL.role==="host")netGo(-B.me);else{netSend({t:"rq"});toast("Meminta host mulai ulang…",1800)}}
@@ -3552,8 +3594,9 @@ function onMsg(m){if(!m||typeof m!=="object")return;
  else if(m.t==="go"){OL.opp=m.hn;begin(m.you)}
  else if(m.t==="mv"&&B.net&&B.ph==="play"){const mv=B.L&&B.L.find(x=>x.f===m.f&&x.t===m.to&&(x.pr||0)===(m.pr||0));if(mv){mv.r=1;apply(mv)}}
  else if(m.t==="rs"&&B.net&&B.ph==="play")finish({o:B.me===1?"win":"loss",r:"Lawan menyerah"});
+ else if(m.t==="chat")ZC.recv(m)
  else if(m.t==="rq"&&OL.role==="host")netRematch()}
-function wire(c){OL.conn=c;c.on("data",onMsg);c.on("close",()=>{if(OL.conn!==c)return;OL.conn=null;if(B.net&&B.ph==="play")finish({o:B.me===1?"win":"loss",r:"Lawan keluar dari room"});else if(OL.role&&!B.net){OL.err="Teman keluar dari room.";onlDraw()}})}
+function wire(c){OL.conn=c;ZC.bind({el,title:()=>OL.opp||"Lawan",name:()=>OL.opp||"Lawan",send:o=>netSend(o),ok:()=>!!(OL.conn&&OL.conn.open)});c.on("data",onMsg);c.on("close",()=>{if(OL.conn!==c)return;OL.conn=null;if(B.net&&B.ph==="play")finish({o:B.me===1?"win":"loss",r:"Lawan keluar dari room"});else if(OL.role&&!B.net){OL.err="Teman keluar dari room.";onlDraw()}})}
 function cfgOnline(sd){netLeave();OL.sd=sd||"acak";B={ph:"setup",gen:false,tm:0,tok:B.tok||0,onl:1};onlDraw()}
 function cbox(v,big){let r="";for(let i=0;i<5;i++)r+="<span"+(big?"":v[i]?' class="f"':"")+">"+(v[i]?esc(v[i]):"")+"</span>";return r}
 function onlDraw(){if(!B.onl)return;const h=OL.role==="host",bz=!!OL.busy;let s='<div class="o6"><div class="o6h"><i>♞</i><div><b>Catur online</b><small>'+(OL.role?(h?"Kamu host":"Tersambung"):"Lewat internet, beda perangkat")+'</small></div></div>';
@@ -4270,7 +4313,7 @@ function netBc(){if(B.mode!=="net"||!B.host)return;const ev=B.ev||null;B.ev=null
 function netLeave(){const p=OL.peer,cl=OL.role==="client";if(cl)nsend({t:"bye"});
  clearInterval(OL.hbt);clearInterval(OL.syt);clearInterval(OL.wd);
  try{if(cl)setTimeout(()=>{try{p.destroy()}catch(e){}},250);else p&&p.destroy()}catch(e){}
- OL.peer=null;OL.hc=null;OL.conns=[];OL.toks=[""];OL.seen=[];OL.role="";OL.st="";OL.names=[];OL.busy=0;OL.rc=0;qu=[]}
+ OL.peer=null;OL.hc=null;OL.conns=[];OL.toks=[""];OL.seen=[];OL.role="";OL.st="";OL.names=[];OL.busy=0;OL.rc=0;qu=[];ZC.unbind()}
 function loadPeer(){if(window.Peer)return Promise.resolve();const U=["https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js","https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"];
  const one=u=>new Promise((ok,no)=>{const s=document.createElement("script"),t=setTimeout(()=>{s.remove();no(1)},6000);s.src=u;s.onload=()=>{clearTimeout(t);window.Peer?ok():no(1)};s.onerror=()=>{clearTimeout(t);no(1)};document.head.appendChild(s)});
  return one(U[0]).catch(()=>one(U[1]))}
@@ -4344,7 +4387,7 @@ async function ohost(){if(OL.busy)return;OL.busy=1;OL.err="";OL.st="Menghubungka
  try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Kalau kamu buka lewat preview di aplikasi Claude, koneksi internet diblokir: buka file ini di Chrome.";onlDraw();return}
  const mk=n=>{const code=Array.from({length:5},()=>CHR[zR(CHR.length)]).join(""),p=new Peer("zcuno-"+code.toLowerCase(),PCFG);
   const to=setTimeout(()=>{if(OL.role==="host")return;try{p.destroy()}catch(e){}OL.busy=0;OL.st="";OL.err="Server PeerJS tidak merespons. Coba buka file ini di browser (Chrome) atau cek koneksi.";onlDraw()},10000);
-  p.on("open",()=>{clearTimeout(to);OL.busy=0;OL.role="host";OL.peer=p;OL.code=code;OL.names=[OL.name];OL.conns=[null];OL.toks=[""];OL.seen=[0];OL.st="";hbStart();onlDraw()});
+  p.on("open",()=>{clearTimeout(to);OL.busy=0;OL.role="host";OL.peer=p;OL.code=code;OL.names=[OL.name];OL.conns=[null];OL.toks=[""];OL.seen=[0];OL.st="";ZC.bind({el,group:1,title:()=>"Chat room",name:()=>"",send:o=>sendAll({...o,from:OL.name}),ok:()=>OL.conns.length>1});hbStart();onlDraw()});
   hwire(p);
   p.on("error",er=>{if(er.type==="unavailable-id"&&n<4){try{p.destroy()}catch(e){}mk(n+1);return}if(OL.role==="host")return;OL.busy=0;OL.st="";OL.err="Gagal: "+(er.type||"koneksi");onlDraw()})};
  mk(0)}
@@ -4371,6 +4414,7 @@ function hconn(c){
   const k=OL.conns.indexOf(c);if(k<1)return;
   OL.seen[k]=Date.now();
   if(m.t==="bye"){hleft(c,1);return}
+  if(m.t==="chat"){const fr=OL.names[k];if(ZC.recv({...m,from:fr}))for(let j=1;j<OL.conns.length;j++)if(j!==k)sendTo(j,{t:"chat",k:m.k,d:m.d,from:fr});return}
   hact(k,m)});
  c.on("close",()=>hleft(c));c.on("error",()=>{})}
 // pemain yang koneksinya putus TIDAK langsung diganti bot: ditunggu 20 dtk, dan bisa kembali kapan saja
@@ -4415,7 +4459,7 @@ async function ojoin(){const code=OL.code.replace(/[^A-Za-z0-9]/g,"").toUpperCas
  const att=()=>{if(done)return;tries++;OL.st="Menghubungkan… ("+tries+")";onlDraw();
   const c=p.connect("zcuno-"+code.toLowerCase(),{reliable:true,serialization:"json"});OL.hc=c;let ok=0;
   to=setTimeout(()=>{if(ok||done)return;try{c.close()}catch(e){}if(tries<6)att();else fail("Tidak bisa terhubung ke room. Pastikan host masih membuka halaman game (jangan pindah app), lalu coba lagi.")},9000);
-  c.on("open",()=>{if(done)return;ok=1;clearTimeout(to);done=1;OL.busy=0;OL.role="client";OL.st="";OL.names=[];cwire(c);c.send({t:"hello",name:OL.name,tok:ctok()});onlDraw()});
+  c.on("open",()=>{if(done)return;ok=1;clearTimeout(to);done=1;OL.busy=0;OL.role="client";OL.st="";OL.names=[];ZC.bind({el,group:1,title:()=>"Chat room",name:()=>"",send:o=>nsend(o),ok:()=>!!(OL.hc&&OL.hc.open)});cwire(c);c.send({t:"hello",name:OL.name,tok:ctok()});onlDraw()});
   c.on("error",()=>{})};
  p.on("error",er=>{if(er.type==="peer-unavailable"){if(tries<8){clearTimeout(to);setTimeout(att,2000)}else fail("Room tidak ditemukan. Pastikan kode benar dan host masih membuka lobby di layar.")}else fail("Gagal: "+(er.type||"koneksi"))});
  p.on("open",att)}
@@ -4439,6 +4483,7 @@ function csync(){clearInterval(OL.syt);let n=0;OL.syt=setInterval(()=>{if(OL.rol
 function cleft(){if(OL.role!=="client")return;netLeave();toast("Koneksi ke host terputus",2000);setup()}
 function cdata(m){if(!m||typeof m!=="object")return;
  if(m.t==="hb"){nsend({t:"hb"});return}
+ if(m.t==="chat"){ZC.recv(m);return}
  if(m.t==="full"){netLeave();OL.err=m.r||"Room penuh";onlDraw();return}
  if(m.t==="lobby"){OL.names=m.names;OL.seat=m.seat;onlDraw();return}
  if(m.t==="go"){if(!B.onl){clearTimeout(tm);el.innerHTML="";B={ph:"setup",gen:false,onl:1}}OL.st="Host mengocok kartu…";qu=[];onlDraw();csync();return}
