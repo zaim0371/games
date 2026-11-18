@@ -5617,6 +5617,42 @@ const GM={
 const AL="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",mk=n=>Array.from({length:n},()=>AL[zR(AL.length)]).join("");
 const hist=f=>{try{return JSON.parse(LS("zf-h-"+f)||"[]")}catch(e){return[]}},saveH=(f,a)=>LS("zf-h-"+f,JSON.stringify(a.slice(-200)));
 const isFr=f=>DATA.rel.some(r=>r.status==="accepted"&&(r.from_code===f||r.to_code===f)),opn=()=>!!(P&&P.classList.contains("show"));
+// ----- STREAK pertemanan: tabel Supabase zg_streak (dibagi berdua). Streak +1 per hari kalau KEDUANYA saling kirim pesan (teks/foto/vn/dll) atau main game bareng -----
+const ZTZ=7*36e5,zday=()=>Math.floor((Date.now()+ZTZ)/864e5);
+let SK={};try{SK=JSON.parse(LS("zf-sk")||"{}")||{}}catch(e){}
+(()=>{if(document.getElementById("zstkcss"))return;const st=document.createElement("style");st.id="zstkcss";
+st.textContent=".zstkn{display:flex!important;align-items:center;gap:6px;min-width:0}.zstkn .zstkt{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.zstk{flex:none;display:inline-flex;align-items:center;gap:1px;font:800 13px/1 Inter,system-ui,sans-serif;color:#f97316;letter-spacing:-.2px;vertical-align:middle}.zstk .zstkf{font-size:15px;display:inline-block;transform-origin:50% 90%;animation:zstkfl 1.6s ease-in-out infinite}.zstk.w{color:#9a9aa0}.zstk.w .zstkf{filter:grayscale(1);opacity:.65;animation:none}@keyframes zstkfl{0%,100%{transform:scale(1) rotate(-4deg)}50%{transform:scale(1.14) rotate(4deg)}}@media (prefers-reduced-motion:reduce){.zstk .zstkf{animation:none}}";
+document.head.appendChild(st)})();
+const zpk=f=>ME.code<f?ME.code+"-"+f:f+"-"+ME.code,
+  zskO=p=>{const a=String(p).split("-");return a[0]===ME.code?a[1]:a[1]===ME.code?a[0]:""},
+  zskR=(r,f)=>{const lo=ME.code<f;return{me:+(lo?r.lo_day:r.hi_day)||0,ot:+(lo?r.hi_day:r.lo_day)||0,done:+r.done||0,cnt:+r.cnt||0}},
+  zskN=f=>{const r=SK[f];return r&&r.cnt>0&&r.done>=zday()-1?r.cnt:0},
+  zskb=f=>{const n=zskN(f);if(!n)return"";const w=SK[f].done<zday();return'<span class="zstk'+(w?" w":"")+'" title="Streak '+n+' hari'+(w?" (selesaikan hari ini biar tidak hilang)":"")+'"><span class="zstkf">🔥</span>'+n+'</span>'},
+  znm=c=>'<span class="zstkt">'+esc(DATA.names[c]||c)+'</span>'+zskb(c),
+  zskS=()=>LS("zf-sk",JSON.stringify(SK));
+const ZF="select=pair,lo_day,hi_day,done,cnt";
+async function zskLoad(rel){if(!ME)return;
+  try{const fs=[...new Set(rel.filter(r=>r.status==="accepted").map(r=>r.from_code===ME.code?r.to_code:r.from_code))];
+    if(!fs.length){SK={};zskS();return}
+    const rows=await api("zg_streak?"+ZF+"&pair=in.("+fs.map(zpk).join(",")+")"),n={},old=SK,d=zday();
+    rows.forEach(r=>{const f=zskO(r.pair);if(f)n[f]=zskR(r,f)});SK=n;zskS();
+    Object.keys(n).forEach(f=>{const o=old[f];if(o&&n[f].done===d&&o.done!==d&&n[f].cnt>0)toast("🔥 Streak dengan "+(DATA.names[f]||f)+" jadi "+n[f].cnt+" hari!",2600)})}
+  catch(e){}}
+async function zskMark(f,k){if(!ME||!f||!isFr(f))return;
+  const d=zday(),key=zpk(f),lo=ME.code<f,mine=lo?"lo_day":"hi_day",oth=lo?"hi_day":"lo_day",c=SK[f];
+  zskMark.t=zskMark.t||{};
+  if(c&&c.me===d&&(k!=="g"||c.ot===d)&&(c.done===d||Date.now()-(zskMark.t[f]||0)<20000))return;
+  zskMark.t[f]=Date.now();
+  try{const b={pair:key};b[mine]=d;if(k==="g")b[oth]=d;
+    await api("zg_streak?on_conflict=pair",{m:"POST",p:"resolution=merge-duplicates,return=minimal",b});
+    let r=(await api("zg_streak?"+ZF+"&pair=eq."+key))[0];if(!r)return;
+    if(+r.lo_day===d&&+r.hi_day===d&&+r.done!==d){
+      await api("zg_streak?pair=eq."+key+"&done=neq."+d,{m:"PATCH",p:"return=minimal",b:{done:d,cnt:(+r.done===d-1?(+r.cnt||0)+1:1)}});
+      r=(await api("zg_streak?"+ZF+"&pair=eq."+key))[0]||r}
+    const was=c&&c.done===d,n=zskR(r,f);SK[f]=n;zskS();
+    if(n.done===d&&!was&&n.cnt>0){try{sfx("ok")}catch(e){}toast("🔥 Streak dengan "+(DATA.names[f]||f)+" jadi "+n.cnt+" hari!",2600)}
+    renderHome();if(opn())zhead()}
+  catch(e){const c2=+(e&&e.message);if(!zskMark.w&&(c2===404||(e&&e.pg==="PGRST205")||c2===401||c2===403)){zskMark.w=1;toast("Tabel zg_streak belum dibuat di Supabase. Jalankan SQL-nya dulu",4200)}}}
 window.zfPickFriend=(g,code)=>{const old=document.getElementById("zpf");if(old)old.remove();
   if(!ME||!GM[g]||!code)return;
   const fs=zfrs().sort((a,b)=>(DATA.on[b]?1:0)-(DATA.on[a]?1:0)),o=document.createElement("div");o.id="zpf";
@@ -5631,7 +5667,7 @@ window.zfAuto=k=>{const R=window.zfRoom;if(R&&R.k===k&&Date.now()-R.t<3e5){windo
 // ----- statistik main bersama teman (disimpan di perangkat ini) -----
 const H2K="zc-h2h",H2G={sdk:"Sudoku",chs:"Catur",uno:"UNO",ldo:"Ludo",pt:"Pulse Tap",bb:"Block Blast"};
 window.zgRec=(k,o)=>{try{const c=window.zfCur;if(!c||c.k!==k||!c.f)return;const now=Date.now();if(zgRec.l&&zgRec.l.k===k&&now-zgRec.l.t<4000)return;zgRec.l={k,t:now};
-  const d=JSON.parse(localStorage.getItem(H2K)||"{}"),a=d[c.f]=d[c.f]||{},g=a[k]=a[k]||{n:0,w:0,l:0,d:0};g.n++;g[o]++;localStorage.setItem(H2K,JSON.stringify(d))}catch(e){}};
+  const d=JSON.parse(localStorage.getItem(H2K)||"{}"),a=d[c.f]=d[c.f]||{},g=a[k]=a[k]||{n:0,w:0,l:0,d:0};g.n++;g[o]++;localStorage.setItem(H2K,JSON.stringify(d));zskMark(c.f,"g")}catch(e){}};
 function zhStat(f){let d={};try{d=JSON.parse(localStorage.getItem(H2K)||"{}")[f]||{}}catch(e){}
   const nm=esc(DATA.names[f]||f),me=esc(ME.name),ks=Object.keys(H2G).filter(k=>d[k]&&d[k].n),sm=x=>ks.reduce((a,k)=>a+d[k][x],0),
     ln=(g)=>me+' menang '+g.w+' · '+nm+' menang '+g.l+(g.d?' · seri '+g.d:'');
@@ -5795,12 +5831,12 @@ async function load(){
   const me=ME.code,rel=await api("zg_friends?select=id,from_code,to_code,status&or=(from_code.eq."+me+",to_code.eq."+me+")");
   const cs=[...new Set(rel.map(r=>r.from_code===me?r.to_code:r.from_code))],names={},on={};
   if(cs.length)(await api("zg_profiles?select=code,name,ts&code=in.("+cs.join(",")+")")).forEach(p=>{names[p.code]=p.name;on[p.code]=Date.now()-(+p.ts||0)<75000});
-  DATA={rel,names,on};dot();return DATA}
+  await zskLoad(rel);DATA={rel,names,on};dot();return DATA}
 const inc=()=>DATA.rel.filter(r=>r.status==="pending"&&r.to_code===ME.code);
 function dot(){renderHome();const d=$("zfd"),c=$("zfd2");const nF=ME?inc().length:0,nC=ME?Object.values(UN).reduce((a,v)=>a+(+v||0),0):0;if(d){d.classList.toggle("on",nF>0);d.textContent=nF>9?"9+":nF||""}if(c){c.classList.toggle("on",nC>0);c.textContent=nC>9?"9+":nC||""}}
 const B=(a,t,x,c)=>'<button type="button" class="chip'+(c?" "+c:"")+'" data-a="'+a+'"'+(x||"")+'>'+t+'</button>';
 function row(r,k){const c=r.from_code===ME.code?r.to_code:r.from_code,n=esc(DATA.names[c]||c),id=' data-id="'+r.id+'"',f=' data-f="'+c+'"';
-  const nm='<b>'+(k==="fr"?'<i class="zfo'+(DATA.on[c]?" on":"")+'"></i>':"")+n+'<small>'+c+'</small></b>';
+  const nm='<b>'+(k==="fr"?'<i class="zfo'+(DATA.on[c]?" on":"")+'"></i>':"")+n+(k==="fr"?zskb(c):"")+'<small>'+c+'</small></b>';
   return '<div class="zfr">'+nm+(k==="in"?B("ok","Terima",id,"on")+B("del","Tolak",id):k==="out"?B("del","Batal",id):B("chat","Chat"+(UN[c]?" ("+UN[c]+")":""),f)+B("inv","Ajak",f,"on")+B("rm","✕",id))+'</div>'}
 const ea=s=>esc(s).replace(/"/g,"&quot;").replace(/'/g,"&#39;");
 const ZC=["#e5252c","#f08a24","#1ea04b","#1479c4","#8e44ad","#16a085","#d6336c"],z2=n=>(n<10?"0":"")+n,
@@ -5813,12 +5849,12 @@ const ZC=["#e5252c","#f08a24","#1ea04b","#1479c4","#8e44ad","#16a085","#d6336c"]
   zfrs=()=>[...new Set(DATA.rel.filter(r=>r.status==="accepted").map(r=>r.from_code===ME.code?r.to_code:r.from_code))],
   zcl=()=>zfrs().map(c=>{const h=hist(c),l=h[h.length-1];return{c,l,t:l&&l.t||0,u:UN[c]||0}}).filter(o=>o.l||o.u).sort((a,b)=>b.t-a.t);
 function zhead(){const t=$("zft"),n=$("zfnw");if(!t||!n)return;const kc=$("zfcall");if(kc)kc.hidden=!CH;const kv=$("zfvcall");if(kv)kv.hidden=!CH;const kx=$("zfstat");if(kx)kx.hidden=!CH;
-  if(CH){t.innerHTML=zav(CH)+'<div class="zfth"><b>'+esc(DATA.names[CH]||CH)+'</b><small>'+(DATA.on[CH]?"online":"offline")+'</small></div>';n.hidden=true}
+  if(CH){t.innerHTML=zav(CH)+'<div class="zfth"><b class="zstkn">'+znm(CH)+'</b><small>'+(DATA.on[CH]?"online":"offline")+'</small></div>';n.hidden=true}
   else if(ZN){t.innerHTML='<b>Chat baru</b>';n.hidden=true}
   else if(INV){t.innerHTML='<b>Ajak main</b>';n.hidden=true}
   else if(ZM==="chat"&&!INV){t.innerHTML='<b>Chat</b>';n.hidden=false}
   else{t.innerHTML='<b>Teman</b>';n.hidden=true}}
-function zrow(c,sub,tm,u,nm){return '<div class="zfc" role="button" tabindex="0" data-a="chat" data-f="'+ea(c)+'"'+(nm?' data-n="'+ea((DATA.names[c]||c).toLowerCase())+'"':'')+'>'+zav(c)+'<div class="zfcm"><div class="zfct"><b>'+esc(DATA.names[c]||c)+'</b>'+(tm?'<small'+(u?' class="un"':'')+'>'+tm+'</small>':'')+'</div><div class="zfcl"><span>'+esc(sub)+'</span>'+(u?'<em class="zfbg">'+u+'</em>':'')+'</div></div></div>'}
+function zrow(c,sub,tm,u,nm){return '<div class="zfc" role="button" tabindex="0" data-a="chat" data-f="'+ea(c)+'"'+(nm?' data-n="'+ea((DATA.names[c]||c).toLowerCase())+'"':'')+'>'+zav(c)+'<div class="zfcm"><div class="zfct"><b class="zstkn">'+znm(c)+'</b>'+(tm?'<small'+(u?' class="un"':'')+'>'+tm+'</small>':'')+'</div><div class="zfcl"><span>'+esc(sub)+'</span>'+(u?'<em class="zfbg">'+u+'</em>':'')+'</div></div></div>'}
 function zlist(cl){P.querySelector(".zfb").innerHTML=cl.length?'<div class="zfls">'+cl.map(o=>zrow(o.c,o.l?o.l.x:"",zlt(o.t),o.u)).join("")+'</div>':'<div class="zfem"><p class="zfe">Belum ada chat</p>'+B("new","Chat baru","","on")+'</div>'}
 function znew(){const fr=zfrs().sort((a,b)=>(DATA.names[a]||a).localeCompare(DATA.names[b]||b));
   P.querySelector(".zfb").innerHTML=fr.length?'<input id="zfq" class="zfsr" placeholder="Cari teman" autocomplete="off"><div class="zfls">'+fr.map(c=>zrow(c,DATA.on[c]?"online":"offline","",0,1)).join("")+'</div>':'<div class="zfem"><p class="zfe">Belum ada teman</p>'+B("tofr","Tambah teman","","on")+'</div>'}
@@ -5846,7 +5882,7 @@ async function zsend(f,k,blob,mime,ext,extra){
   PN[f]=(PN[f]||0)+1;if(CH===f)drawChat();
   try{const u=await zup(blob,mime,ext),x=k==="img"?"📷 Foto":"🎤 Suara";
     const M=zmk(f);await deliver(f,Object.assign({t:"m",k,u,x},extra,M));
-    const ts=Date.now(),h=hist(f);h.push(Object.assign({me:1,x,t:ts,k,u},extra,M));saveH(f,h);zsv(f,M.i,Object.assign({x,k,u},extra,{r:M.r}),ts);if(RP&&RP.f===f){RP=null;zrpDraw()}}
+    const ts=Date.now(),h=hist(f);h.push(Object.assign({me:1,x,t:ts,k,u},extra,M));saveH(f,h);zsv(f,M.i,Object.assign({x,k,u},extra,{r:M.r}),ts);zskMark(f,"m");if(RP&&RP.f===f){RP=null;zrpDraw()}}
   catch(e){toast(e&&e.up?"Gagal mengunggah ke Supabase ("+e.message+(e.m?": "+String(e.m).slice(0,60):"")+")":dErr(e),4200)}
   finally{PN[f]=Math.max(0,(PN[f]||1)-1);if(opn()&&CH===f)drawChat()}}
 function zimg(file){return new Promise((res,rej)=>{const u=URL.createObjectURL(file),im=new Image();
@@ -6050,7 +6086,7 @@ async function act(a,id,x,bt){
       const ok=await invite(INV,SEL,Object.assign({},OPT));if(!ok){const b2=P.querySelector(".zsend");if(b2){b2.classList.remove("ld");b2.disabled=!SEL}}return}
     if(a==="send"&&CH){const i=$("zfmi"),t=QT2(i&&i.value,500);if(!t)return;if(t.trim().toLowerCase()==="/statisik"){i.value="";zgo();zstat(CH);return}
       const M=zmk(CH);try{const via=await deliver(CH,Object.assign({t:"m",x:t},M));if(via==="srv"&&!DATA.on[CH])toast("Teman offline, pesan akan terbaca saat ia online",2200)}catch(e){return toast(dErr(e),3200)}
-      const ts=Date.now(),h=hist(CH);h.push(Object.assign({me:1,x:t,t:ts},M));saveH(CH,h);zsv(CH,M.i,{x:t,r:M.r},ts);RP=null;i.value="";drawChat();zrpDraw();const n=$("zfmi");if(n&&document.activeElement!==n)n.focus();return}
+      const ts=Date.now(),h=hist(CH);h.push(Object.assign({me:1,x:t,t:ts},M));saveH(CH,h);zsv(CH,M.i,{x:t,r:M.r},ts);zskMark(CH,"m");RP=null;i.value="";drawChat();zrpDraw();const n=$("zfmi");if(n&&document.activeElement!==n)n.focus();return}
     if(a==="add"){const c=(($("zfin")||{}).value||"").toUpperCase().replace(/[^A-Z0-9]/g,"");
       if(c.length<6)return toast("Masukkan 6 karakter kode teman",2000);if(c===ME.code)return toast("Itu kodemu sendiri",2000);
       const ex=R.find(y=>y.from_code===c||y.to_code===c);
@@ -6086,11 +6122,11 @@ function renderHome(){const el=$("zhfr");if(!el)return;
   if(!ME){sig="nome";h='<div class="zfq zfe0"><span class="zt"><b>Teman</b><em>Masuk dulu untuk melihat dan mengajak temanmu</em></span><button type="button" class="zfb1 on" data-hf="open"><span>Mulai</span></button></div>'}
   else{
     const fr=zfrs().sort((a,b)=>(DATA.on[b]?1:0)-(DATA.on[a]?1:0)||(DATA.names[a]||a).localeCompare(DATA.names[b]||b));
-    sig=JSON.stringify([fr,DATA.names,DATA.on,UN]);
+    sig=JSON.stringify([fr,DATA.names,DATA.on,UN,fr.map(c=>zskN(c)+":"+(SK[c]&&SK[c].done<zday()?1:0))]);
     if(!fr.length)h='<div class="zfq zfe0"><span class="zt"><b>Belum ada teman</b><em>Tambahkan teman dengan kode akunnya</em></span><button type="button" class="zfb1 on" data-hf="open"><span>Tambah teman</span></button></div>';
     else h=fr.map(c=>{const n=DATA.names[c]||c,on=!!DATA.on[c],u=UN[c]||0,i=[...c].reduce((a,ch)=>a+ch.charCodeAt(0),0);
       return '<div class="zfq"><span class="zfa" style="background:'+ZC[i%ZC.length]+'">'+esc(Array.from(n.trim())[0]||"?").toUpperCase()+'<i class="zfo'+(on?" on":"")+'"></i></span>'
-        +'<span class="zt"><b>'+esc(n)+'</b><em>'+(on?"Online":"Offline")+'</em></span>'
+        +'<span class="zt"><b class="zstkn">'+znm(c)+'</b><em>'+(on?"Online":"Offline")+'</em></span>'
         +'<span class="zfbs"><button type="button" class="zfb1 ic" data-hf="chat" data-f="'+ea(c)+'" aria-label="Chat '+ea(n)+'">'+HCH+(u?'<i class="zfub">'+(u>9?"9+":u)+'</i>':'')+'</button>'
         +'<button type="button" class="zfb1 on" data-hf="inv" data-f="'+ea(c)+'" aria-label="Ajak '+ea(n)+' main">'+HPL+'<span>Ajak main</span></button>'
         +'<button type="button" class="zfb1 ic zfph" data-hf="vcall" data-f="'+ea(c)+'" aria-label="Video call">'+CIC.vd+'</button><button type="button" class="zfb1 ic zfph" data-hf="call" data-f="'+ea(c)+'" aria-label="Telepon '+ea(n)+'">'+CIC.ph+'</button></span></div>'}).join("")}
@@ -6412,6 +6448,19 @@ alter table public.zg_chat enable row level security;
 drop policy if exists zg_chat_all on public.zg_chat;
 create policy zg_chat_all on public.zg_chat for all to anon using (true) with check (true);
 grant select, insert, update, delete on public.zg_chat to anon;
+
+-- Streak pertemanan (jalankan juga)
+create table if not exists public.zg_streak (
+  pair text primary key,
+  lo_day integer not null default 0,
+  hi_day integer not null default 0,
+  done integer not null default 0,
+  cnt integer not null default 0
+);
+alter table public.zg_streak enable row level security;
+drop policy if exists zg_streak_all on public.zg_streak;
+create policy zg_streak_all on public.zg_streak for all to anon using (true) with check (true);
+grant select, insert, update, delete on public.zg_streak to anon;
 notify pgrst, 'reload schema';
 
 [2] sw.js (file terpisah di repo GitHub)
