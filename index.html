@@ -1514,7 +1514,7 @@ body,button,input{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF
 .zfiv{position:fixed;inset:0;z-index:9600;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center}.zfiv img{max-width:100%;max-height:100%;object-fit:contain}
 .zfivx{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:14px;border:0;background:none;color:#fff;font-size:28px;cursor:pointer}
 .zfgm{width:100%;padding:14px;font-size:16px;flex:none}
-.zfg{position:relative;touch-action:pan-y;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;transition:transform .18s}.zfg.sw{transition:none}
+.zfg{position:relative;touch-action:pan-y;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;transition:transform .34s cubic-bezier(.2,.9,.25,1)}.zfg.sw{transition:none;will-change:transform}.zfri{transform-origin:50% 50%}.zfg:not(.sw) .zfri{transition:opacity .2s,transform .2s}
 .zfg.hl{animation:zfhl 1.4s}@keyframes zfhl{0%,60%{box-shadow:0 0 0 3px rgba(20,121,196,.55)}100%{box-shadow:0 0 0 3px transparent}}
 .zfri{position:absolute;left:-34px;top:50%;margin-top:-13px;width:26px;height:26px;border-radius:50%;background:#e3e2dc;color:#555;display:flex;align-items:center;justify-content:center;opacity:0;font-size:14px;pointer-events:none}
 .zfq[data-a]{display:flex;gap:6px;align-items:center;background:rgba(0,0,0,.07);border-left:4px solid #1479c4;border-radius:8px;padding:5px 8px;margin:0 0 5px;cursor:pointer;text-align:left}.zfq[data-a].me{border-left-color:#1ea04b}
@@ -1794,14 +1794,14 @@ html:not(:has(#bru.gfs:has(.un))):not(:has(#bru.gfs:has(.ures))) #gbar[data-g="u
 #zst .zsh{flex:none;font-size:30px;font-weight:800;letter-spacing:-.02em;padding:6px 4px 12px}
 #zst .zsb{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 0 calc(24px + env(safe-area-inset-bottom,0px))}
 .znvon #zst .zsb{padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))}
-.zsc{background:#fff;border-radius:20px;padding:14px 16px;margin:0 0 12px}
-.zsc>b{display:flex;align-items:center;gap:10px;font-size:17px}
-.zsc>b i{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:#fff;font-style:normal;font-size:15px;font-weight:800}
-.zsg{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
-.zsg div{background:var(--bg1);border-radius:13px;padding:10px 12px}
-.zsg small{display:block;font-size:12px;color:var(--tx2);font-weight:600}
-.zsg strong{display:block;font-size:21px;font-weight:800;margin-top:2px;font-variant-numeric:tabular-nums}
-.zse{margin:10px 2px 0;font-size:12.5px;color:var(--tx2)}
+#zst .zsc{width:auto;background:#fff;color:var(--tx);border:0;box-shadow:none;animation:none;border-radius:20px;padding:14px 16px;margin:0 0 12px;font-family:inherit}
+#zst .zsc>b{display:flex;align-items:center;gap:10px;font-size:17px;color:var(--tx)}
+#zst .zsc>b i{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:#fff;font-style:normal;font-size:15px;font-weight:800}
+#zst .zsg{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
+#zst .zsg div{background:var(--bg1);border-radius:13px;padding:10px 12px}
+#zst .zsg small{display:block;font-size:12px;color:var(--tx2);font-weight:600}
+#zst .zsg strong{display:block;font-size:21px;font-weight:800;margin-top:2px;color:var(--tx);font-variant-numeric:tabular-nums}
+#zst .zse{margin:10px 2px 0;font-size:12.5px;color:var(--tx2)}
 #zhs{position:fixed;inset:0;z-index:9600;background:rgba(0,0,0,.35);display:flex;align-items:flex-end;justify-content:center}
 .zhc{width:100%;max-width:520px;max-height:80vh;overflow-y:auto;background:#fff;border-radius:24px 24px 0 0;padding:20px 18px calc(18px + env(safe-area-inset-bottom,0px))}
 .zhc h3{margin:0 0 12px;font-size:19px}
@@ -5618,7 +5618,7 @@ const AL="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",mk=n=>Array.from({length:n},()=>AL[z
 const hist=f=>{try{return JSON.parse(LS("zf-h-"+f)||"[]")}catch(e){return[]}},saveH=(f,a)=>LS("zf-h-"+f,JSON.stringify(a.slice(-200)));
 const isFr=f=>DATA.rel.some(r=>r.status==="accepted"&&(r.from_code===f||r.to_code===f)),opn=()=>!!(P&&P.classList.contains("show"));
 // ----- STREAK pertemanan: tabel Supabase zg_streak (dibagi berdua). Streak +1 per hari kalau KEDUANYA saling kirim pesan (teks/foto/vn/dll) atau main game bareng -----
-const ZTZ=7*36e5,zday=()=>Math.floor((Date.now()+ZTZ)/864e5);
+const ZTZ=7*36e5,zday=t=>Math.floor(((+t||Date.now())+ZTZ)/864e5);
 let SK={};try{SK=JSON.parse(LS("zf-sk")||"{}")||{}}catch(e){}
 (()=>{if(document.getElementById("zstkcss"))return;const st=document.createElement("style");st.id="zstkcss";
 st.textContent=".zstkn{display:flex!important;align-items:center;gap:6px;min-width:0}.zstkn .zstkt{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.zstk{flex:none;display:inline-flex;align-items:center;gap:1px;font:800 13px/1 Inter,system-ui,sans-serif;color:#f97316;letter-spacing:-.2px;vertical-align:middle}.zstk .zstkf{font-size:15px;display:inline-block;transform-origin:50% 90%;animation:zstkfl 1.6s ease-in-out infinite}.zstk.w{color:#9a9aa0}.zstk.w .zstkf{filter:grayscale(1);opacity:.65;animation:none}@keyframes zstkfl{0%,100%{transform:scale(1) rotate(-4deg)}50%{transform:scale(1.14) rotate(4deg)}}@media (prefers-reduced-motion:reduce){.zstk .zstkf{animation:none}}";
@@ -5627,7 +5627,7 @@ const zpk=f=>ME.code<f?ME.code+"-"+f:f+"-"+ME.code,
   zskO=p=>{const a=String(p).split("-");return a[0]===ME.code?a[1]:a[1]===ME.code?a[0]:""},
   zskR=(r,f)=>{const lo=ME.code<f;return{me:+(lo?r.lo_day:r.hi_day)||0,ot:+(lo?r.hi_day:r.lo_day)||0,done:+r.done||0,cnt:+r.cnt||0}},
   zskN=f=>{const r=SK[f];return r&&r.cnt>0&&r.done>=zday()-1?r.cnt:0},
-  zskb=f=>{const n=zskN(f);if(!n)return"";const w=SK[f].done<zday();return'<span class="zstk'+(w?" w":"")+'" title="Streak '+n+' hari'+(w?" (selesaikan hari ini biar tidak hilang)":"")+'"><span class="zstkf">🔥</span>'+n+'</span>'},
+  zskb=f=>{const n=zskN(f);if(!n)return'<span class="zstk w" title="Belum ada streak"><span class="zstkf">🔥</span>0</span>';const w=SK[f].done<zday();return'<span class="zstk'+(w?" w":"")+'" title="Streak '+n+' hari'+(w?" (selesaikan hari ini biar tidak hilang)":"")+'"><span class="zstkf">🔥</span>'+n+'</span>'},
   znm=c=>'<span class="zstkt">'+esc(DATA.names[c]||c)+'</span>'+zskb(c),
   zskS=()=>LS("zf-sk",JSON.stringify(SK));
 const ZF="select=pair,lo_day,hi_day,done,cnt";
@@ -5641,9 +5641,10 @@ async function zskLoad(rel){if(!ME)return;
 async function zskMark(f,k){if(!ME||!f||!isFr(f))return;
   const d=zday(),key=zpk(f),lo=ME.code<f,mine=lo?"lo_day":"hi_day",oth=lo?"hi_day":"lo_day",c=SK[f];
   zskMark.t=zskMark.t||{};
-  if(c&&c.me===d&&(k!=="g"||c.ot===d)&&(c.done===d||Date.now()-(zskMark.t[f]||0)<20000))return;
+  const need=!c||(k!=="r"&&c.me!==d)||(k!=="m"&&c.ot!==d);
+  if(!need&&(c.done===d||Date.now()-(zskMark.t[f]||0)<20000))return;
   zskMark.t[f]=Date.now();
-  try{const b={pair:key};b[mine]=d;if(k==="g")b[oth]=d;
+  try{const b={pair:key};if(k!=="r")b[mine]=d;if(k!=="m")b[oth]=d;
     await api("zg_streak?on_conflict=pair",{m:"POST",p:"resolution=merge-duplicates,return=minimal",b});
     let r=(await api("zg_streak?"+ZF+"&pair=eq."+key))[0];if(!r)return;
     if(+r.lo_day===d&&+r.hi_day===d&&+r.done!==d){
@@ -5652,7 +5653,7 @@ async function zskMark(f,k){if(!ME||!f||!isFr(f))return;
     const was=c&&c.done===d,n=zskR(r,f);SK[f]=n;zskS();
     if(n.done===d&&!was&&n.cnt>0){try{sfx("ok")}catch(e){}toast("🔥 Streak dengan "+(DATA.names[f]||f)+" jadi "+n.cnt+" hari!",2600)}
     renderHome();if(opn())zhead()}
-  catch(e){const c2=+(e&&e.message);if(!zskMark.w&&(c2===404||(e&&e.pg==="PGRST205")||c2===401||c2===403)){zskMark.w=1;toast("Tabel zg_streak belum dibuat di Supabase. Jalankan SQL-nya dulu",4200)}}}
+  catch(e){const c2=+(e&&e.message);if(!zskMark.w){zskMark.w=1;toast(c2===404||(e&&e.pg==="PGRST205")?"Tabel zg_streak belum dibuat di Supabase. Jalankan SQL-nya dulu":c2===401||c2===403?"Streak ditolak ("+c2+"). Cek RLS/GRANT tabel zg_streak":"Streak gagal disimpan ("+(c2||"jaringan")+(e&&e.pg?" "+e.pg:"")+")",4800)}}}
 window.zfPickFriend=(g,code)=>{const old=document.getElementById("zpf");if(old)old.remove();
   if(!ME||!GM[g]||!code)return;
   const fs=zfrs().sort((a,b)=>(DATA.on[b]?1:0)-(DATA.on[a]?1:0)),o=document.createElement("div");o.id="zpf";
@@ -5772,7 +5773,7 @@ async function pull(){if(!ME||PULLING)return;PULLING=1;
   catch(e){}finally{PULLING=0}}
 function boot(){if(HB)return;setInterval(()=>{if(!document.hidden){pull();if(opn())zsync(CH||undefined)}},10000);document.addEventListener("visibilitychange",()=>{if(!document.hidden){refresh();beat().catch(()=>{})}});HB=setInterval(()=>{if(!document.hidden){beat().catch(()=>{});if(!opn())refresh()}},30000);lp().then(peerUp).catch(()=>{})}
 function onData(f,d){if(!d||typeof d!=="object"||!isFr(f))return;
-  if(d.t==="m"&&typeof d.x==="string"){const md=zin(d);if(md===false)return;const x=md?md.x:d.x.slice(0,500),a=hist(f);const mi=zid(d.i);if(mi&&(a.some(y=>y.i===mi)||DM[mi]))return;const rp=zrep(d.r);a.push(Object.assign({me:0,x,t:d._ts||Date.now()},md||{},mi?{i:mi}:{},rp?{r:rp}:{}));saveH(f,a);sfx("recv");
+  if(d.t==="m"&&typeof d.x==="string"){const md=zin(d);if(md===false)return;const x=md?md.x:d.x.slice(0,500),a=hist(f);const mi=zid(d.i);if(mi&&(a.some(y=>y.i===mi)||DM[mi]))return;const rp=zrep(d.r);a.push(Object.assign({me:0,x,t:d._ts||Date.now()},md||{},mi?{i:mi}:{},rp?{r:rp}:{}));saveH(f,a);sfx("recv");if(zday(d._ts)===zday())zskMark(f,"r");
     if(opn()&&CH===f)drawChat();else{UN[f]=(UN[f]||0)+1;saveUN();dot();znMsg(f,x);if(opn()&&!CH&&!INV&&!ZN)draw(true)}}
   else if(d.t==="del"){const mi=zid(d.i),a=hist(f),m=mi&&a.find(y=>y.i===mi&&!y.me);if(m){zwipe(m);saveH(f,a);if(opn()&&CH===f)drawChat()}}
   else if(d.t==="inv"&&GM[d.g]&&/^[A-Z0-9]{5}$/.test(d.c))banner(f,d.g,d.c)
@@ -5928,8 +5929,8 @@ function zrep(r){if(!r||typeof r!=="object")return null;const i=zid(r.i),a=Strin
   const o={i,a,x:String(r.x==null?"":r.x).slice(0,100)};if(r.k==="img"||r.k==="aud")o.k=r.k;if(o.k==="img"&&ZOK(r.u))o.u=r.u;return o}
 function zmk(f){const M={i:zmid()};if(RP&&RP.f===f)M.r={i:RP.i,a:RP.a,x:RP.x,k:RP.k,u:RP.u};return M}
 function zwipe(m){m.dl=1;m.x="🚫 Pesan ini dihapus";delete m.k;delete m.u;delete m.r;delete m.w;delete m.h;delete m.d}
-function zsv(f,mid,body,ts){api("zg_chat?on_conflict=mid",{m:"POST",p:"resolution=merge-duplicates,return=minimal",b:{mid,from_code:ME.code,to_code:f,body,ts}})
-  .catch(()=>{if(!zsv.w){zsv.w=1;toast("Pesan terkirim, tapi gagal disimpan ke Supabase. Cek tabel zg_chat",4200)}})}
+function zsv(f,mid,body,ts,n){n=n||0;api("zg_chat?on_conflict=mid",{m:"POST",p:"resolution=merge-duplicates,return=minimal",b:{mid,from_code:ME.code,to_code:f,body,ts}})
+  .catch(()=>{if(n<2){setTimeout(()=>zsv(f,mid,body,ts,n+1),n?6000:2000);return}if(!zsv.w){zsv.w=1;toast("Pesan terkirim, tapi gagal disimpan ke Supabase. Cek tabel zg_chat",4200)}})}
 async function zdelSrv(mid,mine){try{await api("zg_chat?mid=eq."+mid,{m:"PATCH",p:"return=minimal",b:mine?{del_from:true}:{del_to:true}});delete DM[mid];LS("zf-dm",JSON.stringify(DM))}catch(e){}}
 function zrow2(r){const b=r.body||{},me=r.from_code===ME.code?1:0;if(r.del_all)return{me,x:"🚫 Pesan ini dihapus",t:+r.ts,i:r.mid,dl:1};
   const md=zin(b);if(md===false||(!md&&typeof b.x!=="string"))return null;const rp=zrep(b.r);
@@ -5937,7 +5938,8 @@ function zrow2(r){const b=r.body||{},me=r.from_code===ME.code?1:0;if(r.del_all)r
 async function zsync(f){if(!ME||zsync.b||(f&&!isFr(f)))return;zsync.b=1;const me=ME.code;
   try{const rows=await api("zg_chat?select=mid,from_code,to_code,body,ts,del_all,del_from,del_to&"+(f?"or=(and(from_code.eq."+me+",to_code.eq."+f+"),and(from_code.eq."+f+",to_code.eq."+me+"))&order=ts.desc&limit=150":"or=(from_code.eq."+me+",to_code.eq."+me+")&order=ts.desc&limit=300")),G={};
     rows.forEach(r=>{const o=r.from_code===me?r.to_code:r.from_code;if(isFr(o))(G[o]=G[o]||[]).push(r)});
-    Object.keys(G).forEach(o=>{let a=hist(o),ch=0;const by={};a.forEach(m=>{if(m.i)by[m.i]=m});
+    Object.keys(G).forEach(o=>{const dd=zday(),tdy=G[o].filter(r=>!r.del_all&&zday(+r.ts)===dd);if(tdy.some(r=>r.from_code!==me))zskMark(o,"r");if(tdy.some(r=>r.from_code===me))zskMark(o,"m");
+      let a=hist(o),ch=0;const by={};a.forEach(m=>{if(m.i)by[m.i]=m});
       G[o].forEach(r=>{const mine=r.from_code===me,gone=mine?r.del_from:r.del_to;
         if(DM[r.mid]&&!gone)zdelSrv(r.mid,mine);
         if(gone||DM[r.mid]){if(by[r.mid]){a=a.filter(m=>m.i!==r.mid);ch=1}return}
@@ -5974,15 +5976,19 @@ function zmenu(i){if($("zfsh")||!CH)return;const f=CH,m=hist(f).find(y=>y.i===i)
     let mt=ct+r.height+8;if(mt+mh>H-8)mt=Math.max(8,ct-mh-8);
     const ml=Math.min(Math.max(m.me?r.right-mw:r.left,12),W-mw-12);
     mn.style.cssText="left:"+ml+"px;top:"+mt+"px;transform-origin:"+(m.me?"right":"left")+" "+(mt>ct?"top":"bottom")}}
+const zgeff=r=>r<=48?r:Math.min(80,48+(r-48)*.35);
+function zgp(o){o.rf=0;if(!o.go)return;const e=zgeff(o.raw);o.b.style.transform="translate3d("+o.sd*e+"px,0,0)";const ic=o.b.querySelector(".zfri");
+  if(ic){const k=Math.min(1,e/40);ic.style.opacity=k;ic.style.transform="scale("+(.6+.4*k+(e>=48?.15:0))+")"}
+  if(e>=48&&!o.hit){o.hit=1;try{navigator.vibrate&&navigator.vibrate(8)}catch(_){}}else if(e<44&&o.hit)o.hit=0}
 function zgest(P){let S=null,LT=0;const clr=()=>{clearTimeout(LT);LT=0};
   P.addEventListener("pointerdown",e=>{const b=e.target.closest&&e.target.closest(".zfg[data-i]");if(!b||!CH||(e.pointerType==="mouse"&&e.button))return;
     S={b,x:e.clientX,y:e.clientY,dx:0,go:0,id:e.pointerId};
     LT=setTimeout(()=>{if(S&&!S.go){const bb=S.b;S=null;try{navigator.vibrate&&navigator.vibrate(15)}catch(_){}zmenu(bb.dataset.i)}},480)});
   P.addEventListener("pointermove",e=>{if(!S||e.pointerId!==S.id)return;const dx=e.clientX-S.x,dy=e.clientY-S.y;
-    if(!S.go){const own=S.b.classList.contains("me");if(Math.abs(dy)>10||(dx<-10&&!own)){clr();S=null;return}if(Math.abs(dx)>10&&Math.abs(dx)>Math.abs(dy)*1.5){S.go=1;S.sd=dx>0?1:-1;S.b.dataset.sd=S.sd;clr();S.b.classList.add("sw");try{S.b.setPointerCapture(e.pointerId)}catch(_){}}else return}
-    S.dx=Math.min(70,Math.max(0,dx*S.sd));S.b.style.transform="translateX("+S.sd*S.dx+"px)";const ic=S.b.querySelector(".zfri");if(ic)ic.style.opacity=Math.min(1,S.dx/50)});
-  const end=e=>{if(!S)return;clr();const o=S;S=null;if(!o.go)return;o.b.classList.remove("sw");o.b.style.transform="";delete o.b.dataset.sd;const ic=o.b.querySelector(".zfri");if(ic)ic.style.opacity=0;
-    if(e.type==="pointerup"&&o.dx>=50){try{navigator.vibrate&&navigator.vibrate(10)}catch(_){}zreply(CH,hist(CH).find(y=>y.i===o.b.dataset.i))}zgest.k=Date.now()};
+    if(!S.go){const own=S.b.classList.contains("me");if(Math.abs(dy)>10||(dx<-10&&!own)){clr();S=null;return}if(Math.abs(dx)>10&&Math.abs(dx)>Math.abs(dy)*1.5){S.go=1;S.sd=dx>0?1:-1;S.x0=dx;S.raw=0;S.b.dataset.sd=S.sd;clr();S.b.classList.add("sw");try{S.b.setPointerCapture(e.pointerId)}catch(_){}}else return}
+    S.raw=Math.max(0,(dx-S.x0)*S.sd);if(!S.rf){const o=S;o.rf=requestAnimationFrame(()=>zgp(o))}});
+  const end=e=>{if(!S)return;clr();const o=S;S=null;if(!o.go)return;if(o.rf){cancelAnimationFrame(o.rf);o.rf=0}o.b.classList.remove("sw");o.b.style.transform="";setTimeout(()=>{if(!o.b.classList.contains("sw"))delete o.b.dataset.sd},360);const ic=o.b.querySelector(".zfri");if(ic){ic.style.opacity=0;ic.style.transform=""}
+    if(e.type==="pointerup"&&zgeff(o.raw)>=48){try{navigator.vibrate&&navigator.vibrate(10)}catch(_){}zreply(CH,hist(CH).find(y=>y.i===o.b.dataset.i))}zgest.k=Date.now()};
   P.addEventListener("pointerup",end);P.addEventListener("pointercancel",end);
   P.addEventListener("click",e=>{if(Date.now()-(zgest.k||0)<350){e.stopPropagation();e.preventDefault()}},true);
   P.addEventListener("contextmenu",e=>{const b=e.target.closest&&e.target.closest(".zfg[data-i]");if(b&&CH){e.preventDefault();zmenu(b.dataset.i)}})}
