@@ -8,6 +8,23 @@
   2) Supabase Edge Function "send-push" -> mengirim push ke perangkat penerima (dipicu Database Webhook pada tabel zg_msgs)
   Tabel zg_push (Supabase) menyimpan perangkat yang mengaktifkan notifikasi. Detail lengkap ada di komentar paling bawah file ini.
 -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://0.peerjs.com" crossorigin>
+<script>
+/* ICE ringan: Firefox/Safari jadi lambat kalau server STUN/TURN terlalu banyak (>4 URL) */
+window.ZPCFG={config:{iceServers:[{urls:"stun:stun.l.google.com:19302"},{urls:["turn:openrelay.metered.ca:80","turn:openrelay.metered.ca:443","turns:openrelay.metered.ca:443?transport=tcp"],username:"openrelayproject",credential:"openrelayproject"}]}};
+/* Muat PeerJS: dua CDN dicoba hampir bersamaan, yang pertama selesai dipakai */
+window.zLoadPeer=function(){if(window.Peer)return Promise.resolve();if(zLoadPeer.p)return zLoadPeer.p;
+ var U=["https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js","https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"];
+ zLoadPeer.p=new Promise(function(ok,no){var done=0,fails=0,st=[];
+  function fin(g){if(done)return;if(g){done=1;ok()}else if(++fails>=U.length){done=1;zLoadPeer.p=null;no(1)}}
+  function one(i){if(i>=U.length||st[i])return;st[i]=1;var s=document.createElement("script");s.src=U[i];s.async=true;
+   s.onload=function(){fin(!!window.Peer)};s.onerror=function(){s.remove();fin(0);one(i+1)};document.head.appendChild(s)}
+  one(0);setTimeout(function(){if(!done)one(1)},2500);
+  setTimeout(function(){if(!done){done=1;zLoadPeer.p=null;no(1)}},15000)});
+ return zLoadPeer.p};
+window.addEventListener("load",function(){setTimeout(function(){try{if(localStorage.getItem("zf-me"))zLoadPeer().catch(function(){})}catch(e){}},200)});
+</script>
 <title>Zaim’s Games</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
 <meta name="color-scheme" content="only light">
@@ -3097,8 +3114,8 @@ async function mic(){
 function close(){stopRec(false);const m=document.getElementById("sdcov");if(m)m.remove();isOpen=0;paintFab()}
 const api={
  unread:()=>unread,
- bind(o){bd=o;paintFab()},
- unbind(){const z=window.zfCur;setTimeout(()=>{if(window.zfCur===z)window.zfCur=null},3000);close();CH.length=0;unread=0;bd=null;if(ban){ban.remove();ban=null}badge();paintFab()},
+ bind(o){bd=o;if(window.zfCur)window.zfCur.act=Date.now();paintFab()},
+ unbind(){const z=window.zfCur,t0=Date.now();setTimeout(()=>{if(window.zfCur===z&&!(z&&z.act>=t0))window.zfCur=null},3000);close();CH.length=0;unread=0;bd=null;if(ban){ban.remove();ban=null}badge();paintFab()},
  recv,valid,
  open(){
   if(isOpen||!bd)return;isOpen=1;unread=0;badge();paintFab();
@@ -3253,10 +3270,8 @@ el.addEventListener("click",e=>{
   else if(h.id==="sdgo")start();else if(h.id==="sdnew")setup()});
 
 // ===== Sudoku online (PeerJS) =====
-const PCFG={config:{iceServers:[{urls:"stun:stun.l.google.com:19302"},{urls:"stun:stun1.l.google.com:19302"},{urls:"stun:global.stun.twilio.com:3478"},{urls:"stun:stun.cloudflare.com:3478"},{urls:["turn:openrelay.metered.ca:80","turn:openrelay.metered.ca:443","turn:openrelay.metered.ca:80?transport=tcp","turn:openrelay.metered.ca:443?transport=tcp","turns:openrelay.metered.ca:443?transport=tcp"],username:"openrelayproject",credential:"openrelayproject"}],iceCandidatePoolSize:4}};
-function loadPeer(){if(window.Peer)return Promise.resolve();const U=["https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js","https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"];
- const one=u=>new Promise((ok,no)=>{const s=document.createElement("script"),t=setTimeout(()=>{s.remove();no(1)},6000);s.src=u;s.onload=()=>{clearTimeout(t);window.Peer?ok():no(1)};s.onerror=()=>{clearTimeout(t);no(1)};document.head.appendChild(s)});
- return one(U[0]).catch(()=>one(U[1]))}
+const PCFG=window.ZPCFG;
+function loadPeer(){return window.zLoadPeer()}
 const CHRc="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",OL={role:"",peer:null,conn:null,code:"",name:"",tab:"host",err:"",st:"",busy:0,lv:"sedang",opp:""};
 try{OL.name=localStorage.getItem("zc-chname")||""}catch(e){}
 
@@ -3663,10 +3678,8 @@ document.addEventListener("keydown",e=>{
   if(B.g==="dir"){const d={ArrowUp:"up",ArrowDown:"down",ArrowLeft:"left",ArrowRight:"right"}[e.key];if(d){e.preventDefault();resolve(d,el.querySelector('.rxkey[data-a="'+d+'"]'))}}
   else if(B.g==="str"){const i=+e.key-1;if(i>=0&&i<B.cols.length)resolve(String(i),el.querySelector('.rxco[data-a="'+i+'"]'))}});
 document.addEventListener("visibilitychange",()=>{if(document.hidden&&B.ph==="play"&&!B.net)setup()});
-const PCFG={config:{iceServers:[{urls:"stun:stun.l.google.com:19302"},{urls:"stun:stun1.l.google.com:19302"},{urls:"stun:global.stun.twilio.com:3478"},{urls:"stun:stun.cloudflare.com:3478"},{urls:["turn:openrelay.metered.ca:80","turn:openrelay.metered.ca:443","turn:openrelay.metered.ca:80?transport=tcp","turn:openrelay.metered.ca:443?transport=tcp","turns:openrelay.metered.ca:443?transport=tcp"],username:"openrelayproject",credential:"openrelayproject"}],iceCandidatePoolSize:4}};
-function loadPeer(){if(window.Peer)return Promise.resolve();const U=["https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js","https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"];
- const one=u=>new Promise((ok,no)=>{const s=document.createElement("script"),t=setTimeout(()=>{s.remove();no(1)},6000);s.src=u;s.onload=()=>{clearTimeout(t);window.Peer?ok():no(1)};s.onerror=()=>{clearTimeout(t);no(1)};document.head.appendChild(s)});
- return one(U[0]).catch(()=>one(U[1]))}
+const PCFG=window.ZPCFG;
+function loadPeer(){return window.zLoadPeer()}
 const CHRc="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",OL={role:"",peer:null,conn:null,code:"",name:"",tab:"host",err:"",st:"",busy:0,tg:600,tgm:0,lv:"sedang",opp:""};
 try{OL.name=localStorage.getItem("zc-chname")||""}catch(e){}
 const fmtN=n=>(n|0).toLocaleString("id-ID"),NEYE=ZI.eye,NCHI=ZI.chat;
@@ -4090,10 +4103,8 @@ window.addEventListener("pointerup",e=>dgEnd(e,true));
 window.addEventListener("pointercancel",e=>dgEnd(e,false));
 
 // ===== Catur online (sistem room seperti UNO online) =====
-const PCFG={config:{iceServers:[{urls:"stun:stun.l.google.com:19302"},{urls:"stun:stun1.l.google.com:19302"},{urls:"stun:global.stun.twilio.com:3478"},{urls:"stun:stun.cloudflare.com:3478"},{urls:["turn:openrelay.metered.ca:80","turn:openrelay.metered.ca:443","turn:openrelay.metered.ca:80?transport=tcp","turn:openrelay.metered.ca:443?transport=tcp","turns:openrelay.metered.ca:443?transport=tcp"],username:"openrelayproject",credential:"openrelayproject"}],iceCandidatePoolSize:4}};
-function loadPeer(){if(window.Peer)return Promise.resolve();const U=["https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js","https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"];
- const one=u=>new Promise((ok,no)=>{const s=document.createElement("script"),t=setTimeout(()=>{s.remove();no(1)},6000);s.src=u;s.onload=()=>{clearTimeout(t);window.Peer?ok():no(1)};s.onerror=()=>{clearTimeout(t);no(1)};document.head.appendChild(s)});
- return one(U[0]).catch(()=>one(U[1]))}
+const PCFG=window.ZPCFG;
+function loadPeer(){return window.zLoadPeer()}
 
 const CHRc="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",OL={role:"",peer:null,conn:null,code:"",name:"",tab:"host",err:"",st:"",busy:0,sd:"acak",opp:""};
 try{OL.name=localStorage.getItem("zc-chname")||""}catch(e){}
@@ -4578,10 +4589,8 @@ document.addEventListener("visibilitychange",()=>{if(document.hidden)commit()});
 addEventListener("pagehide",commit);
 
 // ===== Block Blast online (PeerJS) =====
-const PCFG={config:{iceServers:[{urls:"stun:stun.l.google.com:19302"},{urls:"stun:stun1.l.google.com:19302"},{urls:"stun:global.stun.twilio.com:3478"},{urls:"stun:stun.cloudflare.com:3478"},{urls:["turn:openrelay.metered.ca:80","turn:openrelay.metered.ca:443","turn:openrelay.metered.ca:80?transport=tcp","turn:openrelay.metered.ca:443?transport=tcp","turns:openrelay.metered.ca:443?transport=tcp"],username:"openrelayproject",credential:"openrelayproject"}],iceCandidatePoolSize:4}};
-function loadPeer(){if(window.Peer)return Promise.resolve();const U=["https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js","https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"];
- const one=u=>new Promise((ok,no)=>{const s=document.createElement("script"),t=setTimeout(()=>{s.remove();no(1)},6000);s.src=u;s.onload=()=>{clearTimeout(t);window.Peer?ok():no(1)};s.onerror=()=>{clearTimeout(t);no(1)};document.head.appendChild(s)});
- return one(U[0]).catch(()=>one(U[1]))}
+const PCFG=window.ZPCFG;
+function loadPeer(){return window.zLoadPeer()}
 const CHRc="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",OL={role:"",peer:null,conn:null,code:"",name:"",tab:"host",err:"",st:"",busy:0,tg:20000,tgm:0,opp:""};
 try{OL.name=localStorage.getItem("zc-chname")||""}catch(e){}
 const BCHI=ZI.chat;
@@ -4893,7 +4902,7 @@ function tryPlay(c,fr){
 // ----- online (PeerJS): host mengatur game, pemain lain kirim aksi -----
 const OL={role:"",name:S.on||"",code:"",st:"",err:"",names:[],seat:0,conns:[],peer:null,hc:null,busy:0,tok:"",toks:[""],seen:[],hbt:0,syt:0,wd:0,rc:0,hbAt:0};
 const CHR="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";let qu=[],qr=0;
-const PCFG={config:{iceServers:[{urls:"stun:stun.l.google.com:19302"},{urls:"stun:stun1.l.google.com:19302"},{urls:"stun:global.stun.twilio.com:3478"},{urls:"stun:stun.cloudflare.com:3478"},{urls:["turn:openrelay.metered.ca:80","turn:openrelay.metered.ca:443","turn:openrelay.metered.ca:80?transport=tcp","turn:openrelay.metered.ca:443?transport=tcp","turns:openrelay.metered.ca:443?transport=tcp"],username:"openrelayproject",credential:"openrelayproject"}],iceCandidatePoolSize:4}};
+const PCFG=window.ZPCFG;
 const slim=c=>({c:c.c,v:c.v,id:c.id,rot:c.rot});
 function nsend(o){try{OL.hc&&OL.hc.open&&OL.hc.send(o)}catch(e){}}
 function sendTo(k,o){const c=OL.conns[k];try{c&&c.open&&c.send(o)}catch(e){}}
@@ -4904,9 +4913,7 @@ function netLeave(){const p=OL.peer,cl=OL.role==="client";if(cl)nsend({t:"bye"})
  clearInterval(OL.hbt);clearInterval(OL.syt);clearInterval(OL.wd);
  try{if(cl)setTimeout(()=>{try{p.destroy()}catch(e){}},250);else p&&p.destroy()}catch(e){}
  OL.peer=null;OL.hc=null;OL.conns=[];OL.toks=[""];OL.seen=[];OL.role="";OL.st="";OL.names=[];OL.bn=0;OL.busy=0;OL.rc=0;qu=[];ZC.unbind()}
-function loadPeer(){if(window.Peer)return Promise.resolve();const U=["https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js","https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"];
- const one=u=>new Promise((ok,no)=>{const s=document.createElement("script"),t=setTimeout(()=>{s.remove();no(1)},6000);s.src=u;s.onload=()=>{clearTimeout(t);window.Peer?ok():no(1)};s.onerror=()=>{clearTimeout(t);no(1)};document.head.appendChild(s)});
- return one(U[0]).catch(()=>one(U[1]))}
+function loadPeer(){return window.zLoadPeer()}
 function lobbyBc(){for(let k=1;k<OL.conns.length;k++)sendTo(k,{t:"lobby",names:OL.names,seat:k,bn:OL.bn|0})}
 // --- lobby ---
 function olCss(){if(document.getElementById("olcss"))return;const st=document.createElement("style");st.id="olcss";st.textContent=`
@@ -5443,10 +5450,8 @@ function cfgClick(e){
 // ----- online (PeerJS): host mengatur game, pemain lain kirim aksi -----
 const OL={role:"",name:"",code:"",st:"",err:"",names:[],bn:0,seat:0,conns:[],toks:[""],peer:null,hc:null,busy:0,rc:0,tok:"",hbt:0,wd:0,syt:0,hbAt:0,opp0:"",want:"",inv:""};
 const CHR="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-const PCFG={config:{iceServers:[{urls:"stun:stun.l.google.com:19302"},{urls:"stun:stun1.l.google.com:19302"},{urls:"stun:global.stun.twilio.com:3478"},{urls:"stun:stun.cloudflare.com:3478"},{urls:["turn:openrelay.metered.ca:80","turn:openrelay.metered.ca:443","turn:openrelay.metered.ca:80?transport=tcp","turn:openrelay.metered.ca:443?transport=tcp","turns:openrelay.metered.ca:443?transport=tcp"],username:"openrelayproject",credential:"openrelayproject"}],iceCandidatePoolSize:4}};
-function loadPeer(){if(window.Peer)return Promise.resolve();const U=["https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js","https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"];
- const one=u=>new Promise((ok,no)=>{const s=document.createElement("script"),t=setTimeout(()=>{s.remove();no(1)},6000);s.src=u;s.onload=()=>{clearTimeout(t);window.Peer?ok():no(1)};s.onerror=()=>{clearTimeout(t);no(1)};document.head.appendChild(s)});
- return one(U[0]).catch(()=>one(U[1]))}
+const PCFG=window.ZPCFG;
+function loadPeer(){return window.zLoadPeer()}
 function nsend(o){try{OL.hc&&OL.hc.open&&OL.hc.send(o)}catch(e){}}
 function sendTo(k,o){const c=OL.conns[k];try{c&&c.open&&c.send(o)}catch(e){}}
 function sendAll(o){for(let k=1;k<OL.conns.length;k++)sendTo(k,o)}
@@ -5742,7 +5747,7 @@ window.zfPickFriend=(g,code)=>{const old=document.getElementById("zpf");if(old)o
     try{await send(f,{t:"inv",g,c:code,n:ME.name});toast("Ajakan terkirim ke "+(DATA.names[f]||f),2200);o.remove()}
     catch(er){b.disabled=false;toast("Teman sedang offline atau belum membuka web",2600)}};
   document.body.appendChild(o)};
-window.zfAuto=k=>{const R=window.zfRoom;if(R&&R.k===k&&Date.now()-R.t<3e5){window.zfRoom=null;return R}return null};
+window.zfAuto=k=>{const R=window.zfRoom;if(R&&R.k===k&&Date.now()-R.t<3e5){window.zfRoom=null;if(window.zfCur)window.zfCur.act=Date.now();return R}return null};
 // ----- statistik main bersama teman (disimpan di perangkat ini) -----
 const H2K="zc-h2h",H2G={sdk:"Sudoku",chs:"Catur",uno:"UNO",ldo:"Ludo",pt:"Pulse Tap",bb:"Block Blast"};
 window.zgRec=(k,o)=>{try{const c=window.zfCur;if(!c||c.k!==k||!c.f)return;const now=Date.now();if(zgRec.l&&zgRec.l.k===k&&now-zgRec.l.t<4000)return;zgRec.l={k,t:now};
@@ -5760,7 +5765,7 @@ window.zfGameChat=(m,bd)=>{try{const c=window.zfCur;if(!c||!c.f||!isFr(c.f))retu
   const x=m.k==="img"?"📷 Foto":m.k==="aud"?"🎤 Voice note":String(m.d||"").slice(0,500);if(!x)return;
   const a=hist(f);a.push({me:m.me?1:0,x,t:Date.now(),g:H2G[c.k]||"Game"});saveH(f,a);
   if(opn()&&CH===f)drawChat();else if(opn()&&!CH&&!INV&&!ZN)draw(true)}catch(e){}};
-window.zfCancel=()=>{const o=OUT;OUT=null;if(o)send(o.f,{t:"invx",c:o.c}).catch(()=>{})};
+window.zfCancel=()=>{const o=OUT;OUT=null;if(o)deliver(o.f,{t:"invx",c:o.c},2500).catch(()=>{})};
 const AVC=["#e5252c","#f08a24","#1ea04b","#1479c4","#8e44ad","#16a085","#d6336c"],avc=n=>AVC[[...String(n||"?")].reduce((a,ch)=>a+ch.charCodeAt(0),0)%AVC.length];
 window.zfLobby=o=>{const G=Object.values(GM).find(x=>x.k===o.k)||GM.sudoku,opp=o.opp||"Teman",me=o.me||"Kamu",st=o.err?"err":o.st,host=o.role==="host",
  pl=(n,w)=>'<div class="zlp'+(w?" w":"")+'"><i class="zlav" style="background:'+avc(n)+';--rc:'+avc(n)+'88">'+esc(Array.from(String(n).trim())[0]||"?")+'</i><b>'+esc(n)+'</b></div>',
@@ -5823,8 +5828,8 @@ async function pushEnable(){
   toast(r.ok?"Notifikasi aktif ✓":"Gagal: "+r.why,r.ok?2200:7000);HSIG="";renderHome()}
 if("serviceWorker" in navigator)navigator.serviceWorker.addEventListener("message",e=>{const f=e.data&&e.data.zopen;if(f&&isFr(f))open("fr",{a:"chat",f})});
 // ----- PeerJS: chat & undangan -----
-const PCF={config:{iceServers:[{urls:"stun:stun.l.google.com:19302"},{urls:"stun:stun.cloudflare.com:3478"},{urls:["turn:openrelay.metered.ca:80","turn:openrelay.metered.ca:443","turn:openrelay.metered.ca:443?transport=tcp","turns:openrelay.metered.ca:443?transport=tcp"],username:"openrelayproject",credential:"openrelayproject"}]}};
-const lp=()=>window.Peer?Promise.resolve():new Promise((res,rej)=>{const u=["https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js","https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"];let i=0;const t=()=>{if(i>=u.length)return rej();const s=document.createElement("script");s.src=u[i++];s.onload=res;s.onerror=t;document.head.appendChild(s)};t()});
+const PCF=window.ZPCFG;
+const lp=()=>window.zLoadPeer();
 function hook(c){const f=String(c.peer).slice(4).toUpperCase();CN[f]=c;c.on("data",d=>onData(f,d));c.on("close",()=>{if(CN[f]===c)delete CN[f]})}
 function peerUp(){if(PR||!ME||!window.Peer)return;const p=PR=new Peer("zcf-"+ME.code.toLowerCase(),PCF);
   p.on("connection",hook);p.on("call",onCall);p.on("disconnected",()=>{try{p.reconnect()}catch(e){}});
@@ -5837,8 +5842,9 @@ const conn=async f=>{try{return await conn1(f,9000)}catch(e){delete CN[f];return
 const send=async(f,o)=>{let c=await conn(f);try{c.send(o)}catch(e){try{c.close()}catch(_){}delete CN[f];c=await conn(f);c.send(o)}};
 // ----- pesan offline: titip di Supabase (tabel zg_msgs), diambil saat penerima online -----
 let LASTID=+(LS("zf-last")||0),PULLING=0;
-async function deliver(f,o){
-  if(DATA.on[f]){try{const c=await conn1(f,6000);c.send(o);return"p2p"}catch(e){delete CN[f]}}
+async function deliver(f,o,ms){
+  const c0=CN[f];if(c0&&c0.open){try{c0.send(o);return"p2p"}catch(e){delete CN[f]}}
+  if(DATA.on[f]){try{const c=await conn1(f,ms||6000);c.send(o);return"p2p"}catch(e){delete CN[f]}}
   await api("zg_msgs",{m:"POST",p:"return=minimal",b:{from_code:ME.code,to_code:f,body:o,ts:Date.now()}});
   return"srv"}
 function dErr(e){const c=+(e&&e.message);return c===404||(e&&e.pg==="PGRST205")?"Tabel zg_msgs belum dibuat di Supabase. Jalankan SQL-nya dulu":c===401||c===403?"Akses ditolak ("+c+"). Cek RLS dan GRANT tabel zg_msgs":"Pesan gagal dikirim, coba lagi"}
@@ -5849,12 +5855,12 @@ async function pull(){if(!ME||PULLING)return;PULLING=1;
     LS("zf-last",String(LASTID));
     api("zg_msgs?id=in.("+rows.map(r=>r.id).join(",")+")",{m:"DELETE",p:"return=minimal"}).catch(()=>{})}
   catch(e){}finally{PULLING=0}}
-function boot(){if(HB)return;setInterval(()=>{if(!document.hidden){pull();if(opn())zsync(CH||undefined)}},10000);document.addEventListener("visibilitychange",()=>{if(!document.hidden){refresh();beat().catch(()=>{})}});HB=setInterval(()=>{if(!document.hidden){beat().catch(()=>{});if(!opn())refresh()}},30000);lp().then(peerUp).catch(()=>{})}
+function boot(){if(HB)return;setInterval(()=>{if(!document.hidden)pull()},4000);setInterval(()=>{if(!document.hidden){pull();if(opn())zsync(CH||undefined)}},10000);document.addEventListener("visibilitychange",()=>{if(!document.hidden){refresh();beat().catch(()=>{})}});HB=setInterval(()=>{if(!document.hidden){beat().catch(()=>{});if(!opn())refresh()}},30000);lp().then(peerUp).catch(()=>{})}
 function onData(f,d){if(!d||typeof d!=="object"||!isFr(f))return;
   if(d.t==="m"&&typeof d.x==="string"){const md=zin(d);if(md===false)return;const x=md?md.x:d.x.slice(0,500),a=hist(f);const mi=zid(d.i);if(mi&&(a.some(y=>y.i===mi)||DM[mi]))return;const rp=zrep(d.r);a.push(Object.assign({me:0,x,t:d._ts||Date.now()},md||{},mi?{i:mi}:{},rp?{r:rp}:{}));saveH(f,a);sfx("recv");if(zday(d._ts)===zday()&&!(md&&md.k==="stat"))zskMark(f,"r");
     if(opn()&&CH===f)drawChat();else{UN[f]=(UN[f]||0)+1;saveUN();dot();znMsg(f,x);if(opn()&&!CH&&!INV&&!ZN)draw(true)}}
   else if(d.t==="del"){const mi=zid(d.i),a=hist(f),m=mi&&a.find(y=>y.i===mi&&!y.me);if(m){zwipe(m);saveH(f,a);if(opn()&&CH===f)drawChat()}}
-  else if(d.t==="inv"&&GM[d.g]&&/^[A-Z0-9]{5}$/.test(d.c))banner(f,d.g,d.c)
+  else if(d.t==="inv"&&GM[d.g]&&/^[A-Z0-9]{5}$/.test(d.c)){if(d._ts&&Date.now()-d._ts>55000)return;banner(f,d.g,d.c)}
   else if(d.t==="invr"&&OUT&&OUT.c===d.c&&OUT.f===f){if(!d.ok){OUT=null;window.zfAbort&&zfAbort(d.c,(DATA.names[f]||f)+" menolak ajakan.")}}
   else if(d.t==="rack"){const C=CALL;if(C&&C.f===f&&C.wait&&d.id===C.id&&!C.rg){C.rg=1;cRender();try{navigator.vibrate&&navigator.vibrate(120)}catch(e){}}}
   else if(d.t==="cx")onCx(f,d)
@@ -5873,12 +5879,13 @@ async function accept(f,g,c){
   if(cur&&!(await confirmX("Terima ajakan?","Game yang sedang berjalan akan ditutup.","Terima",true)))return;
   if(!BN||BN.c!==c)return;
   bannerOff();if(cur)zGame.quit(cur);
-  send(f,{t:"invr",c,ok:1}).catch(()=>{});
+  deliver(f,{t:"invr",c,ok:1},2500).catch(()=>{});
   close();window.zfCur={k:GM[g].k,f};window.zfRoom={k:GM[g].k,c,t:Date.now(),role:"client",opp:DATA.names[f]||f,me:ME.name};
   window.zfLaunch&&zfLaunch(g)}
-function decline(f,c){bannerOff();send(f,{t:"invr",c,ok:0}).catch(()=>{})}
-async function invite(f,g,o){const c=mk(5);
-  try{await send(f,{t:"inv",g,c,n:ME.name})}catch(e){toast("Teman sedang offline atau belum membuka web",2600);return false}
+function decline(f,c){bannerOff();deliver(f,{t:"invr",c,ok:0},2500).catch(()=>{})}
+async function invite(f,g,o){const c=mk(5),iv={t:"inv",g,c,n:ME.name};
+  try{if(DATA.on[f])await deliver(f,iv,3000);else{const cn=await conn1(f,2500);cn.send(iv)}}
+  catch(e){toast(DATA.on[f]?dErr(e):"Teman sedang offline atau belum membuka web",2600);return false}
   OUT={f,c};window.zfCur={k:GM[g].k,f};window.zfRoom={k:GM[g].k,c,t:Date.now(),role:"host",opp:DATA.names[f]||f,me:ME.name,o:o||{}};
   INV=null;SEL=null;OPT={};INVP=0;close();window.zfLaunch&&zfLaunch(g);return true}
 // ----- layar pilih game -----
@@ -6230,7 +6237,7 @@ async function act(a,id,x,bt){
     if(a==="new"){ZN=1;INV=null;CH=null;NAV.push("zfs",()=>act("back"));draw(true);return}
     if(a==="tofr"){ZM="fr";ZN=0;draw(true);return}
     if(a==="chat"){CH=x;ZN=0;delete UN[x];saveUN();dot();NAV.push("zfs",()=>act("back"));drawChat();zsync(x);return}
-    if(a==="inv"){INV=x;SEL=null;OPT={};INVP=0;NAV.push("zfs",()=>act("back"));draw(true);return}
+    if(a==="inv"){if(DATA.on[x]&&!(CN[x]&&CN[x].open))conn1(x,12000).catch(()=>{});INV=x;SEL=null;OPT={};INVP=0;NAV.push("zfs",()=>act("back"));draw(true);return}
     if(a==="pg"){if(!GM[x])return;if(SEL!==x){SEL=x;OPT={};GM[x].opt.forEach(o=>OPT[o.k]=o.d);sfx("click");invUpd()}return}
     if(a==="op"){const g=SEL&&GM[SEL],o=g&&g.opt.find(y=>y.k===bt.dataset.o);if(!o)return;const v=o.v.find(y=>String(y[0])===bt.dataset.v);if(!v)return;OPT[o.k]=v[0];sfx("click");
       bt.parentNode.querySelectorAll(".zoc").forEach(y=>y.classList.toggle("on",y===bt));return}
