@@ -6003,7 +6003,7 @@ function zrebind(){if(!AU)return;const nb=[...P.querySelectorAll(".zfpl")].find(
 function zview(u){if(!ZOK(u))return;const o=document.createElement("div");o.className="zfiv";o.innerHTML='<img alt="Foto" src="'+u+'"><button type="button" class="zfivx" aria-label="Tutup">✕</button>';o.onclick=()=>o.remove();document.body.appendChild(o)}
 // ----- balas (swipe), hapus, dan simpan riwayat chat ke Supabase (tabel zg_chat) -----
 let RP=null,DM={};try{DM=JSON.parse(LS("zf-dm")||"{}")||{}}catch(e){}
-const zid=x=>typeof x==="string"&&/^[A-Za-z0-9]{8,40}$/.test(x)?x:"",zmid=()=>ME.code+Date.now().toString(36)+mk(4).toLowerCase();
+const zleg=i=>typeof i==="string"&&i.length<14&&/^L[0-9a-z]+$/.test(i),zid=x=>typeof x==="string"&&/^[A-Za-z0-9]{8,40}$/.test(x)?x:"",zmid=()=>ME.code+Date.now().toString(36)+mk(4).toLowerCase();
 function zrep(r){if(!r||typeof r!=="object")return null;const i=zid(r.i),a=String(r.a||"");if(!i||!/^[A-Z0-9]{6}$/.test(a))return null;
   const o={i,a,x:String(r.x==null?"":r.x).slice(0,100)};if(r.k==="img"||r.k==="aud")o.k=r.k;if(o.k==="img"&&ZOK(r.u))o.u=r.u;return o}
 function zmk(f){const M={i:zmid()};if(RP&&RP.f===f)M.r={i:RP.i,a:RP.a,x:RP.x,k:RP.k,u:RP.u};return M}
@@ -6015,7 +6015,7 @@ function zrow2(r){const b=r.body||{},me=r.from_code===ME.code?1:0;if(r.del_all)r
   const md=zin(b);if(md===false||(!md&&typeof b.x!=="string"))return null;const rp=zrep(b.r);
   return Object.assign({me,x:md?md.x:b.x.slice(0,500),t:+r.ts,i:r.mid},md||{},rp?{r:rp}:{})}
 async function zsync(f){if(!ME||zsync.b||(f&&!isFr(f)))return;zsync.b=1;const me=ME.code;
-  try{const rows=await api("zg_chat?select=mid,from_code,to_code,body,ts,del_all,del_from,del_to&"+(f?"or=(and(from_code.eq."+me+",to_code.eq."+f+"),and(from_code.eq."+f+",to_code.eq."+me+"))&order=ts.desc&limit=150":"or=(from_code.eq."+me+",to_code.eq."+me+")&order=ts.desc&limit=300")),G={};
+  try{const rows=await zget("zg_chat?select=mid,from_code,to_code,body,ts,del_all,del_from,del_to&"+(f?"or=(and(from_code.eq."+me+",to_code.eq."+f+"),and(from_code.eq."+f+",to_code.eq."+me+"))&order=ts.desc&limit=150":"or=(from_code.eq."+me+",to_code.eq."+me+")&order=ts.desc&limit=300")),G={};
     rows.forEach(r=>{const o=r.from_code===me?r.to_code:r.from_code;if(isFr(o))(G[o]=G[o]||[]).push(r)});
     Object.keys(G).forEach(o=>{const dd=zday(),tdy=G[o].filter(r=>!r.del_all&&zday(+r.ts)===dd&&!(r.body&&r.body.k==="stat"));if(tdy.some(r=>r.from_code!==me))zskMark(o,"r");if(tdy.some(r=>r.from_code===me))zskMark(o,"m");
       let a=hist(o),ch=0;const by={};a.forEach(m=>{if(m.i)by[m.i]=m});
@@ -6026,10 +6026,18 @@ async function zsync(f){if(!ME||zsync.b||(f&&!isFr(f)))return;zsync.b=1;const me
         const n=zrow2(r);if(n){a.push(n);ch=1}});
       if(ch){a.sort((p,q)=>p.t-q.t);saveH(o,a);if(opn()){if(CH===o)drawChat();else if(!CH&&!INV&&!ZN)draw(true)}}})}
   catch(e){}finally{zsync.b=0}}
+async function zdelAll(i,f,m){
+  const q="zg_chat?mid=eq."+i+"&from_code=eq."+ME.code;
+  try{const r=await api(q,{m:"PATCH",p:"return=representation",b:{del_all:true,body:{}}});
+    if(!r.length)await api("zg_chat?on_conflict=mid",{m:"POST",p:"resolution=merge-duplicates,return=minimal",b:{mid:i,from_code:ME.code,to_code:f,body:{},ts:m.t||Date.now(),del_all:true}});
+    return 1}catch(e){}
+  try{await api(q,{m:"DELETE",p:"return=minimal"});return 2}catch(e){}
+  return 0}
+async function zget(p){try{return await api(p)}catch(e){if(+e.message===400&&p.indexOf(",del_all,del_from,del_to")>0)return api(p.replace(",del_all,del_from,del_to",""));throw e}}
 async function zdel(f,i,all){const a=hist(f),m=a.find(y=>y.i===i);if(!m)return;
-  if(all){try{await api("zg_chat?mid=eq."+i+"&from_code=eq."+ME.code,{m:"PATCH",p:"return=minimal",b:{del_all:true,body:{}}})}catch(e){return toast("Gagal menghapus untuk semua. Cek koneksi dan tabel zg_chat",3200)}
+  if(all){if(!(await zdelAll(i,f,m)))return toast("Gagal menghapus untuk semua. Cek koneksi dan tabel zg_chat (jalankan SQL terbaru)",3600)
     deliver(f,{t:"del",i}).catch(()=>{});zwipe(m)}
-  else{DM[i]=1;LS("zf-dm",JSON.stringify(DM));a.splice(a.indexOf(m),1);if(!/^L/.test(i))zdelSrv(i,m.me)}
+  else{DM[i]=1;LS("zf-dm",JSON.stringify(DM));a.splice(a.indexOf(m),1);if(!zleg(i))zdelSrv(i,m.me)}
   saveH(f,a);drawChat()}
 function zrpDraw(){const w=$("zfrw");if(!w)return;const r=RP&&RP.f===CH?RP:null;
   w.innerHTML=r?'<div class="zfrp"><div><b>'+esc(r.a===ME.code?"Kamu":DATA.names[r.a]||r.a)+'</b><span>'+esc(r.x)+'</span></div><button type="button" data-a="rpx" aria-label="Batal balas">✕</button></div>':""}
@@ -6041,7 +6049,7 @@ function zmenu(i){if($("zfsh")||!CH)return;const f=CH,m=hist(f).find(y=>y.i===i)
   const o=document.createElement("div");o.id="zfsh";o.className="zfsh";
   const S0='<svg viewBox="0 0 24 24">',bt=(k,t,p,c)=>'<button type="button" data-k="'+k+'"'+(c?' class="'+c+'"':"")+'><span>'+t+'</span>'+S0+p+'</svg></button>';
   const IR='<path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 6 6v3"/>',IC='<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/>',ID='<path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/>';
-  o.innerHTML=(r?'<div class="'+b.className.replace(/\b(sw|hl)\b/g,"")+' zfhb">'+b.innerHTML+'</div>':"")+'<div class="zfhm">'+(m.dl?"":bt("rp","Balas",IR)+(m.k?"":bt("cp","Salin",IC)))+bt("dm","Hapus untuk saya",ID,"d")+(m.me&&!m.dl&&!/^L/.test(i)?bt("da","Hapus untuk semua",ID,"d"):"")+'</div>';
+  o.innerHTML=(r?'<div class="'+b.className.replace(/\b(sw|hl)\b/g,"")+' zfhb">'+b.innerHTML+'</div>':"")+'<div class="zfhm">'+(m.dl?"":bt("rp","Balas",IR)+(m.k?"":bt("cp","Salin",IC)))+bt("dm","Hapus untuk saya",ID,"d")+(m.me&&!m.dl&&!zleg(i)?bt("da","Hapus untuk semua",ID,"d"):"")+'</div>';
   const cl=()=>{o.remove();if(b)b.style.visibility=""};
   o.addEventListener("click",async e=>{if(Date.now()-t0<350)return;const k=e.target.closest("[data-k]");if(!k&&e.target.closest(".zfhm"))return;const a=k&&k.dataset.k;cl();
     if(a==="rp")zreply(f,m);
@@ -6105,8 +6113,8 @@ function zbindScroll(m){if(m._zb)return;m._zb=1;m.addEventListener("scroll",zjmp
 function zstat(f){zstPick(f)}
 // ----- Statistik dikirim "robot" ke chat (tersimpan di riwayat + Supabase, teman ikut bisa lihat) -----
 const ZSH={};
-function zsData(f){let d={};try{d=JSON.parse(localStorage.getItem(H2K)||"{}")[f]||{}}catch(e){}return d}
-function zsRows(f,keys){const d=zsData(f);return Object.keys(H2G).filter(k=>keys.indexOf(k)>=0&&d[k]&&d[k].n>0).map(k=>[k,d[k].n|0,d[k].w|0,d[k].l|0,d[k].d|0])}
+function zsMine(f){let d={};try{d=JSON.parse(localStorage.getItem(H2K)||"{}")[f]||{}}catch(e){}return d}
+function zsRows(f,keys){const d=zsMine(f);return Object.keys(H2G).filter(k=>keys.indexOf(k)>=0&&d[k]&&d[k].n>0).map(k=>[k,d[k].n|0,d[k].w|0,d[k].l|0,d[k].d|0])}
 function zStatCmd(t){const m=/^\/stati(?:s|st)ik(?:\s+(.*))?$/i.exec(String(t||"").trim());if(!m)return null;
   const al={sudoku:"sdk",sdk:"sdk",catur:"chs",chs:"chs",uno:"uno",ludo:"ldo",ldo:"ldo",pulse:"pt",pulsetap:"pt",tap:"pt",pt:"pt",block:"bb",blast:"bb",blockblast:"bb",bb:"bb"},ks=[];
   String(m[1]||"").toLowerCase().split(/[\s,]+/).forEach(w=>{const k=al[w];if(k&&ks.indexOf(k)<0)ks.push(k)});
@@ -6137,7 +6145,7 @@ function zstatBot(m,d){
   return h+'<div class="zsf">Data dari perangkat '+esc(A)+'</div></div></div>'}
 function zstPick(f){
   if($("zstp")||!f)return;
-  const d=zsData(f),nm=DATA.names[f]||f,keys=Object.keys(H2G),has=k=>!!(d[k]&&d[k].n>0),av=keys.filter(has);
+  const d=zsMine(f),nm=DATA.names[f]||f,keys=Object.keys(H2G),has=k=>!!(d[k]&&d[k].n>0),av=keys.filter(has);
   let sel=null;try{sel=JSON.parse(LS("zf-stsel")||"null")}catch(e){}
   sel=(Array.isArray(sel)?sel:keys).filter(k=>has(k));
   const o=document.createElement("div");o.id="zstp";o.className="zstp";
@@ -6585,6 +6593,9 @@ create table if not exists public.zg_chat (
   del_from boolean not null default false,
   del_to boolean not null default false
 );
+alter table public.zg_chat add column if not exists del_all boolean not null default false;
+alter table public.zg_chat add column if not exists del_from boolean not null default false;
+alter table public.zg_chat add column if not exists del_to boolean not null default false;
 create index if not exists zg_chat_from_idx on public.zg_chat (from_code, ts);
 create index if not exists zg_chat_to_idx on public.zg_chat (to_code, ts);
 alter table public.zg_chat enable row level security;
