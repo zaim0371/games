@@ -10,14 +10,26 @@
 -->
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://0.peerjs.com" crossorigin>
+<link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js" crossorigin>
 <script>
 /* ICE ringan: Firefox/Safari jadi lambat kalau server STUN/TURN terlalu banyak (>4 URL) */
-window.ZPCFG={config:{iceServers:[{urls:"stun:stun.l.google.com:19302"},{urls:["turn:openrelay.metered.ca:80","turn:openrelay.metered.ca:443","turns:openrelay.metered.ca:443?transport=tcp"],username:"openrelayproject",credential:"openrelayproject"}]}};
+window.ZPCFG=(function(){var ice=[{urls:["stun:stun.l.google.com:19302","stun:stun1.l.google.com:19302","stun:stun2.l.google.com:19302"]},{urls:"stun:stun.cloudflare.com:3478"},
+ {urls:["turn:openrelay.metered.ca:80","turn:openrelay.metered.ca:443","turns:openrelay.metered.ca:443?transport=tcp"],username:"openrelayproject",credential:"openrelayproject"}];
+ /* TURN sendiri (lebih andal dari TURN gratis publik): localStorage.setItem("zf-turn",JSON.stringify([{urls:"turn:host:443",username:"u",credential:"p"}])) */
+ try{var c=JSON.parse(localStorage.getItem("zf-turn")||"null");if(Array.isArray(c)&&c.length)ice=c.concat(ice)}catch(e){}
+ return{config:{iceServers:ice,iceCandidatePoolSize:4}}})();
 /* Muat PeerJS: dua CDN dicoba hampir bersamaan, yang pertama selesai dipakai */
-window.zLoadPeer=function(){if(window.Peer)return Promise.resolve();if(zLoadPeer.p)return zLoadPeer.p;
+/* Sambung ulang otomatis ke server sinyal: HP sering memutus WebSocket saat layar mati / pindah aplikasi / sinyal goyang */
+window.zWrapPeer=function(){var P=window.Peer;if(!P||P.zw)return;var S=window.__zps=window.__zps||[];
+ function re(p,n){if(!p||p.destroyed||!p.disconnected||n>14)return;try{p.reconnect()}catch(e){}setTimeout(function(){re(p,n+1)},Math.min(8000,900*(n+1)))}
+ function W(a,b){var p=new P(a,b);S.push(p);p.on("disconnected",function(){re(p,0)});p.on("close",function(){var i=S.indexOf(p);if(i>=0)S.splice(i,1)});return p}
+ W.prototype=P.prototype;for(var k in P){try{W[k]=P[k]}catch(e){}}W.zw=1;window.Peer=W;
+ function wake(){S.slice().forEach(function(p){if(p.disconnected&&!p.destroyed)re(p,0)})}
+ document.addEventListener("visibilitychange",function(){if(!document.hidden)wake()});window.addEventListener("online",wake);window.addEventListener("pageshow",wake)};
+window.zLoadPeer=function(){if(window.Peer){zWrapPeer();return Promise.resolve()}if(zLoadPeer.p)return zLoadPeer.p;
  var U=["https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js","https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"];
  zLoadPeer.p=new Promise(function(ok,no){var done=0,fails=0,st=[];
-  function fin(g){if(done)return;if(g){done=1;ok()}else if(++fails>=U.length){done=1;zLoadPeer.p=null;no(1)}}
+  function fin(g){if(done)return;if(g){done=1;zWrapPeer();ok()}else if(++fails>=U.length){done=1;zLoadPeer.p=null;no(1)}}
   function one(i){if(i>=U.length||st[i])return;st[i]=1;var s=document.createElement("script");s.src=U[i];s.async=true;
    s.onload=function(){fin(!!window.Peer)};s.onerror=function(){s.remove();fin(0);one(i+1)};document.head.appendChild(s)}
   one(0);setTimeout(function(){if(!done)one(1)},2500);
@@ -2004,7 +2016,7 @@ button.bwchip{background:rgba(243,234,216,.14);border-color:transparent;font-wei
 <div class="app">
   <section class="view show enter" id="vh">
     <div class="hd"><h1>Zaim’s Games</h1><button type="button" class="hb" id="hkey" aria-label="Pengaturan API key"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/></svg></button></div>
-    <div class="zhome"><div class="zs">Main dengan teman</div><div class="zl zfl" id="zhfr"></div><div class="zs">Favorit</div><div class="zl"><button type="button" class="zr" data-w="blast"><span class="zi" style="background:#007AFF"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg><i class="zst"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 6.2 6.8.8-5 4.7 1.3 6.7-6-3.4-6 3.4 1.3-6.7-5-4.7 6.8-.8z"/></svg></i></span><span class="zt"><b>Block Blast</b><em>Susun &amp; hapus baris</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button><button type="button" class="zr" data-w="bowler"><span class="zi" style="background:#E5432D"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5c-1.6 0-2.4 1.2-2.4 2.6 0 1.2.7 2 1.1 2.8.5 1-1.7 2.5-1.7 5.3 0 2 1.1 3 1.1 4.5l-.8 3.8h5.4l-.8-3.8c0-1.5 1.1-2.5 1.1-4.5 0-2.8-2.2-4.3-1.7-5.3.4-.8 1.1-1.6 1.1-2.8 0-1.4-.8-2.6-2.4-2.6z"/><path d="M10.2 9.5h3.6"/></svg><i class="zst"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 6.2 6.8.8-5 4.7 1.3 6.7-6-3.4-6 3.4 1.3-6.7-5-4.7 6.8-.8z"/></svg></i></span><span class="zt"><b>Bowler</b><em>Strike! Solo, teman, atau online</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button><button type="button" class="zr" data-w="sudoku"><span class="zi" style="background:#34C759"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3.5"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></svg><i class="zst"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 6.2 6.8.8-5 4.7 1.3 6.7-6-3.4-6 3.4 1.3-6.7-5-4.7 6.8-.8z"/></svg></i></span><span class="zt"><b>Sudoku</b><em>Teka-teki angka</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button><button type="button" class="zr" data-w="uno"><span class="zi" style="background:#FF3B30"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2.5" width="14" height="19" rx="3"/><ellipse cx="12" cy="12" rx="4" ry="6.5" transform="rotate(30 12 12)"/></svg><i class="zst"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 6.2 6.8.8-5 4.7 1.3 6.7-6-3.4-6 3.4 1.3-6.7-5-4.7 6.8-.8z"/></svg></i></span><span class="zt"><b>UNO</b><em>Lawan AI, teman, atau online</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button><button type="button" class="zr" data-w="ludo"><span class="zi" style="background:#FF9500"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="8.5" cy="8.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="15.5" cy="8.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="8.5" cy="15.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1.3" fill="currentColor" stroke="none"/></svg><i class="zst"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 6.2 6.8.8-5 4.7 1.3 6.7-6-3.4-6 3.4 1.3-6.7-5-4.7 6.8-.8z"/></svg></i></span><span class="zt"><b>Ludo</b><em>Lawan bot, teman, atau online</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button></div><div class="zs">Kartu &amp; papan</div><div class="zl"><button type="button" class="zr" data-w="uno"><span class="zi" style="background:#FF3B30"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2.5" width="14" height="19" rx="3"/><ellipse cx="12" cy="12" rx="4" ry="6.5" transform="rotate(30 12 12)"/></svg></span><span class="zt"><b>UNO</b><em>Lawan AI, teman, atau online</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button><button type="button" class="zr" data-w="chess"><span class="zi" style="background:#5856D6"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="6.5" r="3"/><path d="M9.5 21h5M8 17.5h8M10.5 17.5c0-4 .5-6 1.5-8.5 1 2.500 1.500 4.500 1.500 8.500"/></svg></span><span class="zt"><b>Catur</b><em>Lawan AI, teman, atau online</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button><button type="button" class="zr" data-w="sudoku"><span class="zi" style="background:#34C759"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3.5"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></svg></span><span class="zt"><b>Sudoku</b><em>Teka-teki angka</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button><button type="button" class="zr" data-w="ludo"><span class="zi" style="background:#FF9500"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="8.5" cy="8.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="15.5" cy="8.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="8.5" cy="15.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1.3" fill="currentColor" stroke="none"/></svg></span><span class="zt"><b>Ludo</b><em>Lawan bot, teman, atau online</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button></div><div class="zs">Arcade</div><div class="zl"><button type="button" class="zr" data-w="pul"><span class="zi" style="background:#FF9500"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></span><span class="zt"><b>Pulse Tap</b><em>Tekan kotak menyala</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button><button type="button" class="zr" data-w="blast"><span class="zi" style="background:#007AFF"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg></span><span class="zt"><b>Block Blast</b><em>Susun &amp; hapus baris</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button><button type="button" class="zr" data-w="bowler"><span class="zi" style="background:#E5432D"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5c-1.6 0-2.4 1.2-2.4 2.6 0 1.2.7 2 1.1 2.8.5 1-1.7 2.5-1.7 5.3 0 2 1.1 3 1.1 4.5l-.8 3.8h5.4l-.8-3.8c0-1.5 1.1-2.5 1.1-4.5 0-2.8-2.2-4.3-1.7-5.3.4-.8 1.1-1.6 1.1-2.8 0-1.4-.8-2.6-2.4-2.6z"/><path d="M10.2 9.5h3.6"/></svg></span><span class="zt"><b>Bowler</b><em>Strike! Solo, 2 pemain, atau online</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button></div></div>
+    <div class="zhome"><div class="zs">Main dengan teman</div><div class="zl zfl" id="zhfr"></div><div class="zs">Favorit</div><div class="zl"><button type="button" class="zr" data-w="blast"><span class="zi" style="background:#007AFF"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg><i class="zst"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 6.2 6.8.8-5 4.7 1.3 6.7-6-3.4-6 3.4 1.3-6.7-5-4.7 6.8-.8z"/></svg></i></span><span class="zt"><b>Block Blast</b><em>Susun &amp; hapus baris</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button><button type="button" class="zr" data-w="bowler"><span class="zi" style="background:#E5432D"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5c-1.6 0-2.4 1.2-2.4 2.6 0 1.2.7 2 1.1 2.8.5 1-1.7 2.5-1.7 5.3 0 2 1.1 3 1.1 4.5l-.8 3.8h5.4l-.8-3.8c0-1.5 1.1-2.5 1.1-4.5 0-2.8-2.2-4.3-1.7-5.3.4-.8 1.1-1.6 1.1-2.8 0-1.4-.8-2.6-2.4-2.6z"/><path d="M10.2 9.5h3.6"/></svg><i class="zst"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 6.2 6.8.8-5 4.7 1.3 6.7-6-3.4-6 3.4 1.3-6.7-5-4.7 6.8-.8z"/></svg></i></span><span class="zt"><b>Bowler</b><em>Strike! Solo, teman, atau online</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button><button type="button" class="zr" data-w="sudoku"><span class="zi" style="background:#34C759"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3.5"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></svg><i class="zst"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 6.2 6.8.8-5 4.7 1.3 6.7-6-3.4-6 3.4 1.3-6.7-5-4.7 6.8-.8z"/></svg></i></span><span class="zt"><b>Sudoku</b><em>Teka-teki angka</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button><button type="button" class="zr" data-w="uno"><span class="zi" style="background:#FF3B30"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2.5" width="14" height="19" rx="3"/><ellipse cx="12" cy="12" rx="4" ry="6.5" transform="rotate(30 12 12)"/></svg><i class="zst"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 6.2 6.8.8-5 4.7 1.3 6.7-6-3.4-6 3.4 1.3-6.7-5-4.7 6.8-.8z"/></svg></i></span><span class="zt"><b>UNO</b><em>Lawan AI, teman, atau online</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button><button type="button" class="zr" data-w="ludo"><span class="zi" style="background:#FF9500"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="8.5" cy="8.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="15.5" cy="8.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="8.5" cy="15.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1.3" fill="currentColor" stroke="none"/></svg><i class="zst"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 6.2 6.8.8-5 4.7 1.3 6.7-6-3.4-6 3.4 1.3-6.7-5-4.7 6.8-.8z"/></svg></i></span><span class="zt"><b>Ludo</b><em>Lawan bot, teman, atau online</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button></div><div class="zs">Kartu &amp; papan</div><div class="zl"><button type="button" class="zr" data-w="uno"><span class="zi" style="background:#FF3B30"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2.5" width="14" height="19" rx="3"/><ellipse cx="12" cy="12" rx="4" ry="6.5" transform="rotate(30 12 12)"/></svg></span><span class="zt"><b>UNO</b><em>Lawan AI, teman, atau online</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button><button type="button" class="zr" data-w="chess"><span class="zi" style="background:#5856D6"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="6.5" r="3"/><path d="M9.5 21h5M8 17.5h8M10.5 17.5c0-4 .5-6 1.5-8.5 1 2.500 1.500 4.500 1.500 8.500"/></svg></span><span class="zt"><b>Catur</b><em>Lawan AI, teman, atau online</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button><button type="button" class="zr" data-w="sudoku"><span class="zi" style="background:#34C759"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3.5"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></svg></span><span class="zt"><b>Sudoku</b><em>Teka-teki angka</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button><button type="button" class="zr" data-w="ludo"><span class="zi" style="background:#FF9500"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="8.5" cy="8.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="15.5" cy="8.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="8.5" cy="15.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1.3" fill="currentColor" stroke="none"/></svg></span><span class="zt"><b>Ludo</b><em>Lawan bot, teman, atau online</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button></div><div class="zs">Arcade</div><div class="zl"><button type="button" class="zr" data-w="pul"><span class="zi" style="background:#FF9500"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></span><span class="zt"><b>Pulse Tap</b><em>Tekan kotak menyala</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button><button type="button" class="zr" data-w="blast"><span class="zi" style="background:#007AFF"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg></span><span class="zt"><b>Block Blast</b><em>Susun &amp; hapus baris</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button><button type="button" class="zr" data-w="bowler"><span class="zi" style="background:#E5432D"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5c-1.6 0-2.4 1.2-2.4 2.6 0 1.2.7 2 1.1 2.8.5 1-1.7 2.5-1.7 5.3 0 2 1.1 3 1.1 4.5l-.8 3.8h5.4l-.8-3.8c0-1.5 1.1-2.5 1.1-4.5 0-2.8-2.2-4.3-1.7-5.3.4-.8 1.1-1.6 1.1-2.8 0-1.4-.8-2.6-2.4-2.6z"/><path d="M10.2 9.5h3.6"/></svg></span><span class="zt"><b>Bowler</b><em>Strike! Solo, 2 pemain, atau online</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button><button type="button" class="zr" data-w="kata"><span class="zi" style="background:#AF52DE"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="7" width="5.2" height="10" rx="1.4"/><rect x="9.4" y="7" width="5.2" height="10" rx="1.4"/><rect x="16.3" y="7" width="5.2" height="10" rx="1.4"/></svg></span><span class="zt"><b>Tebak Kata</b><em>Tebak kata bareng teman</em></span><svg class="zc" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg></button></div></div>
     <div class="hbody">
       <div class="hws">
         <button type="button" class="hw w-sd" data-w="sudoku" style="--i:0">
@@ -2079,6 +2091,7 @@ button.bwchip{background:rgba(243,234,216,.14);border-color:transparent;font-wei
     <div class="scroll br" id="bru" style="display:none"></div>
     <div class="scroll br" id="brld" style="display:none"></div>
     <div class="scroll br" id="brw" style="display:none"></div>
+    <div class="scroll br" id="brtk" style="display:none"></div>
   </section>
 </div>
 <div class="modal" id="dmodal"><div class="glass card"><h2 id="dt"></h2><p id="dx"></p><input id="di" autocomplete="off" maxlength="200"><div class="row"><button class="chip" id="dno" type="button">Batal</button><button class="chip on" id="dok" type="button">OK</button></div></div></div>
@@ -2217,7 +2230,7 @@ window.zGame=(()=>{
   const G={},bar=document.createElement("div");
   bar.id="gbar";bar.innerHTML='<button type="button" class="chip" id="gexit">✕ Keluar</button><b id="gttl"></b><i></i>';
   document.body.appendChild(bar);
-  const NM={h:"Hafalan",m:"Matematika",i:"Tes ingatan",s:"Sudoku",r:"Reaction",c:"Catur",n:"Nonogram",b:"Block Blast",u:"UNO",l:"Ludo",w:"Bowler"};
+  const NM={h:"Hafalan",m:"Matematika",i:"Tes ingatan",s:"Sudoku",r:"Reaction",c:"Catur",n:"Nonogram",b:"Block Blast",u:"UNO",l:"Ludo",w:"Bowler",t:"Tebak Kata"};
   function sync(){
     let act=null;
     for(const k in G){const g=G[k],b=g.st();if(b.ph==="res"){if(!g._r){g._r=1;window.brDone&&window.brDone(k)}}else g._r=0;const v=g.el.closest(".view"),on=!!(b.gen||b.ph!=="setup")&&!!v&&v.classList.contains("show")&&g.el.style.display!=="none";
@@ -3414,7 +3427,7 @@ function onlDraw(){if(!B.onl)return;el.innerHTML=window.zfLobby?zfLobby({k:"sdk"
 async function ohost(){if(OL.busy)return;OL.busy=1;OL.err="";OL.st="Menghubungkan…";onlDraw();
  try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Kalau dibuka lewat preview di aplikasi Claude, koneksi diblokir: buka di Chrome.";onlDraw();return}
  const mk=n=>{const code=OL.code||Array.from({length:5},()=>CHRc[Math.random()*CHRc.length|0]).join(""),p=new Peer("zcsdk-"+code.toLowerCase(),PCFG);
-  const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}OL.busy=0;OL.st="";OL.err="Server PeerJS tidak merespons. Coba buka di Chrome.";onlDraw()},10000);
+  const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}OL.busy=0;OL.st="";OL.err="Server PeerJS tidak merespons. Coba buka di Chrome.";onlDraw()},20000);
   p.on("open",()=>{clearTimeout(to);OL.busy=0;OL.role="host";OL.peer=p;OL.code=code;OL.st="";onlDraw()});
   p.on("connection",c=>{if(OL.conn&&OL.conn.open){try{c.close()}catch(e){}return}wire(c)});
   p.on("error",er=>{if(er.type==="unavailable-id"&&n<4){try{p.destroy()}catch(e){}mk(n+1);return}if(OL.role)return;OL.busy=0;OL.st="";OL.err="Gagal: "+(er.type||"koneksi");onlDraw()})};mk(0)}
@@ -3424,7 +3437,7 @@ async function ojoin(){const code=(OL.code||"").toUpperCase();if(OL.busy)return;
  let tries=0,ok_=0;const p=new Peer(PCFG);OL.peer=p;
  const fail=t=>{OL.busy=0;OL.st="";OL.err=t;try{p.destroy()}catch(e){}OL.peer=null;onlDraw()};
  const att=()=>{tries++;const c=p.connect("zcsdk-"+code.toLowerCase(),{reliable:true});
-  const to=setTimeout(()=>{if(ok_)return;try{c.close()}catch(e){}if(tries<6)att();else fail("Tidak bisa terhubung ke teman. Pastikan ia masih membuka halaman game.")},6000);
+  const to=setTimeout(()=>{if(ok_)return;try{c.close()}catch(e){}if(tries<6)att();else fail("Tidak bisa terhubung ke teman. Pastikan ia masih membuka halaman game.")},10000);
   c.on("open",()=>{ok_=1;clearTimeout(to);OL.busy=0;OL.role="client";OL.code=code;OL.st="";wire(c);c.send({t:"hello",name:OL.name||"Tamu"});onlDraw()})};
  p.on("open",att);p.on("error",er=>{if(ok_)return;if(er.type==="peer-unavailable"){if(tries<6)setTimeout(att,1200);else fail("Ajakan sudah tidak berlaku. Minta temanmu mengajak lagi.")}else fail("Gagal: "+(er.type||"koneksi"))})}
 function rematch(){if(!OL.conn||!OL.conn.open){toast("Lawan sudah keluar",1600);return}if(OL.role==="host")netGo();else{netSend({t:"rq"});toast("Meminta host mulai ulang…",1800)}}
@@ -3796,7 +3809,7 @@ function onlDraw(){if(!B.onl)return;el.innerHTML=window.zfLobby?zfLobby({k:"pt",
 async function ohost(){if(OL.busy)return;if(!(OL.tg>=50)){OL.err="Target skor minimal 50.";onlDraw();return}if(!(OL.tg>=100)){OL.err="Target skor minimal 100.";onlDraw();return}OL.busy=1;OL.err="";OL.st="Menghubungkan…";onlDraw();
  try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Kalau dibuka lewat preview di aplikasi Claude, koneksi diblokir: buka di Chrome.";onlDraw();return}
  const mk=n=>{const code=OL.code||Array.from({length:5},()=>CHRc[Math.random()*CHRc.length|0]).join(""),p=new Peer("zcpt-"+code.toLowerCase(),PCFG);
-  const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}OL.busy=0;OL.st="";OL.err="Server PeerJS tidak merespons. Coba buka di Chrome.";onlDraw()},10000);
+  const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}OL.busy=0;OL.st="";OL.err="Server PeerJS tidak merespons. Coba buka di Chrome.";onlDraw()},20000);
   p.on("open",()=>{clearTimeout(to);OL.busy=0;OL.role="host";OL.peer=p;OL.code=code;OL.st="";onlDraw()});
   p.on("connection",c=>{if(OL.conn&&OL.conn.open){try{c.close()}catch(e){}return}wire(c)});
   p.on("error",er=>{if(er.type==="unavailable-id"&&n<4){try{p.destroy()}catch(e){}mk(n+1);return}if(OL.role)return;OL.busy=0;OL.st="";OL.err="Gagal: "+(er.type||"koneksi");onlDraw()})};mk(0)}
@@ -3806,7 +3819,7 @@ async function ojoin(){const code=(OL.code||"").toUpperCase();if(OL.busy)return;
  let tries=0,ok_=0;const p=new Peer(PCFG);OL.peer=p;
  const fail=t=>{OL.busy=0;OL.st="";OL.err=t;try{p.destroy()}catch(e){}OL.peer=null;onlDraw()};
  const att=()=>{tries++;const c=p.connect("zcpt-"+code.toLowerCase(),{reliable:true});
-  const to=setTimeout(()=>{if(ok_)return;try{c.close()}catch(e){}if(tries<6)att();else fail("Tidak bisa terhubung ke teman. Pastikan ia masih membuka halaman game.")},6000);
+  const to=setTimeout(()=>{if(ok_)return;try{c.close()}catch(e){}if(tries<6)att();else fail("Tidak bisa terhubung ke teman. Pastikan ia masih membuka halaman game.")},10000);
   c.on("open",()=>{ok_=1;clearTimeout(to);OL.busy=0;OL.role="client";OL.code=code;OL.st="";wire(c);c.send({t:"hello",name:OL.name||"Tamu"});onlDraw()})};
  p.on("open",att);p.on("error",er=>{if(ok_)return;if(er.type==="peer-unavailable"){if(tries<6)setTimeout(att,1200);else fail("Ajakan sudah tidak berlaku. Minta temanmu mengajak lagi.")}else fail("Gagal: "+(er.type||"koneksi"))})}
 function rematch(){if(!OL.conn||!OL.conn.open){toast("Lawan sudah keluar",1600);return}if(OL.role==="host")netGo();else{netSend({t:"rq"});toast("Meminta host mulai ulang…",1800)}}
@@ -3876,9 +3889,10 @@ const CATS={
   {n:"Catur",s:"Lawan AI atau teman",c:["#7d7aff","#5856d6"],g:G.chs,pick:1,sd:1,ti:"Pilih lawan",pd:()=>[["mudah","Mudah","AI pemula","#0f9a4c"],["sedang","Sedang","AI menengah","#ee8f06"],["sulit","Sulit","AI kuat","#d9283a"],["friend","1v1 Teman","Tanpa AI","#7b61ff"]],pf:(l,sd)=>{brPlay("brc");brC(l,sd)}},
   {n:"Block Blast",get s(){const b=bbBest();return b?"Rekor "+b:"Susun & hapus baris"},c:["#4da3ff","#007aff"],g:G.blk,f:()=>{brPlay("brb");brB()}},
   {n:"UNO",get s(){let w=0,g=0;try{const o=JSON.parse(localStorage.getItem("zc-uno")||"{}");w=+o.wins||0;g=+o.games||0}catch(e){}return g?"Menang "+w+" dari "+g:"Lawan AI atau teman"},c:["#ff6b60","#ff3b30"],g:G.uno,pick:1,ti:"Pilih mode",pd:()=>[["1","1 Lawan AI","Duel 2 pemain","#0f9a4c"],["2","2 Lawan AI","3 pemain","#ee8f06"],["3","3 Lawan AI","4 pemain","#d9283a"],["friend","Main dengan teman","Offline · 2–5 pemain","#7b61ff"]],pf:l=>{brPlay("bru");brU(l)}},
-  {n:"Ludo",get s(){let w=0,g=0;try{const o=JSON.parse(localStorage.getItem("zc-ludo")||"{}");w=+o.wins||0;g=+o.games||0}catch(e){}return g?"Menang "+w+" dari "+g:"Lawan bot atau teman"},c:["#ffcf5a","#ff9500"],g:G.ldo,pick:1,ti:"Pilih mode",pd:()=>[["1","1 Lawan Bot","Duel 2 pemain","#0f9a4c"],["2","2 Lawan Bot","3 pemain","#ee8f06"],["3","3 Lawan Bot","4 pemain","#d9283a"],["friend","Main dengan teman","Satu perangkat · 2–4 pemain","#7b61ff"]],pf:l=>{brPlay("brld");brLd(l)}}]}};
+  {n:"Ludo",get s(){let w=0,g=0;try{const o=JSON.parse(localStorage.getItem("zc-ludo")||"{}");w=+o.wins||0;g=+o.games||0}catch(e){}return g?"Menang "+w+" dari "+g:"Lawan bot atau teman"},c:["#ffcf5a","#ff9500"],g:G.ldo,pick:1,ti:"Pilih mode",pd:()=>[["1","1 Lawan Bot","Duel 2 pemain","#0f9a4c"],["2","2 Lawan Bot","3 pemain","#ee8f06"],["3","3 Lawan Bot","4 pemain","#d9283a"],["friend","Main dengan teman","Satu perangkat · 2–4 pemain","#7b61ff"]],pf:l=>{brPlay("brld");brLd(l)}},
+  {n:"Tebak Kata",s:"Tebak kata bareng teman",c:["#d28cff","#af52de"],g:'<rect x="2.5" y="7" width="5.2" height="10" rx="1.4"/><rect x="9.4" y="7" width="5.2" height="10" rx="1.4"/><rect x="16.3" y="7" width="5.2" height="10" rx="1.4"/>',f:()=>{brPlay("brtk");brTK()}}]}};
 CATS.logic.t=CATS.reaction.t="Games";
-const CN=["br","brm","bri","brs","brr","brc","brn","brb","bru","brld","brw"];
+const CN=["br","brm","bri","brs","brr","brc","brn","brb","bru","brld","brw","brtk"];
 window.brPlay=id=>{$("brl").style.display="none";CN.forEach(x=>$(x).style.display=x===id?"":"none")};
 function render(){
   if(!cat)return;const C=CATS[cat],L=$("brl");$("gtitle").textContent=C.t;
@@ -3910,7 +3924,7 @@ function pick(b,a){
   o.addEventListener("pointerdown",e=>{const x=e.target.closest(".pko");if(!x)return;const r=x.getBoundingClientRect();x.style.setProperty("--mx",(e.clientX-r.left)+"px");x.style.setProperty("--my",(e.clientY-r.top)+"px")});
   const close=()=>{o.classList.remove("in");setTimeout(()=>o.remove(),480)};
   o.addEventListener("click",e=>{const sb=e.target.closest(".pkst");if(sb){sd=sb.dataset.s;try{localStorage.setItem("zc-chside",sd)}catch(_){}o.querySelectorAll(".pkst").forEach(x=>x.classList.toggle("on",x===sb));sfx("click");return}if(e.target===o||e.target.closest(".pkx")){close();return}const x=e.target.closest(".pko");if(x){close();launch(b,{...a,f:()=>{if(a.pf)a.pf(x.dataset.l,sd);else{brPlay("brs");brS(x.dataset.l)}}})}})}
-const ONL={sudoku:["logic","Sudoku",()=>{brPlay("brs");brS("online")}],chess:["logic","Catur",()=>{brPlay("brc");brC("online")}],pul:["reaction","Pulse Tap",()=>{brPlay("brr");brR("pul","online")}],blast:["logic","Block Blast",()=>{brPlay("brb");brBO()}],uno:["logic","UNO",()=>{brPlay("bru");brU("online")}],ludo:["logic","Ludo",()=>{brPlay("brld");brLd("online")}],bowler:["reaction","Bowler",()=>{brPlay("brw");brWO()}]};
+const ONL={sudoku:["logic","Sudoku",()=>{brPlay("brs");brS("online")}],chess:["logic","Catur",()=>{brPlay("brc");brC("online")}],pul:["reaction","Pulse Tap",()=>{brPlay("brr");brR("pul","online")}],blast:["logic","Block Blast",()=>{brPlay("brb");brBO()}],uno:["logic","UNO",()=>{brPlay("bru");brU("online")}],ludo:["logic","Ludo",()=>{brPlay("brld");brLd("online")}],bowler:["reaction","Bowler",()=>{brPlay("brw");brWO()}],kata:["logic","Tebak Kata",()=>{brPlay("brtk");brTKO()}]};
 window.zfLaunch=g=>{const m=ONL[g];if(!m)return;go(m[0]);const i=CATS[m[0]].items.findIndex(x=>x.n===m[1]),a=CATS[m[0]].items[i],b=$("brl").querySelector('.ap[data-i="'+i+'"]');if(b&&a)launch(b,{...a,k:0,f:m[2]});else m[2]()};
 const vh=$("vh"),vg=$("v4");
 function gPop(){const b=$("gback");b&&b.onclick&&b.onclick();if(vg.classList.contains("show"))NAV.push("g",gPop)}
@@ -3921,7 +3935,7 @@ document.querySelector(".hts").addEventListener("click",e=>{const t=e.target.clo
 document.querySelector(".hws").addEventListener("click",e=>{const w=e.target.closest(".hw");if(!w)return;sfx("click");
   const m={sudoku:["logic",0],pul:["reaction",3],blast:["logic",3],uno:["logic",3]}[w.dataset.w];go(m[0]);
   const b=$("brl").querySelector('.ap[data-i="'+m[1]+'"]');if(b)setTimeout(()=>b.click(),60)});
-document.querySelector(".zhome").addEventListener("click",e=>{const w=e.target.closest("[data-w]");if(!w)return;sfx("click");const m={sudoku:["logic","Sudoku"],chess:["logic","Catur"],pul:["reaction","Pulse Tap"],blast:["logic","Block Blast"],uno:["logic","UNO"],ludo:["logic","Ludo"],bowler:["reaction","Bowler"]}[w.dataset.w];go(m[0]);const i=CATS[m[0]].items.findIndex(x=>x.n===m[1]),b=$("brl").querySelector('.ap[data-i="'+i+'"]');if(b)setTimeout(()=>b.click(),60)});
+document.querySelector(".zhome").addEventListener("click",e=>{const w=e.target.closest("[data-w]");if(!w)return;sfx("click");const m={sudoku:["logic","Sudoku"],chess:["logic","Catur"],pul:["reaction","Pulse Tap"],blast:["logic","Block Blast"],uno:["logic","UNO"],ludo:["logic","Ludo"],bowler:["reaction","Bowler"],kata:["logic","Tebak Kata"]}[w.dataset.w];go(m[0]);const i=CATS[m[0]].items.findIndex(x=>x.n===m[1]),b=$("brl").querySelector('.ap[data-i="'+i+'"]');if(b)setTimeout(()=>b.click(),60)});
 $("gback").onclick=()=>{if(window.zfLeave)zfLeave();if(cat==="rxtap"){sfx("click");go("reaction")}else home()};$("hkey").onclick=()=>{sfx("click");openSet()};
 paint();paintXp();
 })();
@@ -4208,7 +4222,7 @@ function onlDraw(){if(!B.onl)return;el.innerHTML=window.zfLobby?zfLobby({k:"chs"
 async function chost(){if(OL.busy)return;OL.busy=1;OL.err="";OL.st="Menghubungkan…";onlDraw();
  try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Kalau dibuka lewat preview di aplikasi Claude, koneksi diblokir: buka di Chrome.";onlDraw();return}
  const mk=n=>{const code=OL.code||Array.from({length:5},()=>CHRc[Math.random()*CHRc.length|0]).join(""),p=new Peer("zcchs-"+code.toLowerCase(),PCFG);
-  const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}OL.busy=0;OL.st="";OL.err="Server PeerJS tidak merespons. Coba buka di Chrome.";onlDraw()},10000);
+  const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}OL.busy=0;OL.st="";OL.err="Server PeerJS tidak merespons. Coba buka di Chrome.";onlDraw()},20000);
   p.on("open",()=>{clearTimeout(to);OL.busy=0;OL.role="host";OL.peer=p;OL.code=code;OL.st="";onlDraw()});
   p.on("connection",c=>{if(OL.conn&&OL.conn.open){try{c.close()}catch(e){}return}wire(c)});
   p.on("error",er=>{if(er.type==="unavailable-id"&&n<4){try{p.destroy()}catch(e){}mk(n+1);return}if(OL.role)return;OL.busy=0;OL.st="";OL.err="Gagal: "+(er.type||"koneksi");onlDraw()})};mk(0)}
@@ -4717,7 +4731,7 @@ function onlDraw(){if(!B.onl)return;el.innerHTML=window.zfLobby?zfLobby({k:"bb",
 async function ohost(){if(OL.busy)return;if(!(OL.tg>=100)){OL.err="Target skor minimal 100.";onlDraw();return}OL.busy=1;OL.err="";OL.st="Menghubungkan…";onlDraw();
  try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Kalau dibuka lewat preview di aplikasi Claude, koneksi diblokir: buka di Chrome.";onlDraw();return}
  const mk=n=>{const code=OL.code||Array.from({length:5},()=>CHRc[Math.random()*CHRc.length|0]).join(""),p=new Peer("zcbb-"+code.toLowerCase(),PCFG);
-  const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}OL.busy=0;OL.st="";OL.err="Server PeerJS tidak merespons. Coba buka di Chrome.";onlDraw()},10000);
+  const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}OL.busy=0;OL.st="";OL.err="Server PeerJS tidak merespons. Coba buka di Chrome.";onlDraw()},20000);
   p.on("open",()=>{clearTimeout(to);OL.busy=0;OL.role="host";OL.peer=p;OL.code=code;OL.st="";onlDraw()});
   p.on("connection",c=>{if(OL.conn&&OL.conn.open){try{c.close()}catch(e){}return}wire(c)});
   p.on("error",er=>{if(er.type==="unavailable-id"&&n<4){try{p.destroy()}catch(e){}mk(n+1);return}if(OL.role)return;OL.busy=0;OL.st="";OL.err="Gagal: "+(er.type||"koneksi");onlDraw()})};mk(0)}
@@ -4727,7 +4741,7 @@ async function ojoin(){const code=(OL.code||"").toUpperCase();if(OL.busy)return;
  let tries=0,ok_=0;const p=new Peer(PCFG);OL.peer=p;
  const fail=t=>{OL.busy=0;OL.st="";OL.err=t;try{p.destroy()}catch(e){}OL.peer=null;onlDraw()};
  const att=()=>{tries++;const c=p.connect("zcbb-"+code.toLowerCase(),{reliable:true});
-  const to=setTimeout(()=>{if(ok_)return;try{c.close()}catch(e){}if(tries<6)att();else fail("Tidak bisa terhubung ke teman. Pastikan ia masih membuka halaman game.")},6000);
+  const to=setTimeout(()=>{if(ok_)return;try{c.close()}catch(e){}if(tries<6)att();else fail("Tidak bisa terhubung ke teman. Pastikan ia masih membuka halaman game.")},10000);
   c.on("open",()=>{ok_=1;clearTimeout(to);OL.busy=0;OL.role="client";OL.code=code;OL.st="";wire(c);c.send({t:"hello",name:OL.name||"Tamu"});onlDraw()})};
  p.on("open",att);p.on("error",er=>{if(ok_)return;if(er.type==="peer-unavailable"){if(tries<6)setTimeout(att,1200);else fail("Ajakan sudah tidak berlaku. Minta temanmu mengajak lagi.")}else fail("Gagal: "+(er.type||"koneksi"))})}
 function rematch(){if(!OL.conn||!OL.conn.open){toast("Lawan sudah keluar",1600);return}if(OL.role==="host")netGo();else{netSend({t:"rq"});toast("Meminta host mulai ulang…",1800)}}
@@ -6178,7 +6192,7 @@ function onlDraw(){if(!B.onl)return;el.innerHTML=window.zfLobby?zfLobby({k:"bw",
 async function ohost(){if(OL.busy)return;OL.busy=1;OL.err="";OL.st="Menghubungkan…";onlDraw();
  try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Kalau dibuka lewat preview di aplikasi Claude, koneksi diblokir: buka di Chrome.";onlDraw();return}
  const mk=n=>{const code=OL.code||Array.from({length:5},()=>CHRc[Math.random()*CHRc.length|0]).join(""),p=new Peer("zcbw-"+code.toLowerCase(),PCFG);
-  const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}OL.busy=0;OL.st="";OL.err="Server PeerJS tidak merespons. Coba buka di Chrome.";onlDraw()},10000);
+  const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}OL.busy=0;OL.st="";OL.err="Server PeerJS tidak merespons. Coba buka di Chrome.";onlDraw()},20000);
   p.on("open",()=>{clearTimeout(to);OL.busy=0;OL.role="host";OL.peer=p;OL.code=code;OL.st="";onlDraw()});
   p.on("connection",c=>{if(OL.conn&&OL.conn.open){try{c.close()}catch(e){}return}wire(c)});
   p.on("error",er=>{if(er.type==="unavailable-id"&&n<4){try{p.destroy()}catch(e){}mk(n+1);return}if(OL.role)return;OL.busy=0;OL.st="";OL.err="Gagal: "+(er.type||"koneksi");onlDraw()})};mk(0)}
@@ -6188,7 +6202,7 @@ async function ojoin(){const code=(OL.code||"").toUpperCase();if(OL.busy)return;
  let tries=0,ok_=0;const p=new Peer(PCFG);OL.peer=p;
  const fail=t=>{OL.busy=0;OL.st="";OL.err=t;try{p.destroy()}catch(e){}OL.peer=null;onlDraw()};
  const att=()=>{tries++;const c=p.connect("zcbw-"+code.toLowerCase(),{reliable:true});
-  const to=setTimeout(()=>{if(ok_)return;try{c.close()}catch(e){}if(tries<6)att();else fail("Tidak bisa terhubung ke teman. Pastikan ia masih membuka halaman game.")},6000);
+  const to=setTimeout(()=>{if(ok_)return;try{c.close()}catch(e){}if(tries<6)att();else fail("Tidak bisa terhubung ke teman. Pastikan ia masih membuka halaman game.")},10000);
   c.on("open",()=>{ok_=1;clearTimeout(to);OL.busy=0;OL.role="client";OL.code=code;OL.st="";wire(c);c.send({t:"hello",name:OL.name||"Tamu"});onlDraw()})};
  p.on("open",att);p.on("error",er=>{if(ok_)return;if(er.type==="peer-unavailable"){if(tries<6)setTimeout(att,1200);else fail("Ajakan sudah tidak berlaku. Minta temanmu mengajak lagi.")}else fail("Gagal: "+(er.type||"koneksi"))})}
 function rematch(){if(!OL.conn||!OL.conn.open){toast("Lawan sudah keluar",1600);return}if(OL.role==="host")netGo();else{netSend({t:"rq"});toast("Meminta host mulai ulang…",1800)}}
@@ -6217,6 +6231,204 @@ setup();
 zGame.reg("w",el,()=>B,()=>{netLeave();loopStop();setup()});
 })();
 
+// ---------- Games: Tebak Kata (online bersama teman) ----------
+// Alur: host & tamu tersambung (PeerJS) -> sistem memilih salah satu secara acak jadi pemberi kata ->
+// pemberi kata memilih 1 dari 6 rekomendasi atau mengetik sendiri -> penebak melihat huruf pertama dan jumlah huruf ->
+// tiap 30 detik 1 huruf acak terbuka -> ronde berakhir saat tersisa 2 huruf belum terbuka (penebak kalah) atau kata tertebak (penebak menang).
+// Kata rahasia HANYA ada di perangkat pemberi kata; penebak cuma menerima huruf yang sudah terbuka.
+(()=>{
+const el=$("brtk"),PCFG=window.ZPCFG,loadPeer=()=>window.zLoadPeer();
+const REV=30,MINL=5,MAXL=12;
+const WORDS="KUCING BURUNG GAJAH HARIMAU KELINCI JERAPAH BUAYA KEPITING SEMANGKA DURIAN RAMBUTAN MANGGIS NANGKA PISANG ANGGUR STROBERI TOMAT WORTEL KENTANG BAWANG SAMBAL RENDANG BAKSO MARTABAK SEPEDA MOTOR MOBIL KERETA PESAWAT KAPAL BECAK SEKOLAH MURID PENSIL PENGGARIS PENGHAPUS KURSI LEMARI JENDELA DAPUR KAMAR HALAMAN TAMAN SUNGAI DANAU PANTAI HUTAN SAWAH PELANGI MATAHARI BINTANG LANGIT BADAI KOMPUTER TELEPON KAMERA GITAR PIANO BASKET RENANG BADMINTON CATUR LAYANGAN BONEKA PERMEN COKELAT PAYUNG SEPATU KACAMATA KALENDER TELEVISI KULKAS GUNTING TANGGA JEMBATAN MENARA BANDARA STASIUN TERMINAL ROKET PLANET GALAKSI GELAS PIRING SENDOK GARPU PANCI BANTAL SELIMUT HANDUK SABUN KOPER DOMPET GELANG KALUNG TOPENG LAMPION TRAKTOR PETANI NELAYAN DOKTER POLISI PILOT PENYANYI PELUKIS";
+const POOL=[...new Set(WORDS.split(/\s+/))].filter(w=>/^[A-Z]+$/.test(w)&&w.length>=MINL&&w.length<=MAXL);
+const OL={role:"",peer:null,conn:null,code:"",name:"",err:"",busy:0,opp:"",opp0:"",want:"",inv:""};
+let B={ph:"setup",gen:false};
+const rnd=n=>Math.floor(Math.random()*n);
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]]}return a};
+const pick6=()=>shuf(POOL).slice(0,6);
+const clean=s=>String(s||"").toUpperCase().replace(/[^A-Z]/g,"").slice(0,MAXL);
+const T=id=>document.getElementById(id);
+const CHAT='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:5px"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.4A8 8 0 1 1 21 12z"/></svg>';
+(()=>{if(T("tkcss"))return;const s=document.createElement("style");s.id="tkcss";
+s.textContent=".tkq{padding:16px}.tkhd{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}"
++".tkrl{font-weight:700;font-size:12px;line-height:1;padding:7px 12px;border-radius:99px;color:#fff;background:linear-gradient(180deg,#d28cff,#af52de)}.tkrl.g{background:linear-gradient(180deg,#5fb0ff,#2f7be0)}"
++".tkrec{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}.tkin{text-transform:uppercase;letter-spacing:2px;font-weight:700;text-align:center}"
++".tkhint{min-height:18px;margin:-4px 0 10px;font-size:12.5px;color:var(--tx2);text-align:center}"
++".tktm{text-align:center;margin:4px 0 14px}.tktm b{display:block;font-size:44px;line-height:1;font-variant-numeric:tabular-nums}.tktm span{font-size:12.5px;color:var(--tx2)}"
++".tkw{display:flex;justify-content:center;gap:6px;margin:6px 0 10px}"
++".tkl{display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:800;font-size:clamp(14px,5.2vw,26px);width:clamp(22px,calc((100% - (var(--n,5) - 1)*6px)/var(--n,5)),46px);aspect-ratio:4/5;border-radius:10px;border:1.5px solid var(--bd);background:var(--gl);color:var(--tx)}"
++".tkl.on{background:linear-gradient(180deg,#d28cff,#af52de);color:#fff;border-color:rgba(255,255,255,.5)}.tkl.dim{opacity:.45}"
++".tkinfo{text-align:center;font-size:12.5px;color:var(--tx2);margin-bottom:12px}"
++".tkgr{display:flex;gap:8px;align-items:center;margin-bottom:12px}.tkgr input{margin:0;flex:1}"
++".tkg{display:flex;justify-content:space-between;gap:8px;padding:9px 12px;border-radius:14px;border:1px solid var(--bd);background:var(--gl);margin-bottom:6px;font-size:13px}.tkg b{letter-spacing:1.5px}.tkg span{color:var(--tx2)}"
++".tkans{font-size:34px;letter-spacing:4px;text-align:center}.tkbd{font-style:normal;margin-left:6px;background:#e5484d;color:#fff;border-radius:99px;padding:1px 6px;font-size:11px}";
+document.head.appendChild(s)})();
+
+/* ---------- koneksi ---------- */
+function netSend(o){try{OL.conn&&OL.conn.open&&OL.conn.send(o)}catch(e){}}
+function stopT(){clearInterval(B.tm);B.tm=0}
+function netLeave(){stopT();clearInterval(OL.hb);OL.hb=0;clearTimeout(OL.rjt);clearTimeout(OL.gt);const p=OL.peer,c=OL.conn,live=!!(c&&c.open);
+ if(live){try{c.send({t:"bye"})}catch(e){}}
+ const kill=()=>{try{c&&c.close()}catch(e){}try{p&&p.destroy()}catch(e){}};
+ if(live)setTimeout(kill,250);else kill();
+ OL.peer=null;OL.conn=null;OL.role="";OL.code="";OL.busy=0;OL.err="";OL.opp="";B.rj=null;try{ZC.unbind()}catch(e){}}
+function paintRj(){const q=el.querySelector(".tkq");let b=T("tkrj");
+ if(B.rj&&B.ph!=="res"){if(!b&&q){b=document.createElement("div");b.id="tkrj";b.className="tkhint";b.style.color="#e5484d";b.textContent="Koneksi terputus, menyambung ulang…";q.insertBefore(b,q.firstChild)}}
+ else if(b)b.remove()}
+function startGrace(){if(B.rj)return;B.rj={end:Date.now()+40000};paintRj();clearTimeout(OL.gt);OL.gt=setTimeout(giveUp,40500);if(OL.role==="client")rejoin()}
+function giveUp(){if(!B.rj)return;B.rj=null;clearTimeout(OL.rjt);const wp=B.ph==="play";fin(true,(OL.opp||"Teman")+" terputus dan tidak kembali.",wp)}
+function resumed(){if(!B.rj)return;B.rj=null;clearTimeout(OL.gt);clearTimeout(OL.rjt);paintRj();toast("Tersambung lagi",1400)}
+function sendEnd(r){B.endr=r;netSend({t:"end",w:B.w,r})}
+function sendSync(){if(!B.net||!B.me)return;
+ if(B.ph==="res"&&B.endr){netSend({t:"end",w:B.w,r:B.endr});return}
+ if(B.ph!=="play")return;
+ const rv=[];B.sh.forEach((x,i)=>{if(x&&i>0)rv.push([i,B.w[i]])});
+ netSend({t:"sync",n:B.n,f:B.w[0],rv,gs:B.gs.map(g=>g.w),ms:Math.max(0,B.nx-Date.now())})}
+function lost(c){if(OL.conn!==c)return;OL.conn=null;
+ if(B.net&&(B.ph==="pick"||B.ph==="wait"||B.ph==="play")){startGrace();return}
+ if(B.onl&&OL.role){OL.err="Teman keluar dari room.";onlDraw()}}
+function rejoin(){clearTimeout(OL.rjt);if(!B.rj||!B.net||OL.role!=="client"||OL.conn)return;
+ if(Date.now()>B.rj.end)return;
+ const again=()=>{clearTimeout(OL.rjt);OL.rjt=setTimeout(rejoin,2000)};
+ let p=OL.peer;
+ const dial=pp=>{if(OL.conn||!B.rj)return;let c;
+  try{c=pp.connect("zctk-"+OL.code.toLowerCase(),{reliable:true})}catch(e){again();return}
+  if(!c){again();return}
+  const to=setTimeout(()=>{if(OL.conn!==c){try{c.close()}catch(e){}again()}},7000);
+  c.on("open",()=>{clearTimeout(to);if(OL.conn||!B.rj){try{c.close()}catch(e){}return}
+   wire(c);c.send({t:"hello",name:OL.name||"Tamu",rj:1});resumed();sendSync()});
+  c.on("error",()=>{clearTimeout(to);again()})};
+ if(!p||p.destroyed){p=new Peer(PCFG);OL.peer=p;p.on("open",()=>dial(p));p.on("error",()=>again());return}
+ if(p.disconnected){try{p.reconnect()}catch(e){}again();return}
+ if(!p.open){again();return}
+ dial(p)}
+["visibilitychange","online","pageshow"].forEach(ev=>(ev==="visibilitychange"?document:window).addEventListener(ev,()=>{
+ if(document.hidden)return;if(B.rj&&OL.role==="client")rejoin()}));
+function exitNet(){netLeave();setup()}
+function setup(){stopT();B={ph:"setup",gen:false};
+ el.innerHTML='<div class="q glass tkq"><h3>Tebak Kata</h3><button type="button" class="chip on brgo" id="tkinv">Ajak teman</button></div>'}
+function chatBadge(){paintRj();document.querySelectorAll("#brtk .tkbd").forEach(b=>{const u=ZC.unread();b.textContent=u?(u>9?"9+":u):"";b.style.display=u?"":"none"})}
+document.addEventListener("zc-badge",chatBadge);
+function cfgOnline(){stopT();netLeave();B={ph:"setup",gen:false,onl:1};OL.err="";const A=window.zfAuto&&zfAuto("tk");
+ if(!A){OL.want="";OL.opp0="";OL.err="Ajak teman lewat daftar teman untuk main online.";onlDraw();return}
+ OL.name=A.me;OL.opp0=A.opp;OL.want=A.role;OL.code=A.c;OL.inv=A.c;
+ window.zfLeave=leaveLobby;window.zfAbort=(c,m)=>{if(!B.onl||OL.inv!==c||(OL.conn&&OL.conn.open))return;const p=OL.peer;try{p&&p.destroy()}catch(e){}OL.peer=null;OL.role="";OL.busy=0;OL.err=m;onlDraw()};
+ onlDraw();A.role==="host"?ohost():ojoin()}
+function leaveLobby(){if(!B.onl)return;window.zfLeave=null;window.zfAbort=null;window.zfCancel&&zfCancel();netLeave();setup();el.innerHTML=""}
+function onlDraw(){if(!B.onl)return;el.innerHTML=window.zfLobby?zfLobby({k:"tk",me:OL.name,opp:OL.opp0,role:OL.want,st:OL.role?(OL.want==="host"?"wait":"ok"):"conn",err:OL.err}):""}
+async function ohost(){if(OL.busy)return;OL.busy=1;OL.err="";onlDraw();
+ try{await loadPeer()}catch(e){OL.busy=0;OL.err="PeerJS gagal dimuat. Kalau dibuka lewat preview di aplikasi Claude, koneksi diblokir: buka di Chrome.";onlDraw();return}
+ const mk=n=>{const code=OL.code,p=new Peer("zctk-"+code.toLowerCase(),PCFG);
+  const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}OL.busy=0;OL.err="Server PeerJS tidak merespons. Coba buka di Chrome.";onlDraw()},20000);
+  p.on("open",()=>{clearTimeout(to);OL.busy=0;OL.role="host";OL.peer=p;OL.code=code;onlDraw()});
+  p.on("connection",c=>{const old=OL.conn;if(!old){wire(c);return}
+   if(!B.net){if(old.open){try{c.close()}catch(e){}return}wire(c);return}
+   const sw=()=>{const o=OL.conn;wire(c);if(o&&o!==c){try{o.close()}catch(e){}}};if(c.open)sw();else c.on("open",sw)});
+  p.on("error",er=>{if(er.type==="unavailable-id"&&n<4){try{p.destroy()}catch(e){}setTimeout(()=>mk(n+1),600);return}if(OL.role)return;OL.busy=0;OL.err="Gagal: "+(er.type||"koneksi");onlDraw()})};mk(0)}
+async function ojoin(){const code=(OL.code||"").toUpperCase();if(OL.busy)return;if(code.length<4){OL.err="Kode room tidak valid.";onlDraw();return}
+ OL.busy=1;OL.err="";onlDraw();
+ try{await loadPeer()}catch(e){OL.busy=0;OL.err="PeerJS gagal dimuat. Buka di Chrome.";onlDraw();return}
+ let tries=0,ok_=0;const p=new Peer(PCFG);OL.peer=p;
+ const fail=t=>{OL.busy=0;OL.err=t;try{p.destroy()}catch(e){}OL.peer=null;onlDraw()};
+ const att=()=>{tries++;const c=p.connect("zctk-"+code.toLowerCase(),{reliable:true});
+  const to=setTimeout(()=>{if(ok_)return;try{c.close()}catch(e){}if(tries<4)att();else fail("Tidak bisa terhubung ke teman. Pastikan ia masih membuka halaman game.")},16000);
+  c.on("open",()=>{ok_=1;clearTimeout(to);OL.busy=0;OL.role="client";OL.code=code;wire(c);c.send({t:"hello",name:OL.name||"Tamu"});onlDraw()})};
+ p.on("open",att);p.on("error",er=>{if(ok_)return;if(er.type==="peer-unavailable"){if(tries<6)setTimeout(att,1200);else fail("Ajakan sudah tidak berlaku. Minta temanmu mengajak lagi.")}else fail("Gagal: "+(er.type||"koneksi"))})}
+function wire(c){OL.conn=c;OL.rx=Date.now();clearInterval(OL.hb);
+ OL.hb=setInterval(()=>{const k=OL.conn;if(!k)return;netSend({t:"p"});if(Date.now()-OL.rx>18000){lost(k);try{k.close()}catch(e){}}},4000);
+ ZC.bind({el,fab:false,title:()=>OL.opp||"Teman",name:()=>OL.opp||"Teman",send:o=>netSend(o),ok:()=>!!(OL.conn&&OL.conn.open)});
+ c.on("data",onMsg);
+ c.on("close",()=>lost(c))}
+
+/* ---------- alur game ---------- */
+function netGo(){const s=Math.random()<.5?"host":"client";netSend({t:"go",hn:OL.name||"Host",s});round(s==="host")}
+function round(me){stopT();B={ph:me?"pick":"wait",gen:false,net:1,me,w:"",n:0,sh:[],ls:[],nx:0,gs:[],tm:0,sg:pick6()};draw()}
+function draw(){if(B.ph==="pick")drawPick();else if(B.ph==="wait")drawWait();else if(B.ph==="play")drawPlay()}
+const hd=()=>'<div class="tkhd"><span class="tkrl '+(B.me?"s":"g")+'">'+(B.me?"Pemberi kata":"Penebak")+'</span><button type="button" class="chip" id="tkch">'+CHAT+'Chat<em class="tkbd" style="display:none"></em></button></div>';
+const recHtml=()=>B.sg.map(w=>'<button type="button" class="chip" data-kw="'+w+'">'+w+'</button>').join("");
+function drawPick(){
+ el.innerHTML='<div class="q glass tkq">'+hd()+'<h3>Kamu terpilih jadi pemberi kata</h3><p class="brp">Pilih salah satu dari 6 rekomendasi, atau ketik katamu sendiri ('+MINL+'–'+MAXL+' huruf, tanpa spasi). '+esc(OL.opp||"Temanmu")+' akan menebaknya.</p>'
+ +'<div class="tkrec" id="tkrec">'+recHtml()+'</div><button type="button" class="chip" id="tkre" style="margin-bottom:12px">Acak ulang rekomendasi</button>'
+ +'<input id="tkin" class="tkin" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="'+MAXL+'" placeholder="Atau ketik katamu sendiri"><div class="tkhint" id="tkhint"></div>'
+ +'<button type="button" class="chip on brgo" id="tkok" disabled>Konfirmasi kata</button></div>';chatBadge()}
+function drawWait(){el.innerHTML='<div class="q glass tkq">'+hd()+'<h3>'+esc(OL.opp||"Teman")+' terpilih jadi pemberi kata</h3><p class="brp">Tunggu ia memilih kata. Kamu yang menebak. Huruf pertama akan terlihat begitu ia selesai.</p></div>';chatBadge()}
+function pickChk(){const i=T("tkin"),ok=T("tkok"),h=T("tkhint");if(!i||!ok)return;const w=clean(i.value),v=w.length>=MINL&&w.length<=MAXL;ok.disabled=!v;
+ if(h)h.textContent=w?(w.length<MINL?"Minimal "+MINL+" huruf (baru "+w.length+")":w.length+" huruf"):"";
+ document.querySelectorAll("#tkrec .chip").forEach(x=>x.classList.toggle("on",x.dataset.kw===w))}
+function confirmWord(){const i=T("tkin"),w=clean(i&&i.value);if(B.ph!=="pick"||w.length<MINL||w.length>MAXL)return;
+ if(!OL.conn||!OL.conn.open){toast("Teman sudah keluar",1600);return}
+ B.w=w;B.n=w.length;B.sh=Array(B.n).fill(false);B.sh[0]=true;B.ph="play";B.nx=Date.now()+REV*1000;
+ netSend({t:"set",n:B.n,f:w[0],rv:REV});sfx("ok");drawPlay();B.tm=setInterval(tick,250)}
+function hidden(){return B.sh.filter(x=>!x).length}
+function drawPlay(){
+ el.innerHTML='<div class="q glass tkq">'+hd()+'<div class="tktm"><b id="tktm">'+REV+'</b><span>detik lagi muncul huruf baru</span></div><div class="tkw" id="tkw"></div><div class="tkinfo" id="tkinfo"></div>'
+ +(B.me?'':'<div class="tkgr"><input id="tkgi" class="tkin" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="'+B.n+'" placeholder="Tebak katanya…"><button type="button" class="chip on" id="tkgo">Tebak</button></div>')
+ +'<div class="tkfd" id="tkfd"></div></div>';paintWord();paintTimer();paintFeed();chatBadge()}
+function paintWord(){const w=T("tkw");if(!w)return;w.style.setProperty("--n",B.n);
+ w.innerHTML=Array.from({length:B.n},(_,i)=>{const sh=B.sh[i],c=B.me?B.w[i]:(B.ls[i]||"");return'<i class="tkl'+(sh?" on":B.me?" dim":"")+'">'+((sh||B.me)?esc(c):"")+'</i>'}).join("");
+ const inf=T("tkinfo");if(inf)inf.textContent=hidden()+" huruf belum terbuka"}
+function paintTimer(){const t=T("tktm");if(!t||B.ph!=="play")return;t.textContent=Math.max(0,Math.ceil((B.nx-Date.now())/1000))}
+function paintFeed(){const f=T("tkfd");if(!f)return;
+ f.innerHTML=B.gs.slice(-12).reverse().map(g=>'<div class="tkg"><b>'+esc(g.w)+'</b><span>'+(B.me?esc(OL.opp||"Teman")+" menebak":"tebakanmu")+' · salah</span></div>').join("")
+ ||'<p class="brp">'+(B.me?"Menunggu tebakan "+esc(OL.opp||"teman")+"…":"Belum ada tebakan.")+'</p>'}
+function tick(){if(B.ph!=="play")return;if(B.me&&Date.now()>=B.nx)reveal();paintTimer()}
+function reveal(){const hs=[];B.sh.forEach((x,i)=>{if(!x)hs.push(i)});if(hs.length<=2)return;
+ const i=hs[rnd(hs.length)];B.sh[i]=true;B.nx=Date.now()+REV*1000;
+ netSend({t:"rv",i,c:B.w[i],nx:REV});sfx("recv");paintWord();
+ if(hidden()<=2){sendEnd("time");fin(true,"Tersisa 2 huruf yang belum terbuka. "+(OL.opp||"Penebak")+" gagal menebak.")}}
+function guess(){const i=T("tkgi"),w=clean(i&&i.value);if(w.length!==B.n){toast("Katanya "+B.n+" huruf",1400);return}
+ if(!OL.conn||!OL.conn.open){toast("Teman sudah keluar",1600);return}
+ if(B.gs.some(x=>x.w===w)){toast("Kata itu sudah kamu tebak",1400);return}
+ netSend({t:"g",w});i.value="";sfx("click")}
+function fin(win,why,rec){if(B.ph==="res")return;stopT();const wasPlay=B.ph==="play";B.ph="res";
+ if(rec!==false&&wasPlay)window.zgRec&&zgRec("tk",win?"w":"l");sfx(win?"win":"no");
+ el.innerHTML='<div class="q glass rxres tkq"><h3 style="text-align:center">'+(win?"Kamu menang!":"Kamu kalah")+'</h3>'+(B.w?'<div class="brbig tkans">'+esc(B.w)+'</div>':'')+'<div class="brmsg">'+esc(why)+'</div><div class="brbtns"><button type="button" class="chip" id="tkchr">'+CHAT+'Chat<em class="tkbd" style="display:none"></em></button><button type="button" class="chip" id="tkx">Keluar</button><button type="button" class="chip on" id="tkr">Main lagi</button></div></div>';chatBadge()}
+function rematch(){if(!OL.conn||!OL.conn.open){toast("Teman sudah keluar",1600);return}if(OL.role==="host")netGo();else{netSend({t:"rq"});toast("Meminta host mulai ulang…",1800)}}
+function onMsg(m){if(!m||typeof m!=="object")return;OL.rx=Date.now();if(m.t==="p")return;
+ if(m.t==="bye"){const c=OL.conn,was=B.ph;OL.conn=null;clearTimeout(OL.gt);clearTimeout(OL.rjt);B.rj=null;try{c&&c.close()}catch(e){}
+  if(B.net&&(was==="pick"||was==="wait"||was==="play"))fin(true,(OL.opp||"Teman")+" keluar dari room.",was==="play");
+  else if(B.onl&&OL.role){OL.err="Teman keluar dari room.";onlDraw()}return}
+ if(m.t==="sync"&&B.net&&!B.me){const n=m.n|0,f=String(m.f||"").toUpperCase();if(n<3||n>20||!/^[A-Z]$/.test(f))return;
+  if(B.ph==="wait"){B.n=n;B.sh=Array(n).fill(false);B.ls=Array(n).fill("");B.ph="play";drawPlay();B.tm=setInterval(tick,250)}
+  if(B.ph!=="play")return;
+  if(B.n!==n)return;
+  B.sh[0]=true;B.ls[0]=f;(m.rv||[]).forEach(a=>{const i=a[0]|0,c=String(a[1]||"").toUpperCase();if(i>=1&&i<n&&/^[A-Z]$/.test(c)){B.sh[i]=true;B.ls[i]=c}});
+  B.gs=(m.gs||[]).slice(-50).map(w=>({w:clean(w)}));B.nx=Date.now()+Math.max(0,Math.min(120000,m.ms|0));paintWord();paintFeed();return}
+ if(m.t==="hello"&&OL.role==="host"){OL.opp=String(m.name||"Tamu").slice(0,12);
+  if(m.rj&&B.net&&B.ph!=="setup"){resumed();sendSync()}else netGo()}
+ else if(m.t==="go"&&OL.role==="client"){OL.opp=String(m.hn||"Host").slice(0,12);round(m.s==="client")}
+ else if(m.t==="set"&&B.net&&!B.me&&B.ph==="wait"){const n=m.n|0,f=String(m.f||"").toUpperCase();if(n<3||n>20||!/^[A-Z]$/.test(f))return;
+  B.n=n;B.sh=Array(n).fill(false);B.sh[0]=true;B.ls=Array(n).fill("");B.ls[0]=f;B.nx=Date.now()+Math.max(5,Math.min(120,m.rv|0||REV))*1000;B.ph="play";sfx("recv");drawPlay();B.tm=setInterval(tick,250)}
+ else if(m.t==="rv"&&B.net&&!B.me&&B.ph==="play"){const i=m.i|0,c=String(m.c||"").toUpperCase();if(i<1||i>=B.n||!/^[A-Z]$/.test(c))return;
+  B.sh[i]=true;B.ls[i]=c;B.nx=Date.now()+Math.max(5,Math.min(120,m.nx|0||REV))*1000;sfx("recv");paintWord()}
+ else if(m.t==="g"&&B.net&&B.me&&B.ph==="play"){const w=clean(m.w);if(!w)return;
+  if(w===B.w){sendEnd("win");fin(false,(OL.opp||"Teman")+" berhasil menebak katamu.")}
+  else{B.gs.push({w});netSend({t:"gr",w});sfx("recv");paintFeed()}}
+ else if(m.t==="gr"&&B.net&&!B.me&&B.ph==="play"){B.gs.push({w:clean(m.w)});sfx("no");paintFeed()}
+ else if(m.t==="end"&&B.net&&!B.me&&B.ph==="play"){B.w=clean(m.w);if(m.r==="win")fin(true,"Tebakanmu benar!");else fin(false,"Tersisa 2 huruf yang belum terbuka. Kamu kehabisan waktu.")}
+ else if(m.t==="chat"&&(B.net||B.onl))ZC.recv(m)
+ else if(m.t==="rq"&&OL.role==="host")netGo()}
+
+/* ---------- klik ---------- */
+el.addEventListener("click",e=>{const g=q=>e.target.closest(q);
+ if(B.onl){if(g("#zlx"))leaveLobby();return}
+ if(g("#tkinv")){sfx("click");if(window.zfOpenPanel)zfOpenPanel("kata");else toast("Fitur teman belum siap",1800);return}
+ if(g("#tkch")||g("#tkchr")){ZC.open();return}
+ if(g("#tkx")){exitNet();return}
+ if(g("#tkr")){rematch();return}
+ if(B.ph==="pick"){
+  const c=g("[data-kw]");if(c){sfx("click");const i=T("tkin");if(i){i.value=c.dataset.kw;pickChk()}return}
+  if(g("#tkre")){sfx("click");B.sg=pick6();const r=T("tkrec");if(r)r.innerHTML=recHtml();pickChk();return}
+  if(g("#tkok")){confirmWord();return}}
+ else if(B.ph==="play"&&!B.me&&g("#tkgo"))guess()});
+el.addEventListener("input",e=>{if(e.target.id==="tkin"){const v=clean(e.target.value);if(e.target.value!==v)e.target.value=v;pickChk()}});
+el.addEventListener("keydown",e=>{if(e.key!=="Enter")return;if(e.target.id==="tkin")confirmWord();else if(e.target.id==="tkgi")guess()});
+window.brTK=()=>setup();
+window.brTKO=()=>cfgOnline();
+setup();
+zGame.reg("t",el,()=>B,()=>{netLeave();setup()});
+})();
+
 // ---------- Teman (Supabase untuk daftar & status, PeerJS untuk chat & undangan) ----------
 (()=>{
 const LS=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);v===null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){return null}};
@@ -6232,7 +6444,8 @@ const GM={
  ludo:{n:"Ludo",k:"ldo",d:"Balapan bidak sampai rumah",c:["#ffcf5a","#ff9500"],i:'<rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="8.5" cy="8.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="15.5" cy="8.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="8.5" cy="15.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1.3" fill="currentColor" stroke="none"/>',opt:[]},
  pul:{n:"Pulse Tap",k:"pt",d:"Adu refleks, kejar target skor",c:["#ffb340","#ff8a00"],i:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',opt:[{k:"lv",t:"Tingkat",v:LVO,d:"sedang"},{k:"tg",t:"Target skor",v:[[300,"300"],[600,"600"],[1000,"1.000"]],d:600}]},
  blast:{n:"Block Blast",k:"bb",d:"Susun blok, balapan skor",c:["#4da3ff","#007aff"],i:'<rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="14" y="14" width="6" height="6" rx="1.5"/>',opt:[{k:"tg",t:"Target skor",v:[[20000,"20.000"],[50000,"50.000"],[100000,"100.000"]],d:20000}]},
- bowler:{n:"Bowler",k:"bw",d:"Adu skor 10 frame",c:["#ff8a6b","#e5432d"],i:'<path d="M12 2.5c-1.6 0-2.4 1.2-2.4 2.6 0 1.2.7 2 1.1 2.8.5 1-1.7 2.5-1.7 5.3 0 2 1.1 3 1.1 4.5l-.8 3.8h5.4l-.8-3.8c0-1.5 1.1-2.5 1.1-4.5 0-2.8-2.2-4.3-1.7-5.3.4-.8 1.1-1.6 1.1-2.8 0-1.4-.8-2.6-2.4-2.6z"/><path d="M10.2 9.5h3.6"/>',opt:[]}};
+ bowler:{n:"Bowler",k:"bw",d:"Adu skor 10 frame",c:["#ff8a6b","#e5432d"],i:'<path d="M12 2.5c-1.6 0-2.4 1.2-2.4 2.6 0 1.2.7 2 1.1 2.8.5 1-1.7 2.5-1.7 5.3 0 2 1.1 3 1.1 4.5l-.8 3.8h5.4l-.8-3.8c0-1.5 1.1-2.5 1.1-4.5 0-2.8-2.2-4.3-1.7-5.3.4-.8 1.1-1.6 1.1-2.8 0-1.4-.8-2.6-2.4-2.6z"/><path d="M10.2 9.5h3.6"/>',opt:[]},
+  kata:{n:"Tebak Kata",k:"tk",d:"Tebak kata sebelum hurufnya terbuka semua",c:["#d28cff","#af52de"],i:'<rect x="2.5" y="7" width="5.2" height="10" rx="1.4"/><rect x="9.4" y="7" width="5.2" height="10" rx="1.4"/><rect x="16.3" y="7" width="5.2" height="10" rx="1.4"/>',opt:[]}};
 const AL="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",mk=n=>Array.from({length:n},()=>AL[zR(AL.length)]).join("");
 const hist=f=>{try{return JSON.parse(LS("zf-h-"+f)||"[]")}catch(e){return[]}},saveH=(f,a)=>LS("zf-h-"+f,JSON.stringify(a.slice(-200)));
 const isFr=f=>DATA.rel.some(r=>r.status==="accepted"&&(r.from_code===f||r.to_code===f)),opn=()=>!!(P&&P.classList.contains("show"));
@@ -6285,7 +6498,7 @@ window.zfPickFriend=(g,code)=>{const old=document.getElementById("zpf");if(old)o
   document.body.appendChild(o)};
 window.zfAuto=k=>{const R=window.zfRoom;if(R&&R.k===k&&Date.now()-R.t<3e5){window.zfRoom=null;if(window.zfCur)window.zfCur.act=Date.now();return R}return null};
 // ----- statistik main bersama teman (disimpan di perangkat ini) -----
-const H2K="zc-h2h",H2G={sdk:"Sudoku",chs:"Catur",uno:"UNO",ldo:"Ludo",pt:"Pulse Tap",bb:"Block Blast",bw:"Bowler"};
+const H2K="zc-h2h",H2G={sdk:"Sudoku",chs:"Catur",uno:"UNO",ldo:"Ludo",pt:"Pulse Tap",bb:"Block Blast",bw:"Bowler",tk:"Tebak Kata"};
 window.zgRec=(k,o,x)=>{try{const c=window.zfCur;if(!c||c.k!==k||!c.f)return;const now=Date.now();if(zgRec.l&&zgRec.l.k===k&&now-zgRec.l.t<4000)return;zgRec.l={k,t:now};
   const d=JSON.parse(localStorage.getItem(H2K)||"{}"),a=d[c.f]=d[c.f]||{},g=a[k]=a[k]||{n:0,w:0,l:0,d:0};g.n++;g[o]++;if(k==="bw"&&x){g.sn=(g.sn|0)+1;g.ts=(g.ts|0)+(x.s|0);g.ot=(g.ot|0)+(x.o|0);if((x.s|0)>(g.hi|0))g.hi=x.s|0}localStorage.setItem(H2K,JSON.stringify(d));zskMark(c.f,"g")}catch(e){}};
 function zbwx(g,a,b){const n=+g.sn||0;if(!n)return"";return"Rekor "+(g.hi|0)+" · rata-rata skor "+a+" "+Math.round((g.ts|0)/n)+" vs "+b+" "+Math.round((g.ot|0)/n)}
