@@ -18,21 +18,137 @@ window.ZPCFG=(function(){var ice=[{urls:["stun:stun.l.google.com:19302","stun:st
  /* TURN sendiri (lebih andal dari TURN gratis publik): localStorage.setItem("zf-turn",JSON.stringify([{urls:"turn:host:443",username:"u",credential:"p"}])) */
  try{var c=JSON.parse(localStorage.getItem("zf-turn")||"null");if(Array.isArray(c)&&c.length)ice=c.concat(ice)}catch(e){}
  return{config:{iceServers:ice,iceCandidatePoolSize:4}}})();
+/* ===== ZNET: progres koneksi online (persen + tahap), pantau jalur ICE, banner "koneksi tidak stabil" ===== */
+window.ZNET=(function(){
+ var PL={
+  host:[["lib","Memuat PeerJS",35],["sig","Menghubungi server sinyal",65]],
+  join:[["lib","Memuat PeerJS",15],["sig","Menghubungi server sinyal",20],["find","Mencari room teman",15],["ice","Menguji jalur jaringan",40],["hs","Berjabat tangan dengan teman",10]],
+  accept:[["ice","Menguji jalur jaringan",80],["hs","Berjabat tangan dengan teman",20]]};
+ var ERR={"network":"koneksi ke server sinyal putus","server-error":"server sinyal bermasalah","socket-error":"koneksi ke server sinyal gagal","socket-closed":"koneksi ke server sinyal tertutup","peer-unavailable":"room belum ditemukan","negotiation-failed":"jalur jaringan gagal dibuka","browser-incompatible":"browser tidak mendukung WebRTC","webrtc":"WebRTC bermasalah","unavailable-id":"kode room masih terpakai","invalid-id":"kode room tidak valid","ssl-unavailable":"koneksi aman tidak tersedia"};
+ var S=null,iv=0,hideT=0,bad={},bn=0,bt=0,bw=null,uid=0;
+ function ix(k){if(!S)return -1;for(var i=0;i<S.pl.length;i++)if(S.pl[i][0]===k)return i;return -1}
+ function pct(){if(!S)return 0;if(S.fin)return 100;var a=0,i;for(i=0;i<S.i;i++)a+=S.pl[i][2];a+=S.pl[S.i][2]*Math.min(1,S.sub);return Math.max(1,Math.min(99,Math.round(a)))}
+ function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+ function css(){if(!document.head||document.getElementById("zncss"))return;var s=document.createElement("style");s.id="zncss";
+  s.textContent=".znp{width:100%;box-sizing:border-box;text-align:left;background:rgba(120,120,128,.12);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--tx,inherit)}"
+  +".znh{display:flex;align-items:baseline;gap:10px}.znpct{font-size:24px;font-weight:800;font-variant-numeric:tabular-nums;min-width:56px}.znlb{flex:1;font-weight:700;line-height:1.25}.znel{font-size:12px;opacity:.55;font-variant-numeric:tabular-nums;white-space:nowrap}"
+  +".znbar{height:8px;border-radius:6px;background:rgba(120,120,128,.25);overflow:hidden}.znbar i{display:block;height:100%;width:0;border-radius:6px;background:linear-gradient(90deg,var(--c1,#5fe08a),var(--c2,#1fa84a));transition:width .35s ease}"
+  +".znst{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:3px}.znst li{display:flex;gap:8px;align-items:center;opacity:.45}.znst li:before{content:\"\\25CB\";width:14px;text-align:center}"
+  +".znst li.d{opacity:.85}.znst li.d:before{content:\"\\2713\";color:#1ea04b;font-weight:800}.znst li.o{opacity:1;font-weight:700}.znst li.o:before{content:\"\\25CF\";animation:znb 1s ease-in-out infinite}"
+  +".zndt{margin:0;font-size:12.5px;opacity:.75;min-height:16px;word-break:break-word}.znhn{margin:0;font-size:12px;opacity:.6}@keyframes znb{50%{opacity:.25}}"
+  +"#znb{position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 10px);z-index:100000;padding:8px 14px;border-radius:999px;font:600 13px/1.25 system-ui,sans-serif;background:#2b2b2e;color:#fff;box-shadow:0 6px 20px rgba(0,0,0,.3);max-width:92vw;display:none;pointer-events:none;text-align:center}"
+  +"#znb.w{background:#b26a00}#znb.o{background:#1c8c45}#znb.e{background:#c0392b}";
+  document.head.appendChild(s)}
+ function hint(){if(!S||S.fin)return"";var st=S.pl[S.i][0],e=Date.now()-S.ts,t=Date.now()-S.t0;
+  if(t>30000)return"Lama sekali. Pastikan temanmu masih membuka halaman game dan sinyal kalian stabil.";
+  if(st==="lib"&&e>5000)return"CDN lambat, mencoba sumber cadangan.";
+  if(st==="sig"&&e>6000)return"Server sinyal publik sedang lambat, akan dicoba ulang otomatis.";
+  if(st==="find"&&e>7000)return"Menunggu teman membuka room…";
+  if(st==="ice"&&e>8000)return"Jaringan seluler/WiFi tertentu butuh jalur relay, bisa sampai 20 detik.";return""}
+ function shell(){var li="",i;for(i=0;i<S.pl.length;i++)li+="<li>"+esc(S.pl[i][1])+"</li>";
+  return'<div class="znp" data-k="'+S.kind+'"><div class="znh"><b class="znpct">0%</b><span class="znlb"></span><span class="znel"></span></div><div class="znbar"><i></i></div><ul class="znst">'+li+'</ul><p class="zndt"></p><p class="znhn"></p></div>'}
+ function paint(el){if(!S||!el)return;var p=pct(),q=function(s){return el.querySelector(s)},li=el.querySelectorAll(".znst li"),i,h=hint();
+  q(".znpct").textContent=p+"%";q(".znbar i").style.width=p+"%";
+  q(".znlb").textContent=S.fin?"Tersambung":S.pl[S.i][1];
+  for(i=0;i<li.length;i++)li[i].className=(S.fin||i<S.i)?"d":i===S.i?"o":"";
+  q(".zndt").textContent=S.dt||"";q(".znhn").textContent=h;
+  q(".znel").textContent=Math.floor((Date.now()-S.t0)/1000)+" dtk"}
+ function html(){if(!S)return"";css();return shell()}
+ function render(){var z=document.querySelector(".zlb:not(.er)"),el=document.querySelector(".znp");
+  if(!S||!z){if(el&&el.parentNode)el.parentNode.removeChild(el);return}
+  if(el&&el.getAttribute("data-k")!==S.kind){el.parentNode.removeChild(el);el=null}
+  if(!el){css();var d=document.createElement("div");d.innerHTML=shell();el=d.firstChild;z.insertBefore(el,z.querySelector(".zlt")||z.querySelector(".zlx"))}
+  paint(el)}
+ function tick(){if(!S){clearInterval(iv);iv=0;return}
+  if(Date.now()-S.t0>150000){S=null;render();return}
+  if(!S.fin){var cap=S.i===S.pl.length-1?.9:.88;S.sub+=(cap-S.sub)*.06}render()}
+ function begin(kind){clearTimeout(hideT);S={kind:kind,pl:PL[kind],i:0,sub:0,dt:"",t0:Date.now(),ts:Date.now(),fin:0,lp:null,ty:null};
+  if(!iv)iv=setInterval(tick,250);render()}
+ function stage(k,dt){if(!S||S.fin)return;var i=ix(k);if(i<0)return;if(i>S.i){S.i=i;S.sub=0;S.ts=Date.now()}else if(i<S.i)return;if(dt)S.dt=dt;render()}
+ function note(dt){if(S&&!S.fin){S.dt=dt;render()}}
+ function retry(next,max,why){if(!S||S.fin)return;S.dt="Percobaan "+next+"/"+max+" · "+why+"…";S.sub=Math.min(S.sub,.3);S.ts=Date.now();render()}
+ function route(p,cb){try{p.getStats().then(function(r){var sel=null,L={},R={},pair=null;
+   r.forEach(function(x){if(x.type==="local-candidate")L[x.id]=x;else if(x.type==="remote-candidate")R[x.id]=x;else if(x.type==="transport"&&x.selectedCandidatePairId)sel=x.selectedCandidatePairId});
+   r.forEach(function(x){if(x.type==="candidate-pair"&&(x.id===sel||(!sel&&x.nominated&&x.state==="succeeded")))pair=x});
+   if(pair){var l=L[pair.localCandidateId],m=R[pair.remoteCandidateId],rl=(l&&l.candidateType==="relay")||(m&&m.candidateType==="relay");cb(rl?"relay":"langsung",pair.currentRoundTripTime?Math.round(pair.currentRoundTripTime*1000):0)}}).catch(function(){})}catch(e){}}
+ function done(dt){if(!S||S.fin)return;var s=S;s.fin=1;s.sub=1;s.dt=dt||"Tersambung";render();
+  if(s.lp)route(s.lp,function(r,ms){if(S===s){s.dt="Tersambung · jalur "+r+(ms?" · "+ms+" ms":"");render()}});
+  clearTimeout(hideT);hideT=setTimeout(function(){if(S===s){S=null;render()}},2200)}
+ function fail(){clearTimeout(hideT);S=null;render()}
+ function why(t){return t&&ERR[t]?ERR[t]:"koneksi gagal"}
+ function msg(t){return t&&ERR[t]?"Gagal: "+ERR[t]+". Cek internet lalu coba lagi.":"Gagal: "+(t||"koneksi")}
+ /* jalur ICE: dipasang ke setiap RTCPeerConnection (harus sebelum PeerJS dimuat) */
+ function pcHook(p){var ty={host:0,srflx:0,relay:0};
+  p.addEventListener("icecandidate",function(e){if(!S||S.fin||S.kind==="host"||!e.candidate)return;var m=/ typ (\w+)/.exec(e.candidate.candidate||"");if(m){ty[m[1]]=(ty[m[1]]||0)+1;S.ty=ty;
+    if(S.pl[S.i][0]!=="hs"){S.dt="Jalur ditemukan: "+ty.host+" lokal · "+ty.srflx+" publik · "+ty.relay+" relay"}}});
+  p.addEventListener("iceconnectionstatechange",function(){if(!S||S.fin||S.kind==="host")return;var s=p.iceConnectionState;
+   if(s==="checking")stage("ice","Menguji jalur ke teman…");
+   else if(s==="connected"||s==="completed"){S.lp=p;stage("hs","Jalur terbuka, berjabat tangan…")}
+   else if(s==="failed")S.dt="Jalur gagal. "+(ty.relay?"Mencoba ulang…":"Tidak ada relay yang merespons, mencoba ulang…");
+   else if(s==="disconnected")S.dt="Jalur terputus sesaat…"})}
+ (function(){var R=window.RTCPeerConnection;if(!R)return;
+  function W(a,b){var p=new R(a,b);try{pcHook(p)}catch(e){}return p}
+  W.prototype=R.prototype;try{Object.setPrototypeOf(W,R)}catch(e){}window.RTCPeerConnection=W})();
+ /* banner saat koneksi game goyang di tengah permainan */
+ function bshow(t,c){css();if(!document.body)return;if(!bw){bw=document.createElement("div");bw.id="znb";bw.setAttribute("role","status");document.body.appendChild(bw)}bw.className=c||"";bw.textContent=t;bw.style.display="block"}
+ function bhide(){clearTimeout(bt);if(bw)bw.style.display="none"}
+ function flash(t,c,ms){bshow(t,c);clearTimeout(bt);bt=setTimeout(bhide,ms)}
+ function bupd(){var n=0,t0=0,k;for(k in bad){n++;if(!t0||bad[k]<t0)t0=bad[k]}clearInterval(bn);bn=0;
+  if(n){var f=function(){bshow("⚠️ Koneksi tidak stabil, memulihkan… "+Math.round((Date.now()-t0)/1000)+" dtk","w")};clearTimeout(bt);f();bn=setInterval(f,1000)}}
+ function trk(c,n){if(!c||c._zt)return;var p=c.peerConnection||(c._negotiator&&c._negotiator.peerConnection);
+  if(!p){if((n||0)<6)setTimeout(function(){trk(c,(n||0)+1)},400);return}
+  c._zt=1;var id="c"+(++uid);
+  p.addEventListener("iceconnectionstatechange",function(){var s=p.iceConnectionState;
+   if(s==="disconnected"){if(!bad[id]){bad[id]=Date.now();bupd()}}
+   else{var was=!!bad[id];if(was){delete bad[id];bupd()}
+    if(was&&(s==="connected"||s==="completed")&&!Object.keys(bad).length)flash("✓ Koneksi pulih","o",1800);
+    else if(s==="failed"){if(was||!bn)flash("Koneksi ke teman terputus","e",3500)}}});
+  c.on("close",function(){if(bad[id]){delete bad[id];bupd()}})}
+ function incoming(c){begin("accept");S.dt="Teman menghubungi, membuka jalur…";render();
+  var f=function(){done("Tersambung")},x=function(){if(S&&S.kind==="accept"&&!S.fin){S=null;render()}};
+  var on=c._zon||c.on;if(c.open)f();else{on.call(c,"open",f);on.call(c,"close",x);on.call(c,"error",x)}}
+ function peer(p,id){if(/^zcf-/.test(id||""))return;
+  stage("sig","Menghubungi server sinyal (0.peerjs.com)…");
+  p.on("open",function(){if(!S||S.fin)return;if(S.kind==="host")done("Room siap, menunggu teman");else stage("find","Server sinyal tersambung, mencari room teman…")});
+  p.on("error",function(e){if(S&&!S.fin&&e&&ERR[e.type]){S.dt="Server/jalur: "+ERR[e.type];render()}});
+  p.on("disconnected",function(){if(S&&!S.fin){S.dt="Server sinyal terputus, menyambung ulang…";render()}});
+  p.on("connection",function(c){if(/^zcf-/.test(c.peer||""))return;
+   /* percobaan sambung yang tidak pernah terbuka (klien mengulang) jangan dianggap "teman keluar" oleh game */
+   var on=c.on;c._zon=on;if(c.open)c._zo=1;else on.call(c,"open",function(){c._zo=1});
+   c.on=function(ev,fn){if(ev==="close"&&typeof fn==="function")return on.call(c,ev,function(){if(c._zo)return fn.apply(this,arguments)});return on.apply(c,arguments)};
+   trk(c);try{incoming(c)}catch(e){}})}
+ function dial(c,id){if(/^zcf-/.test(id||""))return;trk(c);
+  if(S&&S.kind==="join"&&!S.fin){S.dt="Menghubungi teman…";c.on("open",function(){done("Tersambung")})}}
+ return{begin:begin,stage:stage,note:note,retry:retry,done:done,fail:fail,why:why,msg:msg,html:html,peer:peer,dial:dial,trk:trk,get:function(){return S}}})();
+/* ===== Ikon game (gambar) ===== */
+window.ZICO={sudoku:'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2096%2096%22%3E%3Cdefs%3E%3CclipPath%20id%3D%22k%22%3E%3Crect%20width%3D%2296%22%20height%3D%2296%22%20rx%3D%2222%22%2F%3E%3C%2FclipPath%3E%3ClinearGradient%20id%3D%22a%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23fff%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e6edff%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22p%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%220%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23ffb938%22%2F%3E%3Cstop%20offset%3D%22.55%22%20stop-color%3D%22%23ffd870%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23f08a00%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Cg%20clip-path%3D%22url%28%23k%29%22%3E%3Crect%20width%3D%2296%22%20height%3D%2296%22%20fill%3D%22url%28%23a%29%22%2F%3E%3Cg%20stroke%3D%22%2327348b%22%20stroke-width%3D%222.4%22%20stroke-linecap%3D%22round%22%3E%3Cpath%20d%3D%22M32%206V90M64%206V90M6%2032H90M6%2064H90%22%2F%3E%3C%2Fg%3E%3Cg%20stroke%3D%22%239fb0e8%22%20stroke-width%3D%221%22%3E%3Cpath%20d%3D%22M15%206V90M23.5%206V90M41%206V90M49.5%206V90M73%206V90M81.5%206V90M6%2015H90M6%2023.5H90M6%2041H90M6%2049.5H90M6%2073H90M6%2081.5H90%22%2F%3E%3C%2Fg%3E%3Cg%20font-family%3D%22Arial%2CHelvetica%2Csans-serif%22%20font-weight%3D%22700%22%20text-anchor%3D%22middle%22%20font-size%3D%2221%22%3E%3Ctext%20x%3D%2219%22%20y%3D%2225%22%20fill%3D%22%23111b5e%22%3E5%3C%2Ftext%3E%3Ctext%20x%3D%2248%22%20y%3D%2225%22%20fill%3D%22%232b45c8%22%3E3%3C%2Ftext%3E%3Ctext%20x%3D%2219%22%20y%3D%2286%22%20fill%3D%22%23111b5e%22%3E7%3C%2Ftext%3E%3Ctext%20x%3D%2248%22%20y%3D%2257%22%20fill%3D%22%232b45c8%22%3E8%3C%2Ftext%3E%3Ctext%20x%3D%2280%22%20y%3D%2257%22%20fill%3D%22%23111b5e%22%3E1%3C%2Ftext%3E%3Ctext%20x%3D%2248%22%20y%3D%2286%22%20fill%3D%22%232b45c8%22%3E6%3C%2Ftext%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%2866%2062%29%20rotate%2845%29%22%3E%3Crect%20x%3D%22-6.5%22%20y%3D%22-44%22%20width%3D%2213%22%20height%3D%2242%22%20rx%3D%222%22%20fill%3D%22url%28%23p%29%22%2F%3E%3Crect%20x%3D%22-6.5%22%20y%3D%22-50%22%20width%3D%2213%22%20height%3D%228%22%20rx%3D%222.5%22%20fill%3D%22%23ff6b6b%22%2F%3E%3Crect%20x%3D%22-6.5%22%20y%3D%22-44%22%20width%3D%2213%22%20height%3D%223%22%20fill%3D%22%23c9ccd6%22%2F%3E%3Cpath%20d%3D%22M-6.5%20-2L6.5%20-2L0%2014Z%22%20fill%3D%22%23f4d7a8%22%2F%3E%3Cpath%20d%3D%22M-2.6%206L2.6%206L0%2014Z%22%20fill%3D%22%232a2a33%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E',bowler:'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2096%2096%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22b%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f7f9ff%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23d6e2ff%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%2296%22%20height%3D%2296%22%20rx%3D%2222%22%20fill%3D%22url%28%23b%29%22%2F%3E%3Cg%20shape-rendering%3D%22crispEdges%22%3E%3Cpath%20fill%3D%22%23f6f2ee%22%20d%3D%22M12%206h12v3h-12zM42%206h12v3h-12zM72%206h12v3h-12zM9%209h15v3h-15zM39%209h15v3h-15zM69%209h15v3h-15zM9%2012h15v3h-15zM39%2012h15v3h-15zM69%2012h15v3h-15zM12%2015h9v3h-9zM42%2015h9v3h-9zM72%2015h9v3h-9zM12%2021h9v3h-9zM42%2021h9v3h-9zM72%2021h9v3h-9zM12%2027h9v3h-9zM42%2027h9v3h-9zM72%2027h9v3h-9zM9%2030h15v3h-15zM39%2030h15v3h-15zM69%2030h15v3h-15zM6%2033h21v3h-21zM36%2033h21v3h-21zM66%2033h21v3h-21zM6%2036h21v3h-21zM36%2036h21v3h-21zM66%2036h21v3h-21zM6%2039h18v3h-18zM36%2039h18v3h-18zM66%2039h18v3h-18zM6%2042h18v3h-18zM36%2042h18v3h-18zM66%2042h18v3h-18zM6%2045h18v3h-18zM36%2045h18v3h-18zM66%2045h18v3h-18zM9%2048h12v3h-12zM39%2048h3v3h-3zM69%2048h12v3h-12z%22%2F%3E%3Cpath%20fill%3D%22%23c9c6dc%22%20d%3D%22M24%209h3v3h-3zM54%209h3v3h-3zM84%209h3v3h-3zM24%2012h3v3h-3zM54%2012h3v3h-3zM84%2012h3v3h-3zM21%2015h3v3h-3zM51%2015h3v3h-3zM81%2015h3v3h-3zM21%2021h3v3h-3zM51%2021h3v3h-3zM81%2021h3v3h-3zM21%2027h3v3h-3zM51%2027h3v3h-3zM81%2027h3v3h-3zM24%2030h3v3h-3zM54%2030h3v3h-3zM84%2030h3v3h-3zM27%2033h3v3h-3zM57%2033h3v3h-3zM87%2033h3v3h-3zM27%2036h3v3h-3zM57%2036h3v3h-3zM87%2036h3v3h-3zM24%2039h6v3h-6zM54%2039h6v3h-6zM84%2039h6v3h-6zM24%2042h6v3h-6zM54%2042h6v3h-6zM84%2042h6v3h-6zM24%2045h6v3h-6zM54%2045h6v3h-6zM84%2045h6v3h-6zM21%2048h9v3h-9zM54%2048h6v3h-6zM81%2048h9v3h-9zM12%2051h12v3h-12zM72%2051h12v3h-12z%22%2F%3E%3Cpath%20fill%3D%22%23e8352f%22%20d%3D%22M12%2018h12v3h-12zM42%2018h12v3h-12zM72%2018h12v3h-12zM12%2024h12v3h-12zM42%2024h12v3h-12zM72%2024h12v3h-12z%22%2F%3E%3Cpath%20fill%3D%22%232349d6%22%20d%3D%22M42%2048h12v3h-12zM36%2051h24v3h-24zM42%2054h3v3h-3zM48%2054h6v3h-6zM57%2054h6v3h-6zM30%2057h3v3h-3zM42%2057h21v3h-21zM30%2060h3v3h-3zM42%2060h18v3h-18zM27%2063h21v3h-21zM51%2063h9v3h-9zM27%2066h36v3h-36zM27%2069h36v3h-36zM27%2072h33v3h-33zM27%2075h30v3h-30zM30%2078h24v3h-24zM33%2081h6v3h-6zM42%2081h9v3h-9z%22%2F%3E%3Cpath%20fill%3D%22%23b7d4ff%22%20d%3D%22M33%2054h6v3h-6zM33%2057h6v3h-6z%22%2F%3E%3Cpath%20fill%3D%22%234f86ff%22%20d%3D%22M39%2054h3v3h-3zM39%2057h3v3h-3zM33%2060h9v3h-9z%22%2F%3E%3Cpath%20fill%3D%22%230b1450%22%20d%3D%22M45%2054h3v3h-3zM54%2054h3v3h-3zM48%2063h3v3h-3z%22%2F%3E%3Cpath%20fill%3D%22%23162a9c%22%20d%3D%22M63%2057h3v3h-3zM60%2060h6v3h-6zM60%2063h9v3h-9zM63%2066h6v3h-6zM63%2069h6v3h-6zM60%2072h9v3h-9zM57%2075h12v3h-12zM54%2078h12v3h-12zM39%2081h3v3h-3zM51%2081h12v3h-12zM36%2084h24v3h-24zM39%2087h18v3h-18z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E',blast:'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2096%2096%22%3E%3Cdefs%3E%3CclipPath%20id%3D%22k%22%3E%3Crect%20width%3D%2296%22%20height%3D%2296%22%20rx%3D%2222%22%2F%3E%3C%2FclipPath%3E%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%233b7bff%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%231747c4%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22gd%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23ffe066%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23f5a800%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Cg%20clip-path%3D%22url%28%23k%29%22%3E%3Crect%20width%3D%2296%22%20height%3D%2296%22%20fill%3D%22url%28%23bg%29%22%2F%3E%3Crect%20x%3D%2218.0%22%20y%3D%2233.5%22%20width%3D%2218%22%20height%3D%2218%22%20rx%3D%224.5%22%20fill%3D%22%23e07b00%22%2F%3E%3Crect%20x%3D%2218.0%22%20y%3D%2232%22%20width%3D%2218%22%20height%3D%2218%22%20rx%3D%224.5%22%20fill%3D%22%23ffb23d%22%2F%3E%3Crect%20x%3D%2220.0%22%20y%3D%2234%22%20width%3D%2214%22%20height%3D%225%22%20rx%3D%222.5%22%20fill%3D%22%23fff%22%20opacity%3D%22.38%22%2F%3E%3Crect%20x%3D%2239.0%22%20y%3D%2233.5%22%20width%3D%2218%22%20height%3D%2218%22%20rx%3D%224.5%22%20fill%3D%22%23c42b3a%22%2F%3E%3Crect%20x%3D%2239.0%22%20y%3D%2232%22%20width%3D%2218%22%20height%3D%2218%22%20rx%3D%224.5%22%20fill%3D%22%23ff5a5a%22%2F%3E%3Crect%20x%3D%2241.0%22%20y%3D%2234%22%20width%3D%2214%22%20height%3D%225%22%20rx%3D%222.5%22%20fill%3D%22%23fff%22%20opacity%3D%22.38%22%2F%3E%3Crect%20x%3D%2260.0%22%20y%3D%2233.5%22%20width%3D%2218%22%20height%3D%2218%22%20rx%3D%224.5%22%20fill%3D%22%23d9a800%22%2F%3E%3Crect%20x%3D%2260.0%22%20y%3D%2232%22%20width%3D%2218%22%20height%3D%2218%22%20rx%3D%224.5%22%20fill%3D%22%23ffe14a%22%2F%3E%3Crect%20x%3D%2262.0%22%20y%3D%2234%22%20width%3D%2214%22%20height%3D%225%22%20rx%3D%222.5%22%20fill%3D%22%23fff%22%20opacity%3D%22.38%22%2F%3E%3Crect%20x%3D%2218.0%22%20y%3D%2254.5%22%20width%3D%2218%22%20height%3D%2218%22%20rx%3D%224.5%22%20fill%3D%22%231f9e3c%22%2F%3E%3Crect%20x%3D%2218.0%22%20y%3D%2253%22%20width%3D%2218%22%20height%3D%2218%22%20rx%3D%224.5%22%20fill%3D%22%235be070%22%2F%3E%3Crect%20x%3D%2220.0%22%20y%3D%2255%22%20width%3D%2214%22%20height%3D%225%22%20rx%3D%222.5%22%20fill%3D%22%23fff%22%20opacity%3D%22.38%22%2F%3E%3Crect%20x%3D%2260.0%22%20y%3D%2254.5%22%20width%3D%2218%22%20height%3D%2218%22%20rx%3D%224.5%22%20fill%3D%22%237a2fd0%22%2F%3E%3Crect%20x%3D%2260.0%22%20y%3D%2253%22%20width%3D%2218%22%20height%3D%2218%22%20rx%3D%224.5%22%20fill%3D%22%23b66cff%22%2F%3E%3Crect%20x%3D%2262.0%22%20y%3D%2255%22%20width%3D%2214%22%20height%3D%225%22%20rx%3D%222.5%22%20fill%3D%22%23fff%22%20opacity%3D%22.38%22%2F%3E%3Crect%20x%3D%2218.0%22%20y%3D%2275.5%22%20width%3D%2218%22%20height%3D%2218%22%20rx%3D%224.5%22%20fill%3D%22%230d8fd0%22%2F%3E%3Crect%20x%3D%2218.0%22%20y%3D%2274%22%20width%3D%2218%22%20height%3D%2218%22%20rx%3D%224.5%22%20fill%3D%22%2335d0ff%22%2F%3E%3Crect%20x%3D%2220.0%22%20y%3D%2276%22%20width%3D%2214%22%20height%3D%225%22%20rx%3D%222.5%22%20fill%3D%22%23fff%22%20opacity%3D%22.38%22%2F%3E%3Crect%20x%3D%2239.0%22%20y%3D%2275.5%22%20width%3D%2218%22%20height%3D%2218%22%20rx%3D%224.5%22%20fill%3D%22%230d8fd0%22%2F%3E%3Crect%20x%3D%2239.0%22%20y%3D%2274%22%20width%3D%2218%22%20height%3D%2218%22%20rx%3D%224.5%22%20fill%3D%22%2335d0ff%22%2F%3E%3Crect%20x%3D%2241.0%22%20y%3D%2276%22%20width%3D%2214%22%20height%3D%225%22%20rx%3D%222.5%22%20fill%3D%22%23fff%22%20opacity%3D%22.38%22%2F%3E%3Crect%20x%3D%2260.0%22%20y%3D%2275.5%22%20width%3D%2218%22%20height%3D%2218%22%20rx%3D%224.5%22%20fill%3D%22%237a2fd0%22%2F%3E%3Crect%20x%3D%2260.0%22%20y%3D%2274%22%20width%3D%2218%22%20height%3D%2218%22%20rx%3D%224.5%22%20fill%3D%22%23b66cff%22%2F%3E%3Crect%20x%3D%2262.0%22%20y%3D%2276%22%20width%3D%2214%22%20height%3D%225%22%20rx%3D%222.5%22%20fill%3D%22%23fff%22%20opacity%3D%22.38%22%2F%3E%3Cpath%20d%3D%22M33%2027L35%2012L43%2019L48%208L53%2019L61%2012L63%2027Z%22%20fill%3D%22url%28%23gd%29%22%20stroke%3D%22%23c98200%22%20stroke-width%3D%221.2%22%20stroke-linejoin%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2235%22%20cy%3D%2211%22%20r%3D%222.4%22%20fill%3D%22%23ffd23f%22%2F%3E%3Ccircle%20cx%3D%2248%22%20cy%3D%227%22%20r%3D%222.6%22%20fill%3D%22%23ffd23f%22%2F%3E%3Ccircle%20cx%3D%2261%22%20cy%3D%2211%22%20r%3D%222.4%22%20fill%3D%22%23ffd23f%22%2F%3E%3Ccircle%20cx%3D%2248%22%20cy%3D%2221%22%20r%3D%222.6%22%20fill%3D%22%23ff4d5a%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E',uno:'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2096%2096%22%3E%3Cdefs%3E%3CclipPath%20id%3D%22k%22%3E%3Crect%20width%3D%2296%22%20height%3D%2296%22%20rx%3D%2222%22%2F%3E%3C%2FclipPath%3E%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23ff6150%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23cf1220%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Cg%20clip-path%3D%22url%28%23k%29%22%3E%3Crect%20width%3D%2296%22%20height%3D%2296%22%20fill%3D%22url%28%23bg%29%22%2F%3E%3Cellipse%20cx%3D%2248%22%20cy%3D%2252%22%20rx%3D%2244%22%20ry%3D%2228%22%20fill%3D%22%23fff%22%20opacity%3D%22.12%22%20transform%3D%22rotate%28-24%2048%2052%29%22%2F%3E%3Cg%20transform%3D%22translate%2830%2055%29%20rotate%28-24%29%22%3E%3Crect%20x%3D%22-19%22%20y%3D%22-27%22%20width%3D%2238%22%20height%3D%2254%22%20rx%3D%227%22%20fill%3D%22%23fff%22%2F%3E%3Crect%20x%3D%22-16%22%20y%3D%22-24%22%20width%3D%2232%22%20height%3D%2248%22%20rx%3D%225%22%20fill%3D%22%231c7fd6%22%2F%3E%3Cellipse%20cx%3D%220%22%20cy%3D%220%22%20rx%3D%229.5%22%20ry%3D%2217%22%20fill%3D%22%23fff%22%20transform%3D%22rotate%2832%29%22%2F%3E%3Ctext%20x%3D%220%22%20y%3D%228.5%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2CHelvetica%2Csans-serif%22%20font-weight%3D%22900%22%20font-size%3D%2225%22%20fill%3D%22%231c7fd6%22%3E5%3C%2Ftext%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%2866%2055%29%20rotate%2824%29%22%3E%3Crect%20x%3D%22-19%22%20y%3D%22-27%22%20width%3D%2238%22%20height%3D%2254%22%20rx%3D%227%22%20fill%3D%22%23fff%22%2F%3E%3Crect%20x%3D%22-16%22%20y%3D%22-24%22%20width%3D%2232%22%20height%3D%2248%22%20rx%3D%225%22%20fill%3D%22%2322a84a%22%2F%3E%3Cellipse%20cx%3D%220%22%20cy%3D%220%22%20rx%3D%229.5%22%20ry%3D%2217%22%20fill%3D%22%23fff%22%20transform%3D%22rotate%2832%29%22%2F%3E%3Ctext%20x%3D%220%22%20y%3D%228.5%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2CHelvetica%2Csans-serif%22%20font-weight%3D%22900%22%20font-size%3D%2225%22%20fill%3D%22%2322a84a%22%3E9%3C%2Ftext%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%2848%2050%29%20rotate%280%29%22%3E%3Crect%20x%3D%22-19%22%20y%3D%22-27%22%20width%3D%2238%22%20height%3D%2254%22%20rx%3D%227%22%20fill%3D%22%23fff%22%2F%3E%3Crect%20x%3D%22-16%22%20y%3D%22-24%22%20width%3D%2232%22%20height%3D%2248%22%20rx%3D%225%22%20fill%3D%22%23ffd21a%22%2F%3E%3Cellipse%20cx%3D%220%22%20cy%3D%220%22%20rx%3D%229.5%22%20ry%3D%2217%22%20fill%3D%22%23fff%22%20transform%3D%22rotate%2832%29%22%2F%3E%3Ctext%20x%3D%220%22%20y%3D%228.5%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2CHelvetica%2Csans-serif%22%20font-weight%3D%22900%22%20font-size%3D%2225%22%20fill%3D%22%23e5252c%22%3E7%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E',ludo:'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2096%2096%22%3E%3Cdefs%3E%3CclipPath%20id%3D%22k%22%3E%3Crect%20width%3D%2296%22%20height%3D%2296%22%20rx%3D%2222%22%2F%3E%3C%2FclipPath%3E%3C%2Fdefs%3E%3Cg%20clip-path%3D%22url%28%23k%29%22%3E%3Crect%20width%3D%2296%22%20height%3D%2296%22%20fill%3D%22%23fff%22%2F%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2248%22%20height%3D%2248%22%20fill%3D%22%23e8362f%22%2F%3E%3Crect%20x%3D%227%22%20y%3D%227%22%20width%3D%2236%22%20height%3D%2236%22%20rx%3D%228%22%20fill%3D%22%23fff%22%2F%3E%3Ccircle%20cx%3D%2217%22%20cy%3D%2217%22%20r%3D%225.6%22%20fill%3D%22%23e8362f%22%2F%3E%3Ccircle%20cx%3D%2215.4%22%20cy%3D%2215.2%22%20r%3D%221.6%22%20fill%3D%22%23fff%22%20opacity%3D%22.55%22%2F%3E%3Ccircle%20cx%3D%2217%22%20cy%3D%2233%22%20r%3D%225.6%22%20fill%3D%22%23e8362f%22%2F%3E%3Ccircle%20cx%3D%2215.4%22%20cy%3D%2231.2%22%20r%3D%221.6%22%20fill%3D%22%23fff%22%20opacity%3D%22.55%22%2F%3E%3Ccircle%20cx%3D%2233%22%20cy%3D%2217%22%20r%3D%225.6%22%20fill%3D%22%23e8362f%22%2F%3E%3Ccircle%20cx%3D%2231.4%22%20cy%3D%2215.2%22%20r%3D%221.6%22%20fill%3D%22%23fff%22%20opacity%3D%22.55%22%2F%3E%3Ccircle%20cx%3D%2233%22%20cy%3D%2233%22%20r%3D%225.6%22%20fill%3D%22%23e8362f%22%2F%3E%3Ccircle%20cx%3D%2231.4%22%20cy%3D%2231.2%22%20r%3D%221.6%22%20fill%3D%22%23fff%22%20opacity%3D%22.55%22%2F%3E%3Crect%20x%3D%2248%22%20y%3D%220%22%20width%3D%2248%22%20height%3D%2248%22%20fill%3D%22%2322a84a%22%2F%3E%3Crect%20x%3D%2253%22%20y%3D%227%22%20width%3D%2236%22%20height%3D%2236%22%20rx%3D%228%22%20fill%3D%22%23fff%22%2F%3E%3Ccircle%20cx%3D%2263%22%20cy%3D%2217%22%20r%3D%225.6%22%20fill%3D%22%2322a84a%22%2F%3E%3Ccircle%20cx%3D%2261.4%22%20cy%3D%2215.2%22%20r%3D%221.6%22%20fill%3D%22%23fff%22%20opacity%3D%22.55%22%2F%3E%3Ccircle%20cx%3D%2263%22%20cy%3D%2233%22%20r%3D%225.6%22%20fill%3D%22%2322a84a%22%2F%3E%3Ccircle%20cx%3D%2261.4%22%20cy%3D%2231.2%22%20r%3D%221.6%22%20fill%3D%22%23fff%22%20opacity%3D%22.55%22%2F%3E%3Ccircle%20cx%3D%2279%22%20cy%3D%2217%22%20r%3D%225.6%22%20fill%3D%22%2322a84a%22%2F%3E%3Ccircle%20cx%3D%2277.4%22%20cy%3D%2215.2%22%20r%3D%221.6%22%20fill%3D%22%23fff%22%20opacity%3D%22.55%22%2F%3E%3Ccircle%20cx%3D%2279%22%20cy%3D%2233%22%20r%3D%225.6%22%20fill%3D%22%2322a84a%22%2F%3E%3Ccircle%20cx%3D%2277.4%22%20cy%3D%2231.2%22%20r%3D%221.6%22%20fill%3D%22%23fff%22%20opacity%3D%22.55%22%2F%3E%3Crect%20x%3D%220%22%20y%3D%2248%22%20width%3D%2248%22%20height%3D%2248%22%20fill%3D%22%232a78e6%22%2F%3E%3Crect%20x%3D%227%22%20y%3D%2253%22%20width%3D%2236%22%20height%3D%2236%22%20rx%3D%228%22%20fill%3D%22%23fff%22%2F%3E%3Ccircle%20cx%3D%2217%22%20cy%3D%2263%22%20r%3D%225.6%22%20fill%3D%22%232a78e6%22%2F%3E%3Ccircle%20cx%3D%2215.4%22%20cy%3D%2261.2%22%20r%3D%221.6%22%20fill%3D%22%23fff%22%20opacity%3D%22.55%22%2F%3E%3Ccircle%20cx%3D%2217%22%20cy%3D%2279%22%20r%3D%225.6%22%20fill%3D%22%232a78e6%22%2F%3E%3Ccircle%20cx%3D%2215.4%22%20cy%3D%2277.2%22%20r%3D%221.6%22%20fill%3D%22%23fff%22%20opacity%3D%22.55%22%2F%3E%3Ccircle%20cx%3D%2233%22%20cy%3D%2263%22%20r%3D%225.6%22%20fill%3D%22%232a78e6%22%2F%3E%3Ccircle%20cx%3D%2231.4%22%20cy%3D%2261.2%22%20r%3D%221.6%22%20fill%3D%22%23fff%22%20opacity%3D%22.55%22%2F%3E%3Ccircle%20cx%3D%2233%22%20cy%3D%2279%22%20r%3D%225.6%22%20fill%3D%22%232a78e6%22%2F%3E%3Ccircle%20cx%3D%2231.4%22%20cy%3D%2277.2%22%20r%3D%221.6%22%20fill%3D%22%23fff%22%20opacity%3D%22.55%22%2F%3E%3Crect%20x%3D%2248%22%20y%3D%2248%22%20width%3D%2248%22%20height%3D%2248%22%20fill%3D%22%23ffc61a%22%2F%3E%3Crect%20x%3D%2253%22%20y%3D%2253%22%20width%3D%2236%22%20height%3D%2236%22%20rx%3D%228%22%20fill%3D%22%23fff%22%2F%3E%3Ccircle%20cx%3D%2263%22%20cy%3D%2263%22%20r%3D%225.6%22%20fill%3D%22%23ffc61a%22%2F%3E%3Ccircle%20cx%3D%2261.4%22%20cy%3D%2261.2%22%20r%3D%221.6%22%20fill%3D%22%23fff%22%20opacity%3D%22.55%22%2F%3E%3Ccircle%20cx%3D%2263%22%20cy%3D%2279%22%20r%3D%225.6%22%20fill%3D%22%23ffc61a%22%2F%3E%3Ccircle%20cx%3D%2261.4%22%20cy%3D%2277.2%22%20r%3D%221.6%22%20fill%3D%22%23fff%22%20opacity%3D%22.55%22%2F%3E%3Ccircle%20cx%3D%2279%22%20cy%3D%2263%22%20r%3D%225.6%22%20fill%3D%22%23ffc61a%22%2F%3E%3Ccircle%20cx%3D%2277.4%22%20cy%3D%2261.2%22%20r%3D%221.6%22%20fill%3D%22%23fff%22%20opacity%3D%22.55%22%2F%3E%3Ccircle%20cx%3D%2279%22%20cy%3D%2279%22%20r%3D%225.6%22%20fill%3D%22%23ffc61a%22%2F%3E%3Ccircle%20cx%3D%2277.4%22%20cy%3D%2277.2%22%20r%3D%221.6%22%20fill%3D%22%23fff%22%20opacity%3D%22.55%22%2F%3E%3Cg%20fill%3D%22%23fff%22%20opacity%3D%22.92%22%3E%3Crect%20x%3D%2239%22%20y%3D%220%22%20width%3D%2218%22%20height%3D%2296%22%2F%3E%3Crect%20x%3D%220%22%20y%3D%2239%22%20width%3D%2296%22%20height%3D%2218%22%2F%3E%3C%2Fg%3E%3Cg%20stroke%3D%22%23cfd3dc%22%20stroke-width%3D%22.8%22%3E%3Cpath%20d%3D%22M39%200V96M57%200V96M0%2039H96M0%2057H96M48%200V96M0%2048H96%22%2F%3E%3C%2Fg%3E%3Crect%20x%3D%2234%22%20y%3D%2234%22%20width%3D%2228%22%20height%3D%2228%22%20rx%3D%227%22%20fill%3D%22%23fff%22%20stroke%3D%22%232b2f45%22%20stroke-width%3D%222.2%22%2F%3E%3Cg%20fill%3D%22%232b2f45%22%3E%3Ccircle%20cx%3D%2241.5%22%20cy%3D%2241.5%22%20r%3D%222.7%22%2F%3E%3Ccircle%20cx%3D%2254.5%22%20cy%3D%2241.5%22%20r%3D%222.7%22%2F%3E%3Ccircle%20cx%3D%2248%22%20cy%3D%2248%22%20r%3D%222.7%22%2F%3E%3Ccircle%20cx%3D%2241.5%22%20cy%3D%2254.5%22%20r%3D%222.7%22%2F%3E%3Ccircle%20cx%3D%2254.5%22%20cy%3D%2254.5%22%20r%3D%222.7%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E',kata:'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2096%2096%22%3E%3Cdefs%3E%3CclipPath%20id%3D%22k%22%3E%3Crect%20width%3D%2296%22%20height%3D%2296%22%20rx%3D%2222%22%2F%3E%3C%2FclipPath%3E%3ClinearGradient%20id%3D%22f%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23ff8a2b%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23d9291c%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22s%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%234aa6ff%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23a8dcff%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22d%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f1bd5a%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23c98a2a%22%2F%3E%3C%2FlinearGradient%3E%3CclipPath%20id%3D%22q1%22%3E%3Crect%20x%3D%2210%22%20y%3D%2210%22%20width%3D%2236%22%20height%3D%2236%22%20rx%3D%226%22%2F%3E%3C%2FclipPath%3E%3CclipPath%20id%3D%22q2%22%3E%3Crect%20x%3D%2250%22%20y%3D%2210%22%20width%3D%2236%22%20height%3D%2236%22%20rx%3D%226%22%2F%3E%3C%2FclipPath%3E%3CclipPath%20id%3D%22q3%22%3E%3Crect%20x%3D%2210%22%20y%3D%2250%22%20width%3D%2236%22%20height%3D%2236%22%20rx%3D%226%22%2F%3E%3C%2FclipPath%3E%3CclipPath%20id%3D%22q4%22%3E%3Crect%20x%3D%2250%22%20y%3D%2250%22%20width%3D%2236%22%20height%3D%2236%22%20rx%3D%226%22%2F%3E%3C%2FclipPath%3E%3C%2Fdefs%3E%3Cg%20clip-path%3D%22url%28%23k%29%22%3E%3Crect%20width%3D%2296%22%20height%3D%2296%22%20fill%3D%22%231c2740%22%2F%3E%3Cg%20clip-path%3D%22url%28%23q1%29%22%3E%3Crect%20x%3D%2210%22%20y%3D%2210%22%20width%3D%2236%22%20height%3D%2236%22%20fill%3D%22url%28%23f%29%22%2F%3E%3Cpath%20d%3D%22M28%2014C34%2022%2040%2026%2038%2034C37%2040%2032%2043%2028%2043C22%2043%2018%2039%2019%2033C20%2029%2024%2027%2024%2022C27%2024%2028%2020%2028%2014Z%22%20fill%3D%22%23ffd23f%22%2F%3E%3Cpath%20d%3D%22M28%2028C31%2032%2033%2034%2031%2038C30%2040%2029%2041%2028%2041C26%2041%2024%2039%2025%2036C26%2033%2027%2031%2028%2028Z%22%20fill%3D%22%23fff3b0%22%2F%3E%3C%2Fg%3E%3Cg%20clip-path%3D%22url%28%23q2%29%22%3E%3Crect%20x%3D%2250%22%20y%3D%2210%22%20width%3D%2236%22%20height%3D%2236%22%20fill%3D%22%237fd4ff%22%2F%3E%3Cpath%20d%3D%22M50%2036C60%2028%2074%2030%2086%2034V46H50Z%22%20fill%3D%22%233fae4f%22%2F%3E%3Ccircle%20cx%3D%2275%22%20cy%3D%2219%22%20r%3D%225.5%22%20fill%3D%22%23ffe066%22%2F%3E%3C%2Fg%3E%3Cg%20clip-path%3D%22url%28%23q3%29%22%3E%3Crect%20x%3D%2210%22%20y%3D%2250%22%20width%3D%2236%22%20height%3D%2236%22%20fill%3D%22url%28%23s%29%22%2F%3E%3Cg%20fill%3D%22%23fff%22%3E%3Cellipse%20cx%3D%2226%22%20cy%3D%2263%22%20rx%3D%2210%22%20ry%3D%225.5%22%2F%3E%3Ccircle%20cx%3D%2220%22%20cy%3D%2261%22%20r%3D%225%22%2F%3E%3Ccircle%20cx%3D%2231%22%20cy%3D%2260%22%20r%3D%225.5%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3Cg%20clip-path%3D%22url%28%23q4%29%22%3E%3Crect%20x%3D%2250%22%20y%3D%2250%22%20width%3D%2236%22%20height%3D%2236%22%20fill%3D%22url%28%23d%29%22%2F%3E%3Cpath%20d%3D%22M50%2070C60%2060%2072%2062%2086%2072V86H50Z%22%20fill%3D%22%23e8a840%22%2F%3E%3Cpath%20d%3D%22M50%2078C62%2070%2074%2072%2086%2080V86H50Z%22%20fill%3D%22%23b97a22%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22rotate%28-3%2018.5%2048%29%22%3E%3Crect%20x%3D%2210.0%22%20y%3D%2238%22%20width%3D%2217%22%20height%3D%2220%22%20rx%3D%224%22%20fill%3D%22%23f4f4f6%22%2F%3E%3Crect%20x%3D%2210.0%22%20y%3D%2255%22%20width%3D%2217%22%20height%3D%223%22%20rx%3D%221.5%22%20fill%3D%22%23c9ccd6%22%2F%3E%3Ctext%20x%3D%2218.5%22%20y%3D%2253%22%20font-family%3D%22Arial%2CHelvetica%2Csans-serif%22%20font-weight%3D%22800%22%20text-anchor%3D%22middle%22%20font-size%3D%2214%22%20fill%3D%22%231c2740%22%3EK%3C%2Ftext%3E%3C%2Fg%3E%3Cg%20transform%3D%22rotate%282%2039.0%2048%29%22%3E%3Crect%20x%3D%2230.5%22%20y%3D%2238%22%20width%3D%2217%22%20height%3D%2220%22%20rx%3D%224%22%20fill%3D%22%23f4f4f6%22%2F%3E%3Crect%20x%3D%2230.5%22%20y%3D%2255%22%20width%3D%2217%22%20height%3D%223%22%20rx%3D%221.5%22%20fill%3D%22%23c9ccd6%22%2F%3E%3Ctext%20x%3D%2239.0%22%20y%3D%2253%22%20font-family%3D%22Arial%2CHelvetica%2Csans-serif%22%20font-weight%3D%22800%22%20text-anchor%3D%22middle%22%20font-size%3D%2214%22%20fill%3D%22%231c2740%22%3EA%3C%2Ftext%3E%3C%2Fg%3E%3Cg%20transform%3D%22rotate%28-2%2059.5%2048%29%22%3E%3Crect%20x%3D%2251.0%22%20y%3D%2238%22%20width%3D%2217%22%20height%3D%2220%22%20rx%3D%224%22%20fill%3D%22%23f4f4f6%22%2F%3E%3Crect%20x%3D%2251.0%22%20y%3D%2255%22%20width%3D%2217%22%20height%3D%223%22%20rx%3D%221.5%22%20fill%3D%22%23c9ccd6%22%2F%3E%3Ctext%20x%3D%2259.5%22%20y%3D%2253%22%20font-family%3D%22Arial%2CHelvetica%2Csans-serif%22%20font-weight%3D%22800%22%20text-anchor%3D%22middle%22%20font-size%3D%2214%22%20fill%3D%22%231c2740%22%3ET%3C%2Ftext%3E%3C%2Fg%3E%3Cg%20transform%3D%22rotate%283%2080.0%2048%29%22%3E%3Crect%20x%3D%2271.5%22%20y%3D%2238%22%20width%3D%2217%22%20height%3D%2220%22%20rx%3D%224%22%20fill%3D%22%23f4f4f6%22%2F%3E%3Crect%20x%3D%2271.5%22%20y%3D%2255%22%20width%3D%2217%22%20height%3D%223%22%20rx%3D%221.5%22%20fill%3D%22%23c9ccd6%22%2F%3E%3Ctext%20x%3D%2280.0%22%20y%3D%2253%22%20font-family%3D%22Arial%2CHelvetica%2Csans-serif%22%20font-weight%3D%22800%22%20text-anchor%3D%22middle%22%20font-size%3D%2214%22%20fill%3D%22%231c2740%22%3EA%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E'};
+window.ZICOI=function(k){return'<image class="zimg" href="'+ZICO[k]+'" x="0" y="0" width="24" height="24"/>'};
+(function(){var Z=window.ZICO,c="",k,u=function(n){return'url("'+Z[n]+'")'};
+ var bg=function(n){return"background:"+u(n)+" center/100% 100% no-repeat!important"};
+ ["sudoku","bowler","blast","uno","ludo","kata"].forEach(function(n){
+  c+='.zr[data-w="'+n+'"] .zi{'+bg(n)+'}.zr[data-w="'+n+'"] .zi>svg{display:none}';});
+ ["sudoku","blast","uno"].forEach(function(n){
+  c+='.hw[data-w="'+n+'"] .hic{'+bg(n)+';width:40px;height:40px;border-radius:11px;box-shadow:0 3px 8px rgba(0,0,0,.18)}.hw[data-w="'+n+'"] .hic>svg{display:none}';});
+ c+='.zlg:has(>svg>.zimg){background:none;box-shadow:0 14px 26px -10px var(--c2)}.zlg svg:has(>.zimg){width:78px;height:78px}'
+  +'.zmi:has(>svg>.zimg){background:none}.zmi svg:has(>.zimg){width:64px;height:64px}'
+  +'.zgi:has(>svg>.zimg){background:none;box-shadow:none}.zgi svg:has(>.zimg){width:46px;height:46px}'
+  +'.ag svg:has(>.zimg){width:46%;max-height:78%;filter:drop-shadow(0 4px 5px rgba(0,0,0,.25))}';
+ var st=document.createElement("style");st.id="zicss";st.textContent=c;document.head.appendChild(st)})();
 /* Muat PeerJS: dua CDN dicoba hampir bersamaan, yang pertama selesai dipakai */
 /* Sambung ulang otomatis ke server sinyal: HP sering memutus WebSocket saat layar mati / pindah aplikasi / sinyal goyang */
 window.zWrapPeer=function(){var P=window.Peer;if(!P||P.zw)return;var S=window.__zps=window.__zps||[];
  function re(p,n){if(!p||p.destroyed||!p.disconnected||n>14)return;try{p.reconnect()}catch(e){}setTimeout(function(){re(p,n+1)},Math.min(8000,900*(n+1)))}
- function W(a,b){var p=new P(a,b);S.push(p);p.on("disconnected",function(){re(p,0)});p.on("close",function(){var i=S.indexOf(p);if(i>=0)S.splice(i,1)});return p}
+ function W(a,b){var p=new P(a,b);S.push(p);try{ZNET.peer(p,typeof a==="string"?a:"");var oc=p.connect;p.connect=function(id){var c=oc.apply(p,arguments);try{ZNET.dial(c,id)}catch(e){}return c}}catch(e){}p.on("disconnected",function(){re(p,0)});p.on("close",function(){var i=S.indexOf(p);if(i>=0)S.splice(i,1)});return p}
  W.prototype=P.prototype;for(var k in P){try{W[k]=P[k]}catch(e){}}W.zw=1;window.Peer=W;
  function wake(){S.slice().forEach(function(p){if(p.disconnected&&!p.destroyed)re(p,0)})}
  document.addEventListener("visibilitychange",function(){if(!document.hidden)wake()});window.addEventListener("online",wake);window.addEventListener("pageshow",wake)};
-window.zLoadPeer=function(){if(window.Peer){zWrapPeer();return Promise.resolve()}if(zLoadPeer.p)return zLoadPeer.p;
+window.zLoadPeer=function(){if(window.Peer){zWrapPeer();ZNET.stage("sig","Menghubungi server sinyal…");return Promise.resolve()}if(zLoadPeer.p)return zLoadPeer.p;
  var U=["https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js","https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"];
- zLoadPeer.p=new Promise(function(ok,no){var done=0,fails=0,st=[];
-  function fin(g){if(done)return;if(g){done=1;zWrapPeer();ok()}else if(++fails>=U.length){done=1;zLoadPeer.p=null;no(1)}}
+ ZNET.stage("lib","Mengunduh PeerJS dari cdn.jsdelivr.net…");zLoadPeer.p=new Promise(function(ok,no){var done=0,fails=0,st=[];
+  function fin(g){if(done)return;if(g){done=1;zWrapPeer();ZNET.stage("sig","Menghubungi server sinyal…");ok()}else if(++fails>=U.length){done=1;zLoadPeer.p=null;no(1)}}
   function one(i){if(i>=U.length||st[i])return;st[i]=1;var s=document.createElement("script");s.src=U[i];s.async=true;
    s.onload=function(){fin(!!window.Peer)};s.onerror=function(){s.remove();fin(0);one(i+1)};document.head.appendChild(s)}
-  one(0);setTimeout(function(){if(!done)one(1)},2500);
+  one(0);setTimeout(function(){if(!done){ZNET.note("CDN pertama lambat, mencoba unpkg.com…");one(1)}},2500);
   setTimeout(function(){if(!done){done=1;zLoadPeer.p=null;no(1)}},15000)});
  return zLoadPeer.p};
 window.addEventListener("load",function(){setTimeout(function(){try{if(localStorage.getItem("zf-me"))zLoadPeer().catch(function(){})}catch(e){}},200)});
@@ -3427,21 +3543,26 @@ function cfgOnline(){netLeave();stop();B={...blank(),onl:1};OL.err="";const A=wi
 function leaveLobby(){if(!B.onl)return;window.zfLeave=null;window.zfAbort=null;window.zfCancel&&zfCancel();stop();netLeave();B=blank();setup();window.brLauncher&&brLauncher()}
 function onlDraw(){if(!B.onl)return;el.innerHTML=window.zfLobby?zfLobby({k:"sdk",me:OL.name,opp:OL.opp0,role:OL.want,st:OL.role?(OL.want==="host"?"wait":"ok"):"conn",err:OL.err}):""}
 async function ohost(){if(OL.busy)return;OL.busy=1;OL.err="";OL.st="Menghubungkan…";onlDraw();
- try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Kalau dibuka lewat preview di aplikasi Claude, koneksi diblokir: buka di Chrome.";onlDraw();return}
+ ZNET.begin("host");try{await loadPeer()}catch(e){ZNET.fail();OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Kalau dibuka lewat preview di aplikasi Claude, koneksi diblokir: buka di Chrome.";onlDraw();return}
  const mk=n=>{const code=OL.code||Array.from({length:5},()=>CHRc[Math.random()*CHRc.length|0]).join(""),p=new Peer("zcsdk-"+code.toLowerCase(),PCFG);
-  const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}OL.busy=0;OL.st="";OL.err="Server PeerJS tidak merespons. Coba buka di Chrome.";onlDraw()},20000);
+  const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}if(n<4){ZNET.retry(n+2,5,"server sinyal lambat");mk(n+1);return}OL.busy=0;OL.st="";OL.err="Server sinyal tidak merespons. Cek internet lalu coba lagi.";ZNET.fail();onlDraw()},8000+n*3000);
   p.on("open",()=>{clearTimeout(to);OL.busy=0;OL.role="host";OL.peer=p;OL.code=code;OL.st="";onlDraw()});
   p.on("connection",c=>{if(OL.conn&&OL.conn.open){try{c.close()}catch(e){}return}wire(c)});
-  p.on("error",er=>{if(er.type==="unavailable-id"&&n<4){try{p.destroy()}catch(e){}mk(n+1);return}if(OL.role)return;OL.busy=0;OL.st="";OL.err="Gagal: "+(er.type||"koneksi");onlDraw()})};mk(0)}
+  p.on("error",er=>{if(!OL.role&&n<4&&/^(network|server-error|socket-error|socket-closed)$/.test(er.type)){clearTimeout(to);try{p.destroy()}catch(e){}ZNET.retry(n+2,5,ZNET.why(er.type));setTimeout(()=>mk(n+1),600+n*500);return}if(er.type==="unavailable-id"&&n<4){clearTimeout(to);try{p.destroy()}catch(e){}ZNET.retry(n+2,5,"kode room masih terpakai");setTimeout(()=>mk(n+1),900+n*700);return}if(OL.role)return;OL.busy=0;OL.st="";OL.err=ZNET.msg(er.type);onlDraw()})};mk(0)}
 async function ojoin(){const code=(OL.code||"").toUpperCase();if(OL.busy)return;if(code.length<4){OL.err="Masukkan kode room.";onlDraw();return}
  OL.busy=1;OL.err="";OL.st="Menghubungkan…";onlDraw();
- try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Buka di Chrome.";onlDraw();return}
- let tries=0,ok_=0;const p=new Peer(PCFG);OL.peer=p;
- const fail=t=>{OL.busy=0;OL.st="";OL.err=t;try{p.destroy()}catch(e){}OL.peer=null;onlDraw()};
- const att=()=>{tries++;const c=p.connect("zcsdk-"+code.toLowerCase(),{reliable:true});
-  const to=setTimeout(()=>{if(ok_)return;try{c.close()}catch(e){}if(tries<6)att();else fail("Tidak bisa terhubung ke teman. Pastikan ia masih membuka halaman game.")},10000);
-  c.on("open",()=>{ok_=1;clearTimeout(to);OL.busy=0;OL.role="client";OL.code=code;OL.st="";wire(c);c.send({t:"hello",name:OL.name||"Tamu"});onlDraw()})};
- p.on("open",att);p.on("error",er=>{if(ok_)return;if(er.type==="peer-unavailable"){if(tries<6)setTimeout(att,1200);else fail("Ajakan sudah tidak berlaku. Minta temanmu mengajak lagi.")}else fail("Gagal: "+(er.type||"koneksi"))})}
+ ZNET.begin("join");try{await loadPeer()}catch(e){ZNET.fail();OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Buka di Chrome.";onlDraw();return}
+ let tries=0,sg=0,ok_=0,p=null,cur=null;
+ const fail=t=>{ZNET.fail();OL.busy=0;OL.st="";OL.err=t;try{p.destroy()}catch(e){}OL.peer=null;onlDraw()};
+ const att=()=>{if(OL.peer!==p||ok_)return;if(cur)cur();tries++;const c=p.connect("zcsdk-"+code.toLowerCase(),{reliable:true});let dn=0;
+  const kill=()=>{dn=1;clearTimeout(to);try{c.close()}catch(e){}};cur=kill;
+  const retry=w=>{if(dn||ok_||OL.peer!==p)return;kill();if(tries<8){ZNET.retry(tries+1,8,w);setTimeout(att,Math.min(2500,500*tries))}else fail("Tidak bisa terhubung ke teman. Pastikan ia masih membuka halaman game.")};
+  const to=setTimeout(()=>retry("tidak ada respons"),Math.min(18000,11000+tries*1500));
+  c.on("open",()=>{ok_=1;clearTimeout(to);OL.busy=0;OL.role="client";OL.code=code;OL.st="";wire(c);c.send({t:"hello",name:OL.name||"Tamu"});onlDraw()});
+  c.on("error",er=>retry(ZNET.why(er&&er.type)));c.on("close",()=>retry("koneksi tertutup"))};
+ const perr=er=>{if(ok_)return;if(er.type==="peer-unavailable"){if(cur)cur();if(tries<10){ZNET.retry(tries+1,10,"room belum siap, menunggu teman");setTimeout(att,1500)}else fail("Ajakan sudah tidak berlaku. Minta temanmu mengajak lagi.")}else if(sg<3&&/^(network|server-error|socket-error|socket-closed)$/.test(er.type)){sg++;ZNET.retry(sg+1,4,ZNET.why(er.type));try{p.destroy()}catch(e){}p=null;setTimeout(mk,800*sg)}else fail(ZNET.msg(er.type))};
+ const mk=()=>{const q=new Peer(PCFG);p=q;OL.peer=q;q.on("open",()=>{if(q===p)att()});q.on("error",er=>{if(q===p)perr(er)})};
+ mk()}
 function rematch(){if(!OL.conn||!OL.conn.open){toast("Lawan sudah keluar",1600);return}if(OL.role==="host")netGo();else{netSend({t:"rq"});toast("Meminta host mulai ulang…",1800)}}
 function netClick(e){const g=s=>e.target.closest(s);
  if(B.onl){if(g("#zlx"))leaveLobby();return true}
@@ -3809,21 +3930,26 @@ function cfgOnline(){clr();netLeave();B={ph:"setup",gen:false,onl:1};OL.err="";c
 function leaveLobby(){if(!B.onl)return;window.zfLeave=null;window.zfAbort=null;window.zfCancel&&zfCancel();setup();el.innerHTML=""}
 function onlDraw(){if(!B.onl)return;el.innerHTML=window.zfLobby?zfLobby({k:"pt",me:OL.name,opp:OL.opp0,role:OL.want,st:OL.role?(OL.want==="host"?"wait":"ok"):"conn",err:OL.err}):""}
 async function ohost(){if(OL.busy)return;if(!(OL.tg>=50)){OL.err="Target skor minimal 50.";onlDraw();return}if(!(OL.tg>=100)){OL.err="Target skor minimal 100.";onlDraw();return}OL.busy=1;OL.err="";OL.st="Menghubungkan…";onlDraw();
- try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Kalau dibuka lewat preview di aplikasi Claude, koneksi diblokir: buka di Chrome.";onlDraw();return}
+ ZNET.begin("host");try{await loadPeer()}catch(e){ZNET.fail();OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Kalau dibuka lewat preview di aplikasi Claude, koneksi diblokir: buka di Chrome.";onlDraw();return}
  const mk=n=>{const code=OL.code||Array.from({length:5},()=>CHRc[Math.random()*CHRc.length|0]).join(""),p=new Peer("zcpt-"+code.toLowerCase(),PCFG);
-  const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}OL.busy=0;OL.st="";OL.err="Server PeerJS tidak merespons. Coba buka di Chrome.";onlDraw()},20000);
+  const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}if(n<4){ZNET.retry(n+2,5,"server sinyal lambat");mk(n+1);return}OL.busy=0;OL.st="";OL.err="Server sinyal tidak merespons. Cek internet lalu coba lagi.";ZNET.fail();onlDraw()},8000+n*3000);
   p.on("open",()=>{clearTimeout(to);OL.busy=0;OL.role="host";OL.peer=p;OL.code=code;OL.st="";onlDraw()});
   p.on("connection",c=>{if(OL.conn&&OL.conn.open){try{c.close()}catch(e){}return}wire(c)});
-  p.on("error",er=>{if(er.type==="unavailable-id"&&n<4){try{p.destroy()}catch(e){}mk(n+1);return}if(OL.role)return;OL.busy=0;OL.st="";OL.err="Gagal: "+(er.type||"koneksi");onlDraw()})};mk(0)}
+  p.on("error",er=>{if(!OL.role&&n<4&&/^(network|server-error|socket-error|socket-closed)$/.test(er.type)){clearTimeout(to);try{p.destroy()}catch(e){}ZNET.retry(n+2,5,ZNET.why(er.type));setTimeout(()=>mk(n+1),600+n*500);return}if(er.type==="unavailable-id"&&n<4){clearTimeout(to);try{p.destroy()}catch(e){}ZNET.retry(n+2,5,"kode room masih terpakai");setTimeout(()=>mk(n+1),900+n*700);return}if(OL.role)return;OL.busy=0;OL.st="";OL.err=ZNET.msg(er.type);onlDraw()})};mk(0)}
 async function ojoin(){const code=(OL.code||"").toUpperCase();if(OL.busy)return;if(code.length<4){OL.err="Masukkan kode room.";onlDraw();return}
  OL.busy=1;OL.err="";OL.st="Menghubungkan…";onlDraw();
- try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Buka di Chrome.";onlDraw();return}
- let tries=0,ok_=0;const p=new Peer(PCFG);OL.peer=p;
- const fail=t=>{OL.busy=0;OL.st="";OL.err=t;try{p.destroy()}catch(e){}OL.peer=null;onlDraw()};
- const att=()=>{tries++;const c=p.connect("zcpt-"+code.toLowerCase(),{reliable:true});
-  const to=setTimeout(()=>{if(ok_)return;try{c.close()}catch(e){}if(tries<6)att();else fail("Tidak bisa terhubung ke teman. Pastikan ia masih membuka halaman game.")},10000);
-  c.on("open",()=>{ok_=1;clearTimeout(to);OL.busy=0;OL.role="client";OL.code=code;OL.st="";wire(c);c.send({t:"hello",name:OL.name||"Tamu"});onlDraw()})};
- p.on("open",att);p.on("error",er=>{if(ok_)return;if(er.type==="peer-unavailable"){if(tries<6)setTimeout(att,1200);else fail("Ajakan sudah tidak berlaku. Minta temanmu mengajak lagi.")}else fail("Gagal: "+(er.type||"koneksi"))})}
+ ZNET.begin("join");try{await loadPeer()}catch(e){ZNET.fail();OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Buka di Chrome.";onlDraw();return}
+ let tries=0,sg=0,ok_=0,p=null,cur=null;
+ const fail=t=>{ZNET.fail();OL.busy=0;OL.st="";OL.err=t;try{p.destroy()}catch(e){}OL.peer=null;onlDraw()};
+ const att=()=>{if(OL.peer!==p||ok_)return;if(cur)cur();tries++;const c=p.connect("zcpt-"+code.toLowerCase(),{reliable:true});let dn=0;
+  const kill=()=>{dn=1;clearTimeout(to);try{c.close()}catch(e){}};cur=kill;
+  const retry=w=>{if(dn||ok_||OL.peer!==p)return;kill();if(tries<8){ZNET.retry(tries+1,8,w);setTimeout(att,Math.min(2500,500*tries))}else fail("Tidak bisa terhubung ke teman. Pastikan ia masih membuka halaman game.")};
+  const to=setTimeout(()=>retry("tidak ada respons"),Math.min(18000,11000+tries*1500));
+  c.on("open",()=>{ok_=1;clearTimeout(to);OL.busy=0;OL.role="client";OL.code=code;OL.st="";wire(c);c.send({t:"hello",name:OL.name||"Tamu"});onlDraw()});
+  c.on("error",er=>retry(ZNET.why(er&&er.type)));c.on("close",()=>retry("koneksi tertutup"))};
+ const perr=er=>{if(ok_)return;if(er.type==="peer-unavailable"){if(cur)cur();if(tries<10){ZNET.retry(tries+1,10,"room belum siap, menunggu teman");setTimeout(att,1500)}else fail("Ajakan sudah tidak berlaku. Minta temanmu mengajak lagi.")}else if(sg<3&&/^(network|server-error|socket-error|socket-closed)$/.test(er.type)){sg++;ZNET.retry(sg+1,4,ZNET.why(er.type));try{p.destroy()}catch(e){}p=null;setTimeout(mk,800*sg)}else fail(ZNET.msg(er.type))};
+ const mk=()=>{const q=new Peer(PCFG);p=q;OL.peer=q;q.on("open",()=>{if(q===p)att()});q.on("error",er=>{if(q===p)perr(er)})};
+ mk()}
 function rematch(){if(!OL.conn||!OL.conn.open){toast("Lawan sudah keluar",1600);return}if(OL.role==="host")netGo();else{netSend({t:"rq"});toast("Meminta host mulai ulang…",1800)}}
 el.addEventListener("click",e=>{const g=q=>e.target.closest(q);
  if(B.onl){if(g("#zlx"))leaveLobby();return}
@@ -3871,15 +3997,15 @@ const G={
  str:'<circle cx="8.5" cy="9" r="4.5"/><circle cx="15.5" cy="9" r="4.5"/><circle cx="12" cy="15" r="4.5"/>',
  pat:'<rect x="9" y="3" width="6" height="6" rx="1.6"/><rect x="3" y="9" width="6" height="6" rx="1.6"/><rect x="15" y="9" width="6" height="6" rx="1.6"/><rect x="9" y="15" width="6" height="6" rx="1.6"/><rect x="9" y="9" width="6" height="6" rx="1.6" fill="currentColor" stroke="none"/>',
  flo:'<path d="M13.5 2.5 5 13.5h6l-1 8 8.5-11.5h-6z"/>',
- bwl:'<path d="M12 2.5c-1.6 0-2.4 1.2-2.4 2.6 0 1.2.7 2 1.1 2.8.5 1-1.7 2.5-1.7 5.3 0 2 1.1 3 1.1 4.5l-.8 3.8h5.4l-.8-3.8c0-1.5 1.1-2.5 1.1-4.5 0-2.8-2.2-4.3-1.7-5.3.4-.8 1.1-1.6 1.1-2.8 0-1.4-.8-2.6-2.4-2.6z"/><path d="M10.2 9.5h3.6"/>',
+ bwl:ZICOI("bowler"),
  tap:'<rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2" fill="currentColor" stroke="none"/><rect x="3.5" y="13.5" width="7" height="7" rx="2" fill="currentColor" stroke="none"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/>',
  num:'<circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="2.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',
  chs:'<path d="M7 20h10M8 20v-2.5h8V20M9 17.5l.8-6.5h4.4l.8 6.5M9.5 11V7.5h1.6v1.5h1.8V7.5h1.6V11"/><path d="M12 3.2v2.6M10.7 4.5h2.6"/>',
  nng:'<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 3v18M3 9h18"/><path fill="currentColor" stroke="none" d="M10 10h5v5h-5zM15 15h4v4h-4z"/>',
- sdk:'<rect x="3" y="3" width="18" height="18" rx="3.5"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/>',
- blk:'<rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="14" y="14" width="6" height="6" rx="1.5" fill="currentColor" stroke="none"/>',
- uno:'<rect x="5" y="2.5" width="14" height="19" rx="3"/><ellipse cx="12" cy="12" rx="4" ry="6.5" transform="rotate(30 12 12)"/>',
- ldo:'<rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="8.5" cy="8.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="15.5" cy="8.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="8.5" cy="15.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1.3" fill="currentColor" stroke="none"/>'};
+ sdk:ZICOI("sudoku"),
+ blk:ZICOI("blast"),
+ uno:ZICOI("uno"),
+ ldo:ZICOI("ludo")};
 const H=(c,g,k)=>({k:1,f:()=>{brPlay("br");brH(c)}});
 const bbBest=()=>{try{return+(JSON.parse(localStorage.getItem("zc-bb")||"{}").best)||0}catch(e){return 0}};
 const CATS={
@@ -3892,7 +4018,7 @@ const CATS={
   {n:"Block Blast",get s(){const b=bbBest();return b?"Rekor "+b:"Susun & hapus baris"},c:["#4da3ff","#007aff"],g:G.blk,f:()=>{brPlay("brb");brB()}},
   {n:"UNO",get s(){let w=0,g=0;try{const o=JSON.parse(localStorage.getItem("zc-uno")||"{}");w=+o.wins||0;g=+o.games||0}catch(e){}return g?"Menang "+w+" dari "+g:"Lawan AI atau teman"},c:["#ff6b60","#ff3b30"],g:G.uno,pick:1,ti:"Pilih mode",pd:()=>[["1","1 Lawan AI","Duel 2 pemain","#0f9a4c"],["2","2 Lawan AI","3 pemain","#ee8f06"],["3","3 Lawan AI","4 pemain","#d9283a"],["friend","Main dengan teman","Offline · 2–5 pemain","#7b61ff"]],pf:l=>{brPlay("bru");brU(l)}},
   {n:"Ludo",get s(){let w=0,g=0;try{const o=JSON.parse(localStorage.getItem("zc-ludo")||"{}");w=+o.wins||0;g=+o.games||0}catch(e){}return g?"Menang "+w+" dari "+g:"Lawan bot atau teman"},c:["#ffcf5a","#ff9500"],g:G.ldo,pick:1,ti:"Pilih mode",pd:()=>[["1","1 Lawan Bot","Duel 2 pemain","#0f9a4c"],["2","2 Lawan Bot","3 pemain","#ee8f06"],["3","3 Lawan Bot","4 pemain","#d9283a"],["friend","Main dengan teman","Satu perangkat · 2–4 pemain","#7b61ff"]],pf:l=>{brPlay("brld");brLd(l)}},
-  {n:"Tebak Kata",s:"Tebak kata bareng teman",c:["#d28cff","#af52de"],g:'<rect x="2.5" y="7" width="5.2" height="10" rx="1.4"/><rect x="9.4" y="7" width="5.2" height="10" rx="1.4"/><rect x="16.3" y="7" width="5.2" height="10" rx="1.4"/>',f:()=>{brPlay("brtk");brTK()}}]}};
+  {n:"Tebak Kata",s:"Tebak kata bareng teman",c:["#d28cff","#af52de"],g:ZICOI("kata"),f:()=>{brPlay("brtk");brTK()}}]}};
 CATS.logic.t=CATS.reaction.t="Games";
 const CN=["br","brm","bri","brs","brr","brc","brn","brb","bru","brld","brw","brtk"];
 window.brPlay=id=>{$("brl").style.display="none";CN.forEach(x=>$(x).style.display=x===id?"":"none")};
@@ -4222,21 +4348,26 @@ function cfgOnline(sd){netLeave();OL.sd=sd||"acak";B={ph:"setup",gen:false,tm:0,
 function leaveLobby(){if(!B.onl)return;window.zfLeave=null;window.zfAbort=null;window.zfCancel&&zfCancel();B.tok=(B.tok||0)+1;B.busy=false;hideBub();netLeave();setup();el.innerHTML=""}
 function onlDraw(){if(!B.onl)return;el.innerHTML=window.zfLobby?zfLobby({k:"chs",me:OL.name,opp:OL.opp0,role:OL.want,st:OL.role?(OL.want==="host"?"wait":"ok"):"conn",err:OL.err}):""}
 async function chost(){if(OL.busy)return;OL.busy=1;OL.err="";OL.st="Menghubungkan…";onlDraw();
- try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Kalau dibuka lewat preview di aplikasi Claude, koneksi diblokir: buka di Chrome.";onlDraw();return}
+ ZNET.begin("host");try{await loadPeer()}catch(e){ZNET.fail();OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Kalau dibuka lewat preview di aplikasi Claude, koneksi diblokir: buka di Chrome.";onlDraw();return}
  const mk=n=>{const code=OL.code||Array.from({length:5},()=>CHRc[Math.random()*CHRc.length|0]).join(""),p=new Peer("zcchs-"+code.toLowerCase(),PCFG);
-  const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}OL.busy=0;OL.st="";OL.err="Server PeerJS tidak merespons. Coba buka di Chrome.";onlDraw()},20000);
+  const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}if(n<4){ZNET.retry(n+2,5,"server sinyal lambat");mk(n+1);return}OL.busy=0;OL.st="";OL.err="Server sinyal tidak merespons. Cek internet lalu coba lagi.";ZNET.fail();onlDraw()},8000+n*3000);
   p.on("open",()=>{clearTimeout(to);OL.busy=0;OL.role="host";OL.peer=p;OL.code=code;OL.st="";onlDraw()});
   p.on("connection",c=>{if(OL.conn&&OL.conn.open){try{c.close()}catch(e){}return}wire(c)});
-  p.on("error",er=>{if(er.type==="unavailable-id"&&n<4){try{p.destroy()}catch(e){}mk(n+1);return}if(OL.role)return;OL.busy=0;OL.st="";OL.err="Gagal: "+(er.type||"koneksi");onlDraw()})};mk(0)}
+  p.on("error",er=>{if(!OL.role&&n<4&&/^(network|server-error|socket-error|socket-closed)$/.test(er.type)){clearTimeout(to);try{p.destroy()}catch(e){}ZNET.retry(n+2,5,ZNET.why(er.type));setTimeout(()=>mk(n+1),600+n*500);return}if(er.type==="unavailable-id"&&n<4){clearTimeout(to);try{p.destroy()}catch(e){}ZNET.retry(n+2,5,"kode room masih terpakai");setTimeout(()=>mk(n+1),900+n*700);return}if(OL.role)return;OL.busy=0;OL.st="";OL.err=ZNET.msg(er.type);onlDraw()})};mk(0)}
 async function cjoin(){const code=(OL.code||"").toUpperCase();if(OL.busy)return;if(code.length<4){OL.err="Masukkan kode room.";onlDraw();return}
  OL.busy=1;OL.err="";OL.st="Menghubungkan…";onlDraw();
- try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Buka di Chrome.";onlDraw();return}
- let tries=0,ok=0;const p=new Peer(PCFG);OL.peer=p;
- const fail=t=>{OL.busy=0;OL.st="";OL.err=t;try{p.destroy()}catch(e){}OL.peer=null;onlDraw()};
- const att=()=>{tries++;const c=p.connect("zcchs-"+code.toLowerCase(),{reliable:true});
-  const to=setTimeout(()=>{if(ok)return;try{c.close()}catch(e){}if(tries<6)att();else fail("Tidak bisa terhubung ke teman. Pastikan ia masih membuka halaman game.")},6000);
-  c.on("open",()=>{ok=1;clearTimeout(to);OL.busy=0;OL.role="client";OL.code=code;OL.st="";wire(c);c.send({t:"hello",name:OL.name||"Tamu"});onlDraw()})};
- p.on("open",att);p.on("error",er=>{if(ok)return;if(er.type==="peer-unavailable"){if(tries<6)setTimeout(att,1200);else fail("Ajakan sudah tidak berlaku. Minta temanmu mengajak lagi.")}else fail("Gagal: "+(er.type||"koneksi"))})}
+ ZNET.begin("join");try{await loadPeer()}catch(e){ZNET.fail();OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Buka di Chrome.";onlDraw();return}
+ let tries=0,sg=0,ok=0,p=null,cur=null;
+ const fail=t=>{ZNET.fail();OL.busy=0;OL.st="";OL.err=t;try{p.destroy()}catch(e){}OL.peer=null;onlDraw()};
+ const att=()=>{if(OL.peer!==p||ok)return;if(cur)cur();tries++;const c=p.connect("zcchs-"+code.toLowerCase(),{reliable:true});let dn=0;
+  const kill=()=>{dn=1;clearTimeout(to);try{c.close()}catch(e){}};cur=kill;
+  const retry=w=>{if(dn||ok||OL.peer!==p)return;kill();if(tries<8){ZNET.retry(tries+1,8,w);setTimeout(att,Math.min(2500,500*tries))}else fail("Tidak bisa terhubung ke teman. Pastikan ia masih membuka halaman game.")};
+  const to=setTimeout(()=>retry("tidak ada respons"),Math.min(18000,11000+tries*1500));
+  c.on("open",()=>{ok=1;clearTimeout(to);OL.busy=0;OL.role="client";OL.code=code;OL.st="";wire(c);c.send({t:"hello",name:OL.name||"Tamu"});onlDraw()});
+  c.on("error",er=>retry(ZNET.why(er&&er.type)));c.on("close",()=>retry("koneksi tertutup"))};
+ const perr=er=>{if(ok)return;if(er.type==="peer-unavailable"){if(cur)cur();if(tries<10){ZNET.retry(tries+1,10,"room belum siap, menunggu teman");setTimeout(att,1500)}else fail("Ajakan sudah tidak berlaku. Minta temanmu mengajak lagi.")}else if(sg<3&&/^(network|server-error|socket-error|socket-closed)$/.test(er.type)){sg++;ZNET.retry(sg+1,4,ZNET.why(er.type));try{p.destroy()}catch(e){}p=null;setTimeout(mk,800*sg)}else fail(ZNET.msg(er.type))};
+ const mk=()=>{const q=new Peer(PCFG);p=q;OL.peer=q;q.on("open",()=>{if(q===p)att()});q.on("error",er=>{if(q===p)perr(er)})};
+ mk()}
 el.addEventListener("click",e=>{if(!B.onl)return;if(e.target.closest("#zlx"))leaveLobby()});
 window.brC=(l,s)=>start(l,s);
 zGame.reg("c",el,()=>B,()=>{B.tok=(B.tok||0)+1;B.busy=false;hideBub();setup()});
@@ -4731,21 +4862,26 @@ function cfgOnline(){netLeave();cancelAnimationFrame(tw);if(dg){dg.d.remove();dg
 function leaveLobby(){if(!B.onl)return;window.zfLeave=null;window.zfAbort=null;window.zfCancel&&zfCancel();exitNet();el.innerHTML=""}
 function onlDraw(){if(!B.onl)return;el.innerHTML=window.zfLobby?zfLobby({k:"bb",me:OL.name,opp:OL.opp0,role:OL.want,st:OL.role?(OL.want==="host"?"wait":"ok"):"conn",err:OL.err}):""}
 async function ohost(){if(OL.busy)return;if(!(OL.tg>=100)){OL.err="Target skor minimal 100.";onlDraw();return}OL.busy=1;OL.err="";OL.st="Menghubungkan…";onlDraw();
- try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Kalau dibuka lewat preview di aplikasi Claude, koneksi diblokir: buka di Chrome.";onlDraw();return}
+ ZNET.begin("host");try{await loadPeer()}catch(e){ZNET.fail();OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Kalau dibuka lewat preview di aplikasi Claude, koneksi diblokir: buka di Chrome.";onlDraw();return}
  const mk=n=>{const code=OL.code||Array.from({length:5},()=>CHRc[Math.random()*CHRc.length|0]).join(""),p=new Peer("zcbb-"+code.toLowerCase(),PCFG);
-  const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}OL.busy=0;OL.st="";OL.err="Server PeerJS tidak merespons. Coba buka di Chrome.";onlDraw()},20000);
+  const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}if(n<4){ZNET.retry(n+2,5,"server sinyal lambat");mk(n+1);return}OL.busy=0;OL.st="";OL.err="Server sinyal tidak merespons. Cek internet lalu coba lagi.";ZNET.fail();onlDraw()},8000+n*3000);
   p.on("open",()=>{clearTimeout(to);OL.busy=0;OL.role="host";OL.peer=p;OL.code=code;OL.st="";onlDraw()});
   p.on("connection",c=>{if(OL.conn&&OL.conn.open){try{c.close()}catch(e){}return}wire(c)});
-  p.on("error",er=>{if(er.type==="unavailable-id"&&n<4){try{p.destroy()}catch(e){}mk(n+1);return}if(OL.role)return;OL.busy=0;OL.st="";OL.err="Gagal: "+(er.type||"koneksi");onlDraw()})};mk(0)}
+  p.on("error",er=>{if(!OL.role&&n<4&&/^(network|server-error|socket-error|socket-closed)$/.test(er.type)){clearTimeout(to);try{p.destroy()}catch(e){}ZNET.retry(n+2,5,ZNET.why(er.type));setTimeout(()=>mk(n+1),600+n*500);return}if(er.type==="unavailable-id"&&n<4){clearTimeout(to);try{p.destroy()}catch(e){}ZNET.retry(n+2,5,"kode room masih terpakai");setTimeout(()=>mk(n+1),900+n*700);return}if(OL.role)return;OL.busy=0;OL.st="";OL.err=ZNET.msg(er.type);onlDraw()})};mk(0)}
 async function ojoin(){const code=(OL.code||"").toUpperCase();if(OL.busy)return;if(code.length<4){OL.err="Masukkan kode room.";onlDraw();return}
  OL.busy=1;OL.err="";OL.st="Menghubungkan…";onlDraw();
- try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Buka di Chrome.";onlDraw();return}
- let tries=0,ok_=0;const p=new Peer(PCFG);OL.peer=p;
- const fail=t=>{OL.busy=0;OL.st="";OL.err=t;try{p.destroy()}catch(e){}OL.peer=null;onlDraw()};
- const att=()=>{tries++;const c=p.connect("zcbb-"+code.toLowerCase(),{reliable:true});
-  const to=setTimeout(()=>{if(ok_)return;try{c.close()}catch(e){}if(tries<6)att();else fail("Tidak bisa terhubung ke teman. Pastikan ia masih membuka halaman game.")},10000);
-  c.on("open",()=>{ok_=1;clearTimeout(to);OL.busy=0;OL.role="client";OL.code=code;OL.st="";wire(c);c.send({t:"hello",name:OL.name||"Tamu"});onlDraw()})};
- p.on("open",att);p.on("error",er=>{if(ok_)return;if(er.type==="peer-unavailable"){if(tries<6)setTimeout(att,1200);else fail("Ajakan sudah tidak berlaku. Minta temanmu mengajak lagi.")}else fail("Gagal: "+(er.type||"koneksi"))})}
+ ZNET.begin("join");try{await loadPeer()}catch(e){ZNET.fail();OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Buka di Chrome.";onlDraw();return}
+ let tries=0,sg=0,ok_=0,p=null,cur=null;
+ const fail=t=>{ZNET.fail();OL.busy=0;OL.st="";OL.err=t;try{p.destroy()}catch(e){}OL.peer=null;onlDraw()};
+ const att=()=>{if(OL.peer!==p||ok_)return;if(cur)cur();tries++;const c=p.connect("zcbb-"+code.toLowerCase(),{reliable:true});let dn=0;
+  const kill=()=>{dn=1;clearTimeout(to);try{c.close()}catch(e){}};cur=kill;
+  const retry=w=>{if(dn||ok_||OL.peer!==p)return;kill();if(tries<8){ZNET.retry(tries+1,8,w);setTimeout(att,Math.min(2500,500*tries))}else fail("Tidak bisa terhubung ke teman. Pastikan ia masih membuka halaman game.")};
+  const to=setTimeout(()=>retry("tidak ada respons"),Math.min(18000,11000+tries*1500));
+  c.on("open",()=>{ok_=1;clearTimeout(to);OL.busy=0;OL.role="client";OL.code=code;OL.st="";wire(c);c.send({t:"hello",name:OL.name||"Tamu"});onlDraw()});
+  c.on("error",er=>retry(ZNET.why(er&&er.type)));c.on("close",()=>retry("koneksi tertutup"))};
+ const perr=er=>{if(ok_)return;if(er.type==="peer-unavailable"){if(cur)cur();if(tries<10){ZNET.retry(tries+1,10,"room belum siap, menunggu teman");setTimeout(att,1500)}else fail("Ajakan sudah tidak berlaku. Minta temanmu mengajak lagi.")}else if(sg<3&&/^(network|server-error|socket-error|socket-closed)$/.test(er.type)){sg++;ZNET.retry(sg+1,4,ZNET.why(er.type));try{p.destroy()}catch(e){}p=null;setTimeout(mk,800*sg)}else fail(ZNET.msg(er.type))};
+ const mk=()=>{const q=new Peer(PCFG);p=q;OL.peer=q;q.on("open",()=>{if(q===p)att()});q.on("error",er=>{if(q===p)perr(er)})};
+ mk()}
 function rematch(){if(!OL.conn||!OL.conn.open){toast("Lawan sudah keluar",1600);return}if(OL.role==="host")netGo();else{netSend({t:"rq"});toast("Meminta host mulai ulang…",1800)}}
 function bClick(e){const g=q=>e.target.closest(q);
  if(B.onl){if(g("#zlx"))leaveLobby();return true}
@@ -5078,12 +5214,12 @@ function onlClick(e){const b=e.target.closest("button");if(!b)return;if(b.id==="
  else if(b.id==="ulgo")ostart()}
 // --- host ---
 async function ohost(){if(OL.busy)return;OL.busy=1;OL.err="";OL.st="Menghubungkan…";onlDraw();
- try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Kalau kamu buka lewat preview di aplikasi Claude, koneksi internet diblokir: buka file ini di Chrome.";onlDraw();return}
+ ZNET.begin("host");try{await loadPeer()}catch(e){ZNET.fail();OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Kalau kamu buka lewat preview di aplikasi Claude, koneksi internet diblokir: buka file ini di Chrome.";onlDraw();return}
  const mk=n=>{const code=OL.code||Array.from({length:5},()=>CHR[zR(CHR.length)]).join(""),p=new Peer("zcuno-"+code.toLowerCase(),PCFG);
-  const to=setTimeout(()=>{if(OL.role==="host")return;try{p.destroy()}catch(e){}OL.busy=0;OL.st="";OL.err="Server PeerJS tidak merespons. Coba buka file ini di browser (Chrome) atau cek koneksi.";onlDraw()},10000);
+  const to=setTimeout(()=>{if(OL.role==="host")return;try{p.destroy()}catch(e){}if(n<4){ZNET.retry(n+2,5,"server sinyal lambat");mk(n+1);return}OL.busy=0;OL.st="";OL.err="Server sinyal tidak merespons. Cek internet lalu coba lagi.";ZNET.fail();onlDraw()},8000+n*3000);
   p.on("open",()=>{clearTimeout(to);OL.busy=0;OL.role="host";OL.peer=p;OL.code=code;OL.names=[OL.name];OL.conns=[null];OL.toks=[""];OL.seen=[0];OL.st="";ZC.bind({el,group:1,title:()=>"Chat room",name:()=>"",send:o=>sendAll({...o,from:OL.name}),ok:()=>OL.conns.length>1});hbStart();onlDraw()});
   hwire(p);
-  p.on("error",er=>{if(er.type==="unavailable-id"&&n<4){try{p.destroy()}catch(e){}mk(n+1);return}if(OL.role==="host")return;OL.busy=0;OL.st="";OL.err="Gagal: "+(er.type||"koneksi");onlDraw()})};
+  p.on("error",er=>{if(!OL.role&&n<4&&/^(network|server-error|socket-error|socket-closed)$/.test(er.type)){clearTimeout(to);try{p.destroy()}catch(e){}ZNET.retry(n+2,5,ZNET.why(er.type));setTimeout(()=>mk(n+1),600+n*500);return}if(er.type==="unavailable-id"&&n<4){clearTimeout(to);try{p.destroy()}catch(e){}ZNET.retry(n+2,5,"kode room masih terpakai");setTimeout(()=>mk(n+1),900+n*700);return}if(OL.role==="host")return;OL.busy=0;OL.st="";OL.err=ZNET.msg(er.type);onlDraw()})};
  mk(0)}
 // host tetap "terdaftar" di server PeerJS walau tab/app sempat di-background (penyebab utama Android gagal jadi host)
 let WL=null;
@@ -5149,16 +5285,18 @@ function hact(seat,m){
 async function ojoin(){const code=OL.code.replace(/[^A-Za-z0-9]/g,"").toUpperCase();OL.code=code;
  if(code.length<4){OL.err="Masukkan kode room.";onlDraw();return}
  if(OL.busy)return;OL.busy=1;OL.err="";OL.st="Menghubungkan…";onlDraw();
- try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Cek internet.";onlDraw();return}
- let done=0,tries=0,to=null;const p=new Peer(PCFG);OL.peer=p;
- const fail=t=>{if(done)return;done=1;clearTimeout(to);try{p.destroy()}catch(e){}OL.peer=null;OL.hc=null;OL.busy=0;OL.st="";OL.err=t;onlDraw()};
+ ZNET.begin("join");try{await loadPeer()}catch(e){ZNET.fail();OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Cek internet.";onlDraw();return}
+ let done=0,tries=0,sg=0,to=null,p=new Peer(PCFG);OL.peer=p;
+ const fail=t=>{if(done)return;done=1;ZNET.fail();clearTimeout(to);try{p.destroy()}catch(e){}OL.peer=null;OL.hc=null;OL.busy=0;OL.st="";OL.err=t;onlDraw()};
  const att=()=>{if(done)return;tries++;OL.st="Menghubungkan… ("+tries+")";onlDraw();
   const c=p.connect("zcuno-"+code.toLowerCase(),{reliable:true,serialization:"json"});OL.hc=c;let ok=0;
-  to=setTimeout(()=>{if(ok||done)return;try{c.close()}catch(e){}if(tries<6)att();else fail("Tidak bisa terhubung ke teman. Pastikan ia masih membuka halaman game (jangan pindah app).")},9000);
+  to=setTimeout(()=>dead("tidak ada respons"),Math.min(18000,11000+tries*1500));
   c.on("open",()=>{if(done)return;ok=1;clearTimeout(to);done=1;OL.busy=0;OL.role="client";OL.st="";OL.names=[];ZC.bind({el,group:1,title:()=>"Chat room",name:()=>"",send:o=>nsend(o),ok:()=>!!(OL.hc&&OL.hc.open)});cwire(c);c.send({t:"hello",name:OL.name,tok:ctok()});onlDraw()});
-  c.on("error",()=>{})};
- p.on("error",er=>{if(er.type==="peer-unavailable"){if(tries<8){clearTimeout(to);setTimeout(att,2000)}else fail("Ajakan sudah tidak berlaku. Minta temanmu mengajak lagi.")}else fail("Gagal: "+(er.type||"koneksi"))});
- p.on("open",att)}
+  const dead=w=>{if(ok||done||OL.hc!==c)return;clearTimeout(to);OL.hc=null;try{c.close()}catch(e){}if(tries<8){ZNET.retry(tries+1,8,w);setTimeout(att,Math.min(2500,500*tries))}else fail("Tidak bisa terhubung ke teman. Pastikan ia masih membuka halaman game (jangan pindah app).")};
+  c.on("error",er=>dead(ZNET.why(er&&er.type)));c.on("close",()=>dead("koneksi tertutup"))};
+ const perr=er=>{if(done)return;if(er.type==="peer-unavailable"){clearTimeout(to);const o=OL.hc;OL.hc=null;try{o&&o.close()}catch(e){}if(tries<10){ZNET.retry(tries+1,10,"room belum siap, menunggu teman");setTimeout(att,1800)}else fail("Ajakan sudah tidak berlaku. Minta temanmu mengajak lagi.")}
+  else if(sg<3&&/^(network|server-error|socket-error|socket-closed)$/.test(er.type)){sg++;clearTimeout(to);ZNET.retry(sg+1,4,ZNET.why(er.type));try{p.destroy()}catch(e){}setTimeout(()=>{if(done)return;p=new Peer(PCFG);OL.peer=p;hk(p)},800*sg)}else fail(ZNET.msg(er.type))};
+ const hk=q=>{q.on("error",er=>{if(q===p)perr(er)});q.on("open",()=>{if(q===p)att()})};hk(p)}
 function ctok(){if(!OL.tok){OL.tok=S.tk||(Math.random().toString(36).slice(2,10)+Date.now().toString(36));if(S.tk!==OL.tok){S.tk=OL.tok;save()}}return OL.tok}
 function cwire(c){OL.hc=c;OL.hbAt=Date.now();c.on("data",m=>{OL.hbAt=Date.now();cdata(m)});c.on("close",()=>{if(OL.hc===c&&OL.role==="client")cdrop()});c.on("error",()=>{});
  clearInterval(OL.wd);OL.wd=setInterval(()=>{if(OL.role!=="client"){clearInterval(OL.wd);return}if(OL.hc===c&&Date.now()-OL.hbAt>15000){try{c.close()}catch(e){}if(OL.hc===c)cdrop()}},3000)}
@@ -5583,14 +5721,14 @@ function onlClick(e){const b=e.target.closest("button");if(!b)return;if(b.id==="
  else if(b.id==="ldlgo")ostart()}
 
 async function ohost(){if(OL.busy)return;OL.busy=1;OL.err="";OL.st="Menghubungkan…";onlDraw();
- try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Cek internet.";onlDraw();return}
+ ZNET.begin("host");try{await loadPeer()}catch(e){ZNET.fail();OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Cek internet.";onlDraw();return}
  const mk=n=>{const code=OL.code||Array.from({length:5},()=>CHR[zR(CHR.length)]).join(""),p=new Peer("zcludo-"+code.toLowerCase(),PCFG);
-  const to=setTimeout(()=>{if(OL.role==="host")return;try{p.destroy()}catch(e){}OL.busy=0;OL.st="";OL.err="Server PeerJS tidak merespons. Coba buka file ini di browser (Chrome) atau cek koneksi.";onlDraw()},10000);
+  const to=setTimeout(()=>{if(OL.role==="host")return;try{p.destroy()}catch(e){}if(n<4){ZNET.retry(n+2,5,"server sinyal lambat");mk(n+1);return}OL.busy=0;OL.st="";OL.err="Server sinyal tidak merespons. Cek internet lalu coba lagi.";ZNET.fail();onlDraw()},8000+n*3000);
   p.on("open",()=>{clearTimeout(to);OL.busy=0;OL.role="host";OL.peer=p;OL.code=code;OL.names=[OL.name];OL.conns=[null];OL.toks=[""];OL.st="";
    ZC.bind(OL.zb={el,group:1,peers:()=>(OL.names||[]).filter(n=>n!==OL.name),title:()=>"Chat room",name:()=>"",send:o=>sendAll({...o,from:OL.name}),ok:()=>OL.conns.length>1});
    clearInterval(OL.hbt);OL.hbt=setInterval(()=>{if(OL.role==="host")sendAll({t:"hb"})},4000);onlDraw()});
   hwire(p);
-  p.on("error",er=>{if(er.type==="unavailable-id"&&n<4){try{p.destroy()}catch(e){}mk(n+1);return}if(OL.role==="host")return;OL.busy=0;OL.st="";OL.err="Gagal: "+(er.type||"koneksi");onlDraw()})};
+  p.on("error",er=>{if(!OL.role&&n<4&&/^(network|server-error|socket-error|socket-closed)$/.test(er.type)){clearTimeout(to);try{p.destroy()}catch(e){}ZNET.retry(n+2,5,ZNET.why(er.type));setTimeout(()=>mk(n+1),600+n*500);return}if(er.type==="unavailable-id"&&n<4){clearTimeout(to);try{p.destroy()}catch(e){}ZNET.retry(n+2,5,"kode room masih terpakai");setTimeout(()=>mk(n+1),900+n*700);return}if(OL.role==="host")return;OL.busy=0;OL.st="";OL.err=ZNET.msg(er.type);onlDraw()})};
  mk(0)}
 function hwire(p){p.on("connection",hconn);
  p.on("disconnected",()=>{if(OL.role==="host"&&OL.peer===p)setTimeout(hkeep,600)});
@@ -5648,18 +5786,20 @@ function ctok(){if(!OL.tok){OL.tok=S.tk||(Math.random().toString(36).slice(2,10)
 async function ojoin(){const code=OL.code.replace(/[^A-Za-z0-9]/g,"").toUpperCase();OL.code=code;
  if(code.length<4){OL.err="Masukkan kode room.";onlDraw();return}
  if(OL.busy)return;OL.busy=1;OL.err="";OL.st="Menghubungkan…";onlDraw();
- try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Cek internet.";onlDraw();return}
- let done=0,tries=0,to=null;const p=new Peer(PCFG);OL.peer=p;
- const fail=t=>{if(done)return;done=1;clearTimeout(to);try{p.destroy()}catch(e){}OL.peer=null;OL.hc=null;OL.busy=0;OL.st="";OL.err=t;onlDraw()};
+ ZNET.begin("join");try{await loadPeer()}catch(e){ZNET.fail();OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Cek internet.";onlDraw();return}
+ let done=0,tries=0,sg=0,to=null,p=new Peer(PCFG);OL.peer=p;
+ const fail=t=>{if(done)return;done=1;ZNET.fail();clearTimeout(to);try{p.destroy()}catch(e){}OL.peer=null;OL.hc=null;OL.busy=0;OL.st="";OL.err=t;onlDraw()};
  const att=()=>{if(done)return;tries++;OL.st="Menghubungkan… ("+tries+")";onlDraw();
   const c=p.connect("zcludo-"+code.toLowerCase(),{reliable:true,serialization:"json"});OL.hc=c;let ok=0;
-  to=setTimeout(()=>{if(ok||done)return;try{c.close()}catch(e){}if(tries<6)att();else fail("Tidak bisa terhubung ke teman. Pastikan ia masih membuka halaman game (jangan pindah app).")},9000);
+  to=setTimeout(()=>dead("tidak ada respons"),Math.min(18000,11000+tries*1500));
   c.on("open",()=>{if(done)return;ok=1;clearTimeout(to);done=1;OL.busy=0;OL.role="client";OL.st="";OL.names=[];
    ZC.bind(OL.zb={el,group:1,peers:()=>(OL.names||[]).filter(n=>n!==OL.name),title:()=>"Chat room",name:()=>"",send:o=>nsend(o),ok:()=>!!(OL.hc&&OL.hc.open)});
    cwire(c);c.send({t:"hello",name:OL.name,tok:ctok()});onlDraw()});
-  c.on("error",()=>{})};
- p.on("error",er=>{if(er.type==="peer-unavailable"){if(tries<8){clearTimeout(to);setTimeout(att,2000)}else fail("Ajakan sudah tidak berlaku. Minta temanmu mengajak lagi.")}else fail("Gagal: "+(er.type||"koneksi"))});
- p.on("open",att)}
+  const dead=w=>{if(ok||done||OL.hc!==c)return;clearTimeout(to);OL.hc=null;try{c.close()}catch(e){}if(tries<8){ZNET.retry(tries+1,8,w);setTimeout(att,Math.min(2500,500*tries))}else fail("Tidak bisa terhubung ke teman. Pastikan ia masih membuka halaman game (jangan pindah app).")};
+  c.on("error",er=>dead(ZNET.why(er&&er.type)));c.on("close",()=>dead("koneksi tertutup"))};
+ const perr=er=>{if(done)return;if(er.type==="peer-unavailable"){clearTimeout(to);const o=OL.hc;OL.hc=null;try{o&&o.close()}catch(e){}if(tries<10){ZNET.retry(tries+1,10,"room belum siap, menunggu teman");setTimeout(att,1800)}else fail("Ajakan sudah tidak berlaku. Minta temanmu mengajak lagi.")}
+  else if(sg<3&&/^(network|server-error|socket-error|socket-closed)$/.test(er.type)){sg++;clearTimeout(to);ZNET.retry(sg+1,4,ZNET.why(er.type));try{p.destroy()}catch(e){}setTimeout(()=>{if(done)return;p=new Peer(PCFG);OL.peer=p;hk(p)},800*sg)}else fail(ZNET.msg(er.type))};
+ const hk=q=>{q.on("error",er=>{if(q===p)perr(er)});q.on("open",()=>{if(q===p)att()})};hk(p)}
 function cwire(c){OL.hc=c;OL.hbAt=Date.now();
  c.on("data",m=>{OL.hbAt=Date.now();cdata(m)});c.on("close",()=>{if(OL.hc===c&&OL.role==="client")cdrop()});c.on("error",()=>{});
  clearInterval(OL.wd);OL.wd=setInterval(()=>{if(OL.role!=="client"){clearInterval(OL.wd);return}if(OL.hc===c&&Date.now()-OL.hbAt>15000){try{c.close()}catch(e){}if(OL.hc===c)cdrop()}},3000);
@@ -6200,21 +6340,26 @@ function cfgOnline(){netLeave();loopStop();el.classList.remove("bwplay");net=0;B
 function leaveLobby(){if(!B.onl)return;window.zfLeave=null;window.zfAbort=null;window.zfCancel&&zfCancel();exitNet()}
 function onlDraw(){if(!B.onl)return;el.innerHTML=window.zfLobby?zfLobby({k:"bw",me:OL.name,opp:OL.opp0,role:OL.want,st:OL.role?(OL.want==="host"?"wait":"ok"):"conn",err:OL.err}):""}
 async function ohost(){if(OL.busy)return;OL.busy=1;OL.err="";OL.st="Menghubungkan…";onlDraw();
- try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Kalau dibuka lewat preview di aplikasi Claude, koneksi diblokir: buka di Chrome.";onlDraw();return}
+ ZNET.begin("host");try{await loadPeer()}catch(e){ZNET.fail();OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Kalau dibuka lewat preview di aplikasi Claude, koneksi diblokir: buka di Chrome.";onlDraw();return}
  const mk=n=>{const code=OL.code||Array.from({length:5},()=>CHRc[Math.random()*CHRc.length|0]).join(""),p=new Peer("zcbw-"+code.toLowerCase(),PCFG);
-  const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}OL.busy=0;OL.st="";OL.err="Server PeerJS tidak merespons. Coba buka di Chrome.";onlDraw()},20000);
+  const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}if(n<4){ZNET.retry(n+2,5,"server sinyal lambat");mk(n+1);return}OL.busy=0;OL.st="";OL.err="Server sinyal tidak merespons. Cek internet lalu coba lagi.";ZNET.fail();onlDraw()},8000+n*3000);
   p.on("open",()=>{clearTimeout(to);OL.busy=0;OL.role="host";OL.peer=p;OL.code=code;OL.st="";onlDraw()});
   p.on("connection",c=>{if(OL.conn&&OL.conn.open){try{c.close()}catch(e){}return}wire(c)});
-  p.on("error",er=>{if(er.type==="unavailable-id"&&n<4){try{p.destroy()}catch(e){}mk(n+1);return}if(OL.role)return;OL.busy=0;OL.st="";OL.err="Gagal: "+(er.type||"koneksi");onlDraw()})};mk(0)}
+  p.on("error",er=>{if(!OL.role&&n<4&&/^(network|server-error|socket-error|socket-closed)$/.test(er.type)){clearTimeout(to);try{p.destroy()}catch(e){}ZNET.retry(n+2,5,ZNET.why(er.type));setTimeout(()=>mk(n+1),600+n*500);return}if(er.type==="unavailable-id"&&n<4){clearTimeout(to);try{p.destroy()}catch(e){}ZNET.retry(n+2,5,"kode room masih terpakai");setTimeout(()=>mk(n+1),900+n*700);return}if(OL.role)return;OL.busy=0;OL.st="";OL.err=ZNET.msg(er.type);onlDraw()})};mk(0)}
 async function ojoin(){const code=(OL.code||"").toUpperCase();if(OL.busy)return;if(code.length<4){OL.err="Masukkan kode room.";onlDraw();return}
  OL.busy=1;OL.err="";OL.st="Menghubungkan…";onlDraw();
- try{await loadPeer()}catch(e){OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Buka di Chrome.";onlDraw();return}
- let tries=0,ok_=0;const p=new Peer(PCFG);OL.peer=p;
- const fail=t=>{OL.busy=0;OL.st="";OL.err=t;try{p.destroy()}catch(e){}OL.peer=null;onlDraw()};
- const att=()=>{tries++;const c=p.connect("zcbw-"+code.toLowerCase(),{reliable:true});
-  const to=setTimeout(()=>{if(ok_)return;try{c.close()}catch(e){}if(tries<6)att();else fail("Tidak bisa terhubung ke teman. Pastikan ia masih membuka halaman game.")},10000);
-  c.on("open",()=>{ok_=1;clearTimeout(to);OL.busy=0;OL.role="client";OL.code=code;OL.st="";wire(c);c.send({t:"hello",name:OL.name||"Tamu"});onlDraw()})};
- p.on("open",att);p.on("error",er=>{if(ok_)return;if(er.type==="peer-unavailable"){if(tries<6)setTimeout(att,1200);else fail("Ajakan sudah tidak berlaku. Minta temanmu mengajak lagi.")}else fail("Gagal: "+(er.type||"koneksi"))})}
+ ZNET.begin("join");try{await loadPeer()}catch(e){ZNET.fail();OL.busy=0;OL.st="";OL.err="PeerJS gagal dimuat. Buka di Chrome.";onlDraw();return}
+ let tries=0,sg=0,ok_=0,p=null,cur=null;
+ const fail=t=>{ZNET.fail();OL.busy=0;OL.st="";OL.err=t;try{p.destroy()}catch(e){}OL.peer=null;onlDraw()};
+ const att=()=>{if(OL.peer!==p||ok_)return;if(cur)cur();tries++;const c=p.connect("zcbw-"+code.toLowerCase(),{reliable:true});let dn=0;
+  const kill=()=>{dn=1;clearTimeout(to);try{c.close()}catch(e){}};cur=kill;
+  const retry=w=>{if(dn||ok_||OL.peer!==p)return;kill();if(tries<8){ZNET.retry(tries+1,8,w);setTimeout(att,Math.min(2500,500*tries))}else fail("Tidak bisa terhubung ke teman. Pastikan ia masih membuka halaman game.")};
+  const to=setTimeout(()=>retry("tidak ada respons"),Math.min(18000,11000+tries*1500));
+  c.on("open",()=>{ok_=1;clearTimeout(to);OL.busy=0;OL.role="client";OL.code=code;OL.st="";wire(c);c.send({t:"hello",name:OL.name||"Tamu"});onlDraw()});
+  c.on("error",er=>retry(ZNET.why(er&&er.type)));c.on("close",()=>retry("koneksi tertutup"))};
+ const perr=er=>{if(ok_)return;if(er.type==="peer-unavailable"){if(cur)cur();if(tries<10){ZNET.retry(tries+1,10,"room belum siap, menunggu teman");setTimeout(att,1500)}else fail("Ajakan sudah tidak berlaku. Minta temanmu mengajak lagi.")}else if(sg<3&&/^(network|server-error|socket-error|socket-closed)$/.test(er.type)){sg++;ZNET.retry(sg+1,4,ZNET.why(er.type));try{p.destroy()}catch(e){}p=null;setTimeout(mk,800*sg)}else fail(ZNET.msg(er.type))};
+ const mk=()=>{const q=new Peer(PCFG);p=q;OL.peer=q;q.on("open",()=>{if(q===p)att()});q.on("error",er=>{if(q===p)perr(er)})};
+ mk()}
 function rematch(){if(!OL.conn||!OL.conn.open){toast("Lawan sudah keluar",1600);return}if(OL.role==="host")netGo();else{netSend({t:"rq"});toast("Meminta host mulai ulang…",1800)}}
 /* ---------- klik ---------- */
 el.addEventListener("click",e=>{
@@ -6334,23 +6479,28 @@ function cfgOnline(){stopT();netLeave();B={ph:"setup",gen:false,onl:1};OL.err=""
 function leaveLobby(){if(!B.onl)return;window.zfLeave=null;window.zfAbort=null;window.zfCancel&&zfCancel();netLeave();setup();el.innerHTML=""}
 function onlDraw(){if(!B.onl)return;el.innerHTML=window.zfLobby?zfLobby({k:"tk",me:OL.name,opp:OL.opp0,role:OL.want,st:OL.role?(OL.want==="host"?"wait":"ok"):"conn",err:OL.err}):""}
 async function ohost(){if(OL.busy)return;OL.busy=1;OL.err="";onlDraw();
- try{await loadPeer()}catch(e){OL.busy=0;OL.err="PeerJS gagal dimuat. Kalau dibuka lewat preview di aplikasi Claude, koneksi diblokir: buka di Chrome.";onlDraw();return}
+ ZNET.begin("host");try{await loadPeer()}catch(e){ZNET.fail();OL.busy=0;OL.err="PeerJS gagal dimuat. Kalau dibuka lewat preview di aplikasi Claude, koneksi diblokir: buka di Chrome.";onlDraw();return}
  const mk=n=>{const code=OL.code,p=new Peer("zctk-"+code.toLowerCase(),PCFG);
-  const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}OL.busy=0;OL.err="Server PeerJS tidak merespons. Coba buka di Chrome.";onlDraw()},20000);
+  const to=setTimeout(()=>{if(OL.role)return;try{p.destroy()}catch(e){}if(n<4){ZNET.retry(n+2,5,"server sinyal lambat");mk(n+1);return}OL.busy=0;OL.err="Server sinyal tidak merespons. Cek internet lalu coba lagi.";ZNET.fail();onlDraw()},8000+n*3000);
   p.on("open",()=>{clearTimeout(to);OL.busy=0;OL.role="host";OL.peer=p;OL.code=code;onlDraw()});
   p.on("connection",c=>{const old=OL.conn;if(!old){wire(c);return}
    if(!B.net){if(old.open){try{c.close()}catch(e){}return}wire(c);return}
    const sw=()=>{const o=OL.conn;wire(c);if(o&&o!==c){try{o.close()}catch(e){}}};if(c.open)sw();else c.on("open",sw)});
-  p.on("error",er=>{if(er.type==="unavailable-id"&&n<4){try{p.destroy()}catch(e){}setTimeout(()=>mk(n+1),600);return}if(OL.role)return;OL.busy=0;OL.err="Gagal: "+(er.type||"koneksi");onlDraw()})};mk(0)}
+  p.on("error",er=>{if(!OL.role&&n<4&&/^(network|server-error|socket-error|socket-closed)$/.test(er.type)){clearTimeout(to);try{p.destroy()}catch(e){}ZNET.retry(n+2,5,ZNET.why(er.type));setTimeout(()=>mk(n+1),600+n*500);return}if(er.type==="unavailable-id"&&n<4){clearTimeout(to);try{p.destroy()}catch(e){}ZNET.retry(n+2,5,"kode room masih terpakai");setTimeout(()=>mk(n+1),900+n*700);return}if(OL.role)return;OL.busy=0;OL.err=ZNET.msg(er.type);onlDraw()})};mk(0)}
 async function ojoin(){const code=(OL.code||"").toUpperCase();if(OL.busy)return;if(code.length<4){OL.err="Kode room tidak valid.";onlDraw();return}
  OL.busy=1;OL.err="";onlDraw();
- try{await loadPeer()}catch(e){OL.busy=0;OL.err="PeerJS gagal dimuat. Buka di Chrome.";onlDraw();return}
- let tries=0,ok_=0;const p=new Peer(PCFG);OL.peer=p;
- const fail=t=>{OL.busy=0;OL.err=t;try{p.destroy()}catch(e){}OL.peer=null;onlDraw()};
- const att=()=>{tries++;const c=p.connect("zctk-"+code.toLowerCase(),{reliable:true});
-  const to=setTimeout(()=>{if(ok_)return;try{c.close()}catch(e){}if(tries<4)att();else fail("Tidak bisa terhubung ke teman. Pastikan ia masih membuka halaman game.")},16000);
-  c.on("open",()=>{ok_=1;clearTimeout(to);OL.busy=0;OL.role="client";OL.code=code;wire(c);c.send({t:"hello",name:OL.name||"Tamu"});onlDraw()})};
- p.on("open",att);p.on("error",er=>{if(ok_)return;if(er.type==="peer-unavailable"){if(tries<6)setTimeout(att,1200);else fail("Ajakan sudah tidak berlaku. Minta temanmu mengajak lagi.")}else fail("Gagal: "+(er.type||"koneksi"))})}
+ ZNET.begin("join");try{await loadPeer()}catch(e){ZNET.fail();OL.busy=0;OL.err="PeerJS gagal dimuat. Buka di Chrome.";onlDraw();return}
+ let tries=0,sg=0,ok_=0,p=null,cur=null;
+ const fail=t=>{ZNET.fail();OL.busy=0;OL.err=t;try{p.destroy()}catch(e){}OL.peer=null;onlDraw()};
+ const att=()=>{if(OL.peer!==p||ok_)return;if(cur)cur();tries++;const c=p.connect("zctk-"+code.toLowerCase(),{reliable:true});let dn=0;
+  const kill=()=>{dn=1;clearTimeout(to);try{c.close()}catch(e){}};cur=kill;
+  const retry=w=>{if(dn||ok_||OL.peer!==p)return;kill();if(tries<8){ZNET.retry(tries+1,8,w);setTimeout(att,Math.min(2500,500*tries))}else fail("Tidak bisa terhubung ke teman. Pastikan ia masih membuka halaman game.")};
+  const to=setTimeout(()=>retry("tidak ada respons"),Math.min(18000,11000+tries*1500));
+  c.on("open",()=>{ok_=1;clearTimeout(to);OL.busy=0;OL.role="client";OL.code=code;wire(c);c.send({t:"hello",name:OL.name||"Tamu"});onlDraw()});
+  c.on("error",er=>retry(ZNET.why(er&&er.type)));c.on("close",()=>retry("koneksi tertutup"))};
+ const perr=er=>{if(ok_)return;if(er.type==="peer-unavailable"){if(cur)cur();if(tries<10){ZNET.retry(tries+1,10,"room belum siap, menunggu teman");setTimeout(att,1500)}else fail("Ajakan sudah tidak berlaku. Minta temanmu mengajak lagi.")}else if(sg<3&&/^(network|server-error|socket-error|socket-closed)$/.test(er.type)){sg++;ZNET.retry(sg+1,4,ZNET.why(er.type));try{p.destroy()}catch(e){}p=null;setTimeout(mk,800*sg)}else fail(ZNET.msg(er.type))};
+ const mk=()=>{const q=new Peer(PCFG);p=q;OL.peer=q;q.on("open",()=>{if(q===p)att()});q.on("error",er=>{if(q===p)perr(er)})};
+ mk()}
 function wire(c){OL.conn=c;OL.rx=Date.now();clearInterval(OL.hb);
  OL.hb=setInterval(()=>{const k=OL.conn;if(!k)return;netSend({t:"p"});if(Date.now()-OL.rx>18000){lost(k);try{k.close()}catch(e){}}},4000);
  ZC.bind({el,fab:false,title:()=>OL.opp||"Teman",name:()=>OL.opp||"Teman",send:o=>netSend(o),ok:()=>!!(OL.conn&&OL.conn.open)});
@@ -6455,14 +6605,14 @@ try{ME=JSON.parse(LS("zf-me")||"null");UN=JSON.parse(LS("zf-un")||"{}")||{}}catc
 const saveUN=()=>LS("zf-un",JSON.stringify(UN));
 const LVO=[["mudah","Mudah"],["sedang","Sedang"],["sulit","Sulit"]];
 const GM={
- sudoku:{n:"Sudoku",k:"sdk",d:"Isi papan lebih cepat dari temanmu",c:["#5fe08a","#1fa84a"],i:'<rect x="3" y="3" width="18" height="18" rx="3.5"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/>',opt:[{k:"lv",t:"Tingkat puzzle",v:LVO,d:"sedang"}]},
+ sudoku:{n:"Sudoku",k:"sdk",d:"Isi papan lebih cepat dari temanmu",c:["#5fe08a","#1fa84a"],i:ZICOI("sudoku"),opt:[{k:"lv",t:"Tingkat puzzle",v:LVO,d:"sedang"}]},
  chess:{n:"Catur",k:"chs",d:"Duel strategi satu lawan satu",c:["#8f8cff","#5856d6"],i:'<circle cx="12" cy="6.5" r="3"/><path d="M9.5 21h5M8 17.5h8M10.5 17.5c0-4 .5-6 1.5-8.5 1 2.5 1.5 4.5 1.5 8.5"/>',opt:[{k:"sd",t:"Kamu main sebagai",v:[["putih","Putih"],["hitam","Hitam"],["acak","Acak"]],d:"acak"}]},
- uno:{n:"UNO",k:"uno",d:"Habiskan kartumu lebih dulu",c:["#ff7a6e","#ff3b30"],i:'<rect x="5" y="2.5" width="14" height="19" rx="3"/><ellipse cx="12" cy="12" rx="4" ry="6.5" transform="rotate(30 12 12)"/>',opt:[]},
- ludo:{n:"Ludo",k:"ldo",d:"Balapan bidak sampai rumah",c:["#ffcf5a","#ff9500"],i:'<rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="8.5" cy="8.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="15.5" cy="8.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="8.5" cy="15.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1.3" fill="currentColor" stroke="none"/>',opt:[]},
+ uno:{n:"UNO",k:"uno",d:"Habiskan kartumu lebih dulu",c:["#ff7a6e","#ff3b30"],i:ZICOI("uno"),opt:[]},
+ ludo:{n:"Ludo",k:"ldo",d:"Balapan bidak sampai rumah",c:["#ffcf5a","#ff9500"],i:ZICOI("ludo"),opt:[]},
  pul:{n:"Pulse Tap",k:"pt",d:"Adu refleks, kejar target skor",c:["#ffb340","#ff8a00"],i:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',opt:[{k:"lv",t:"Tingkat",v:LVO,d:"sedang"},{k:"tg",t:"Target skor",v:[[300,"300"],[600,"600"],[1000,"1.000"]],d:600}]},
- blast:{n:"Block Blast",k:"bb",d:"Susun blok, balapan skor",c:["#4da3ff","#007aff"],i:'<rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="14" y="14" width="6" height="6" rx="1.5"/>',opt:[{k:"tg",t:"Target skor",v:[[20000,"20.000"],[50000,"50.000"],[100000,"100.000"]],d:20000}]},
- bowler:{n:"Bowler",k:"bw",d:"Adu skor 10 frame",c:["#ff8a6b","#e5432d"],i:'<path d="M12 2.5c-1.6 0-2.4 1.2-2.4 2.6 0 1.2.7 2 1.1 2.8.5 1-1.7 2.5-1.7 5.3 0 2 1.1 3 1.1 4.5l-.8 3.8h5.4l-.8-3.8c0-1.5 1.1-2.5 1.1-4.5 0-2.8-2.2-4.3-1.7-5.3.4-.8 1.1-1.6 1.1-2.8 0-1.4-.8-2.6-2.4-2.6z"/><path d="M10.2 9.5h3.6"/>',opt:[]},
-  kata:{n:"Tebak Kata",k:"tk",d:"Tebak kata sebelum hurufnya terbuka semua",c:["#d28cff","#af52de"],i:'<rect x="2.5" y="7" width="5.2" height="10" rx="1.4"/><rect x="9.4" y="7" width="5.2" height="10" rx="1.4"/><rect x="16.3" y="7" width="5.2" height="10" rx="1.4"/>',opt:[]}};
+ blast:{n:"Block Blast",k:"bb",d:"Susun blok, balapan skor",c:["#4da3ff","#007aff"],i:ZICOI("blast"),opt:[{k:"tg",t:"Target skor",v:[[20000,"20.000"],[50000,"50.000"],[100000,"100.000"]],d:20000}]},
+ bowler:{n:"Bowler",k:"bw",d:"Adu skor 10 frame",c:["#ff8a6b","#e5432d"],i:ZICOI("bowler"),opt:[]},
+  kata:{n:"Tebak Kata",k:"tk",d:"Tebak kata sebelum hurufnya terbuka semua",c:["#d28cff","#af52de"],i:ZICOI("kata"),opt:[]}};
 const AL="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",mk=n=>Array.from({length:n},()=>AL[zR(AL.length)]).join("");
 const hist=f=>{try{return JSON.parse(LS("zf-h-"+f)||"[]")}catch(e){return[]}},saveH=(f,a)=>LS("zf-h-"+f,JSON.stringify(a.slice(-200)));
 const isFr=f=>DATA.rel.some(r=>r.status==="accepted"&&(r.from_code===f||r.to_code===f)),opn=()=>!!(P&&P.classList.contains("show"));
@@ -6672,7 +6822,7 @@ window.zfLobby=o=>{const G=Object.values(GM).find(x=>x.k===o.k)||GM.sudoku,opp=o
  msg=st==="conn"?(host?"Menyiapkan permainan…":"Menyambungkan ke "+opp+"…"):st==="wait"?"Menunggu "+opp+" menerima ajakan…":(o.msg||"Tersambung! Permainan segera dimulai…");
  return '<div class="zlb'+(st==="err"?" er":"")+'" style="--c1:'+G.c[0]+';--c2:'+G.c[1]+'"><div class="zlh"><span class="zlg"><svg viewBox="0 0 24 24">'+G.i+'</svg></span><b>'+G.n+' online</b></div>'
   +'<div class="zlv">'+pl(me,0)+'<div class="zll '+(st==="ok"?"ok":st==="err"?"err":"")+'"><u></u><u></u><u></u></div>'+pl(opp,st==="wait"||st==="conn")+'</div>'
-  +(st==="err"?'<p class="zle">'+esc(o.err)+'</p>':'<p class="zls">'+esc(msg)+'</p><p class="zlt">Tetap buka halaman ini sampai permainan dimulai.</p>')
+  +(st==="err"?'<p class="zle">'+esc(o.err)+'</p>':'<p class="zls">'+esc(msg)+'</p>'+(window.ZNET?ZNET.html():"")+'<p class="zlt">Tetap buka halaman ini sampai permainan dimulai.</p>')
   +'<button type="button" class="zlx" id="zlx">'+(st==="err"?"Kembali":"Batalkan")+'</button></div>'};
 async function api(path,o){o=o||{};const r=await fetch(CF.url.replace(/\/+$/,"")+"/rest/v1/"+path,{method:o.m||"GET",headers:Object.assign({apikey:CF.key,"Content-Type":"application/json",Prefer:o.p||"return=representation"},CF.key.startsWith("sb_")?{}:{Authorization:"Bearer "+CF.key}),body:o.b?JSON.stringify(o.b):undefined});
   if(!r.ok){let g="";try{const j=await r.json();g=j.code||j.error_code||""}catch(_){}const er=new Error(r.status);er.pg=g;throw er}const t=await r.text();return t?JSON.parse(t):[]}
