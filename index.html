@@ -1899,7 +1899,9 @@ html:not(:has(#bru.gfs:has(.un))):not(:has(#bru.gfs:has(.ures))) #gbar[data-g="u
 /* layout video call */
 #zvl.vv{background:#000;padding-top:0}
 #zvl .zvvw{position:absolute;inset:0;background:#0b1214}
-#zvl .zvvw video{width:100%;height:100%;object-fit:contain}
+#zvl .zvvw video{width:100%;height:100%;object-fit:cover}
+#zvl.tb .zvvw video{object-fit:contain}
+#zvl.tb .zvsv{max-width:240px!important}
 #zvl .zvph{display:none;position:absolute;inset:0;place-items:center}#zvl .zvph .zvav{margin:0}
 #zvl .zvvw.nocam video{visibility:hidden}#zvl .zvvw.nocam .zvph{display:grid}
 #zvl.vv .zvt{position:relative;z-index:2;margin-top:env(safe-area-inset-top,0px);padding-top:10px}
@@ -1964,8 +1966,8 @@ html:not(:has(#bru.gfs:has(.un))):not(:has(#bru.gfs:has(.ures))) #gbar[data-g="u
 #zvl .zvbr{transition:top .3s cubic-bezier(.2,.8,.2,1)}
 #zvl.hdr0 .zvh{opacity:0;transform:translateY(-14px);pointer-events:none}
 #zvl.hdr0 .zvbr{top:calc(16px + env(safe-area-inset-top,0px))}
-#zvl .zvcap{position:absolute;z-index:3;right:20px;bottom:calc(26px + env(safe-area-inset-bottom,0px));width:68px;height:68px;border-radius:50%;border:4px solid #fff;background:none;padding:0;display:grid;place-items:center}
-#zvl .zvcap i{width:52px;height:52px;border-radius:50%;background:#fff;transition:transform .12s}
+#zvl .zvcap{position:absolute;z-index:3;right:18px;bottom:calc(24px + env(safe-area-inset-bottom,0px));width:56px;height:56px;border-radius:50%;border:3px solid #fff;background:none;padding:0;display:grid;place-items:center}
+#zvl .zvcap i{width:42px;height:42px;border-radius:50%;background:#fff;transition:transform .12s}
 #zvl .zvcap:active i{transform:scale(.88)}
 @keyframes zvFl{from{opacity:.85}to{opacity:0}}
 #zvb.zvin{position:fixed;inset:0;z-index:9700;background:#222;color:#fff;display:flex;flex-direction:column;align-items:center;padding:calc(90px + env(safe-area-inset-top,0px)) 24px calc(34px + env(safe-area-inset-bottom,0px));font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",Inter,system-ui,sans-serif;animation:zvIn .25s ease-out}
@@ -7823,8 +7825,24 @@ function cRender(){const o=$("zvl"),C=CALL;if(!o)return;
   :'<div class="zvn">'+nm+'</div><div class="zvs" id="zvs">'+cStatus()+'</div>'
     +'<div class="zvg">'+btn("mute",C.mute?CIC.moff:CIC.mic,"bisukan",C.mute)+btn("spk",CIC.spk,"speaker",C.spk,dis)+btn("vid",CIC.vd,C.vreq?"menunggu":"video",C.vreq,dis)+btn("chat",HCH,"pesan")+btn("fr",CIC.ct,"teman")+btn("min",CIC.dn,"kecilkan")+'</div>'
     +'<div class="zve">'+btn("end",CIC.end,lbl,0,"end")+'</div>';
-  o.classList.toggle("vv",V);o.classList.toggle("hdr0",V&&!!C.hid);o.classList.toggle("show",!C.min);attachVid();if(V&&!C.hid&&!C.hdt)cHdrArm()}
-function attachVid(){const C=CALL;if(!C)return;[["zvrv",C.sw?C.vst:C.rs],["zvsv",C.sw?C.rs:C.vst],["zvpv",C.rs]].forEach(([i,s])=>{const v=$(i);if(v&&s){if(v.srcObject!==s)v.srcObject=s;if(v.paused)v.play().catch(()=>{})}})}
+  o.classList.toggle("tb",ISTB);o.classList.toggle("vv",V);o.classList.toggle("hdr0",V&&!!C.hid);o.classList.toggle("show",!C.min);attachVid();if(V&&!C.hid&&!C.hdt)cHdrArm()}
+// preview kamera sendiri: stream khusus berisi trek video saja, supaya tidak ikut macet bersama audio/pengiriman
+function lv(C){const t=C.vst&&C.vst.getVideoTracks()[0];if(!t)return C.vst;if(C.pvT!==t){C.pvT=t;C.pv=new MediaStream([t])}return C.pv}
+// penjaga: tiap 2 detik cek video/audio yang macet lalu pulihkan sendiri (kamera lokal, video teman, suara)
+function vWatch(C){clearInterval(C.vwt);C.vwt=setInterval(()=>{if(CALL!==C){clearInterval(C.vwt);return}if(document.hidden)return;
+  const a=$("zva");if(a&&a.srcObject&&a.paused)a.play().catch(()=>{});
+  attachVid();
+  const lt=C.vst&&C.vst.getVideoTracks()[0];
+  if(lt&&!lt._w){lt._w=1;lt.addEventListener("ended",()=>{if(CALL===C)camRevive()});lt.addEventListener("mute",()=>{setTimeout(()=>{if(CALL===C&&lt.muted&&!document.hidden)camRevive()},2500)})}
+  ["zvrv","zvsv","zvpv"].forEach(id=>{const v=$(id);if(!v||!v.srcObject)return;
+    if(v.paused){v.play().catch(()=>{});return}
+    const ct=v.currentTime;
+    if(v._ct!==undefined&&ct===v._ct&&v.offsetParent!==null&&!(v.closest&&v.closest(".nocam"))&&!v.classList.contains("off")){
+      v._st=(v._st||0)+1;
+      if(v._st>=2){v._st=0;const m=v.srcObject;v.srcObject=null;v.srcObject=m;v.play().catch(()=>{})}}
+    else v._st=0;
+    v._ct=ct})},2000)}
+function attachVid(){const C=CALL;if(!C)return;[["zvrv",C.sw?lv(C):C.rs],["zvsv",C.sw?C.rs:lv(C)],["zvpv",C.rs]].forEach(([i,s])=>{const v=$(i);if(v&&s){if(v.srcObject!==s)v.srcObject=s;if(v.paused)v.play().catch(()=>{})}})}
 function cEnsure(){let o=$("zvl");if(o)return;
   o=document.createElement("div");o.id="zvl";document.body.appendChild(o);
   try{new MutationObserver(()=>{document.body.classList.toggle("zcl",o.classList.contains("show"));try{znvSync()}catch(e){}}).observe(o,{attributes:true,attributeFilter:["class"]})}catch(e){}
@@ -7846,7 +7864,7 @@ function cMin(m){if(!CALL)return;CALL.min=!!m;cPill();cRender()}
 function cPill(){const C=CALL,p=$("zvp");if(!p)return;const on=!!(C&&C.min);p.style.display=on?"flex":"none";document.body.classList.remove("zin");try{znvSync()}catch(e){}
   if(!on)return;const vv=!!(C.vid&&C.rs);p.classList.toggle("vv",vv);p.setAttribute("aria-label","Kembali ke panggilan");
   p.innerHTML=(vv?'<video id="zvpv" autoplay playsinline muted></video>':CIC.ph)+'<span id="zvpt">'+cStatus()+'</span>';attachVid();pPos()}
-function cTick(){const s=$("zvs"),t=$("zvpt");if(!CALL)return;const x=cStatus();if(s)s.textContent=x;if(t)t.textContent=x}
+function cTick(){const s=$("zvs"),t=$("zvpt");if(!CALL)return;const x=cStatus();if(s)s.textContent=x;if(t)t.textContent=x;if(CALL.st==="live"){try{document.title=(CALL.vid?"🎥 ":"📞 ")+x+" · "+cName(CALL.f)}catch(e){}}}
 // output suara: speaker HP (keras) atau speaker telepon (earpiece); butuh setSinkId + daftar perangkat dari browser
 async function outDev(spk){try{const o=(await navigator.mediaDevices.enumerateDevices()).filter(x=>x.kind==="audiooutput");if(!o.length)return null;
   if(spk)return o.find(x=>/speaker|loud|pengeras/i.test(x.label))||o.find(x=>x.deviceId==="default")||o[0];
@@ -7861,12 +7879,13 @@ function cHdr(force){const C=CALL,o=$("zvl");if(!C||!o)return;C.hid=force===unde
 function cCap(){const C=CALL,A=$("zvrv"),B=$("zvsv");if(!C||!A)return;
   const dpr=Math.min(2,window.devicePixelRatio||1),k=Math.min(1,1080/(innerWidth*dpr)),sc=dpr*k,W=Math.round(innerWidth*sc),H=Math.round(innerHeight*sc),cv=document.createElement("canvas");cv.width=W;cv.height=H;
   const x=cv.getContext("2d");x.fillStyle="#000";x.fillRect(0,0,W,H);
-  const dv=(v,X,Y,w,h,r,mir,off)=>{if(!v)return;x.save();x.beginPath();if(x.roundRect)x.roundRect(X,Y,w,h,r);else x.rect(X,Y,w,h);x.clip();x.fillStyle="#000";x.fillRect(X,Y,w,h);
-    if(!off&&v.videoWidth){const vw=v.videoWidth,vh=v.videoHeight,s2=Math.min(w/vw,h/vh),dw=vw*s2,dh=vh*s2,dx=(w-dw)/2,dy=(h-dh)/2;
+  const dv=(v,X,Y,w,h,r,mir,off,cov)=>{if(!v)return;x.save();x.beginPath();if(x.roundRect)x.roundRect(X,Y,w,h,r);else x.rect(X,Y,w,h);x.clip();x.fillStyle="#000";x.fillRect(X,Y,w,h);
+    if(!off&&v.videoWidth){const vw=v.videoWidth,vh=v.videoHeight,s2=cov?Math.max(w/vw,h/vh):Math.min(w/vw,h/vh),dw=vw*s2,dh=vh*s2,dx=(w-dw)/2,dy=(h-dh)/2;
       if(mir){x.translate(X+w,Y);x.scale(-1,1);x.drawImage(v,dx,dy,dw,dh)}else x.drawImage(v,X+dx,Y+dy,dw,dh)}
     x.restore()};
-  dv(A,0,0,W,H,0,A.classList.contains("mir"),A.classList.contains("off")||!!A.closest(".nocam"));
+  dv(A,0,0,W,H,0,A.classList.contains("mir"),A.classList.contains("off")||!!A.closest(".nocam"),!ISTB);
   if(B){const r=B.getBoundingClientRect();dv(B,r.left*sc,r.top*sc,r.width*sc,r.height*sc,22*sc,!B.classList.contains("bk"),B.classList.contains("off"))}
+  x.save();x.fillStyle="#fff";x.textAlign="center";x.textBaseline="top";x.font="600 "+Math.round(17*sc)+"px -apple-system,BlinkMacSystemFont,system-ui,sans-serif";x.shadowColor="rgba(0,0,0,.65)";x.shadowBlur=8*sc;x.fillText("FaceTime Video",W/2,30*sc);x.restore();
   const fl=document.createElement("div");fl.style.cssText="position:fixed;inset:0;background:#fff;z-index:9800;pointer-events:none;animation:zvFl .35s ease-out forwards";document.body.appendChild(fl);setTimeout(()=>fl.remove(),400);
   try{cv.toBlob(bl=>{if(!bl)return toast("Gagal mengambil foto",2200);const a=document.createElement("a");a.href=URL.createObjectURL(bl);a.download="facetime-"+Date.now()+".jpg";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);toast("Foto tersimpan di Unduhan",2000)},"image/jpeg",.92)}catch(e){toast("Gagal mengambil foto",2200)}}
 function cMute(){const C=CALL;if(!C||!C.stream)return;C.mute=!C.mute;C.stream.getAudioTracks().forEach(t=>t.enabled=!C.mute);cRender()}
@@ -7901,7 +7920,7 @@ function bannerC(on){let b=$("zvb");
     else if(d==="later"){endCall("no");const t="Aku lagi sibuk, nanti aku telepon balik ya";deliver(f,{t:"m",x:t}).then(()=>addH(f,t,1)).catch(()=>{})}});
   document.body.appendChild(b);try{navigator.vibrate&&navigator.vibrate([200,100,200])}catch(_){}}
 // ----- alur panggilan -----
-const MICA={echoCancellation:true,noiseSuppression:true,autoGainControl:true,channelCount:{ideal:1}},MICO={audio:MICA},CAMO={video:{facingMode:"user",width:{ideal:640},frameRate:{ideal:24}}};
+const MICA={echoCancellation:true,noiseSuppression:true,autoGainControl:true,channelCount:{ideal:1}},MICO={audio:MICA},ISTB=Math.min(screen.width||0,screen.height||0)>=600,CAMO={video:Object.assign({facingMode:"user",frameRate:{ideal:24}},ISTB?{width:{ideal:640}}:{width:{ideal:854},aspectRatio:{ideal:16/9}})};
 // Opus mono ~32kbps + FEC: suara lebih ringan & tahan paket hilang
 const SDPT=sd=>{try{return String(sd).replace(/(a=fmtp:\d+ [^\r\n]*useinbandfec=1)/g,"$1;maxaveragebitrate=32000;stereo=0;sprop-stereo=0")}catch(e){return sd}};
 // suara diprioritaskan; video dibatasi bitrate & menjaga framerate agar tidak freeze
@@ -7916,24 +7935,50 @@ async function camRevive(){const C=CALL;if(!C||!C.vst||C.cam0)return;const t=C.v
   const nt=ns.getVideoTracks()[0];try{nt.contentHint="motion"}catch(_){}
   [C.call,C.vcall].forEach(c=>{try{const q=c&&c.peerConnection&&c.peerConnection.getSenders().find(x=>x.track&&x.track.kind==="video");q&&q.replaceTrack(nt)}catch(e){}});
   C.vst.getVideoTracks().forEach(x=>{x.stop();try{C.vst.removeTrack(x)}catch(_){}});C.vst.addTrack(nt);attachVid();cRender()}
-document.addEventListener("visibilitychange",()=>{if(document.hidden||!CALL)return;attachVid();setTimeout(camRevive,900)});
+// notifikasi "panggilan berlangsung" saat kamu keluar dari browser
+async function cNote(on){try{if(!("serviceWorker" in navigator))return;const reg=await navigator.serviceWorker.getRegistration();if(!reg)return;
+  if(on){const C=CALL;if(!C||!window.Notification||Notification.permission!=="granted")return;
+    await reg.showNotification(cName(C.f),{body:(C.vid?"Video call":"Telepon")+" berlangsung · ketuk untuk kembali",tag:"zcall-live",silent:true,requireInteraction:true,data:{f:C.f}})}
+  else{(await reg.getNotifications({tag:"zcall-live"})).forEach(n=>n.close())}}catch(e){}}
+document.addEventListener("visibilitychange",()=>{const C=CALL;if(!C||C.st!=="live"){return}
+  if(document.hidden){ // browser tidak mengirim kamera saat di background: beri tahu teman supaya tidak melihat gambar beku
+    if(C.vid&&C.vst&&!C.cam0){C.bgc=1;send(C.f,{t:"cv",id:C.id,a:"cam",on:0}).catch(()=>{})}
+    cNote(1);return}
+  cNote(0);try{if(PR&&PR.disconnected)PR.reconnect()}catch(e){}
+  const a=$("zva");if(a&&a.paused&&a.srcObject)a.play().catch(()=>{});attachVid();wake(true);
+  if(C.rc&&C.dir==="out")setTimeout(()=>{if(CALL===C&&C.rc)cRedial(C)},600);
+  setTimeout(async()=>{if(CALL!==C)return;await camRevive();if(C.bgc){C.bgc=0;if(!C.cam0)send(C.f,{t:"cv",id:C.id,a:"cam",on:1}).catch(()=>{})}},900)});
+window.addEventListener("online",()=>{const C=CALL;if(!C||C.st!=="live")return;try{if(PR&&PR.disconnected)PR.reconnect()}catch(e){}if(C.dir==="out")setTimeout(()=>{if(CALL===C&&C.rc)cRedial(C)},800)});
 const mkMedia=v=>navigator.mediaDevices.getUserMedia(v?{audio:MICA,video:CAMO.video}:MICO);
 function askNotif(){try{if(window.Notification&&Notification.permission==="default")Notification.requestPermission()}catch(e){}}
 function playRemote(rs){let a=$("zva");if(!a){a=document.createElement("audio");a.id="zva";a.autoplay=true;a.setAttribute("playsinline","");document.body.appendChild(a)}try{if(rs.getAudioTracks().length){a.srcObject=rs;a.play().catch(()=>{})}}catch(e){}}
 function remoteStream(C,rs){if(!rs.getVideoTracks().length)return;if(C.st==="live"&&!C.vsp){C.vsp=1;C.spk=1;applySpk()}C.rs=rs;C.rcam=1;C.vid=1;C.vused=1;cRender();cPill()}
 function wireCall(call){const C=CALL;
-  call.on("stream",rs=>{if(CALL!==C)return;playRemote(rs);remoteStream(C,rs);goLive()});
+  call.on("stream",rs=>{if(CALL!==C)return;if(C.rc){C.rc=0;clearTimeout(C.rct);cTick()}playRemote(rs);remoteStream(C,rs);goLive()});
   call.on("close",()=>{if(CALL===C&&C.call===call)endCall(C.st==="ring"&&C.dir==="in"?"cancel":"end",1)});
-  call.on("error",()=>{if(CALL===C&&C.call===call)endCall("err",1)});
-  try{const pc=call.peerConnection;if(pc)pc.addEventListener("iceconnectionstatechange",()=>{if(CALL!==C)return;const s=pc.iceConnectionState;
-    if(s==="disconnected"){C.rc=1;cTick();clearTimeout(C.rct);C.rct=setTimeout(()=>{if(CALL===C&&C.rc)endCall("err",1)},15000)}
+  call.on("error",()=>{if(CALL===C&&C.call===call)cLost(C,call)});
+  try{const pc=call.peerConnection;if(pc)pc.addEventListener("iceconnectionstatechange",()=>{if(CALL!==C||C.call!==call)return;const s=pc.iceConnectionState;
+    if(s==="disconnected"){C.rc=1;cTick();clearTimeout(C.rct);C.rct=setTimeout(()=>{if(CALL===C&&C.rc&&C.call===call)cLost(C,call)},10000)}
     else if(s==="connected"||s==="completed"){C.rc=0;clearTimeout(C.rct);cTick()}
-    else if(s==="failed"||s==="closed")endCall("err",1)})}catch(e){}}
+    else if(s==="failed")cLost(C,call)
+    else if(s==="closed"&&C.st!=="live")endCall("err",1)})}catch(e){}}
+// koneksi putus (pindah app, ganti sinyal): penelepon menyambung ulang otomatis, penerima menunggu; menyerah setelah 60 detik
+function cLost(C,call){if(CALL!==C||C.call!==call)return;if(C.st!=="live"){endCall("err",1);return}
+  C.rc=1;cTick();clearTimeout(C.rct);
+  C.rct=setTimeout(()=>{if(CALL===C&&C.rc)endCall("err",1)},60000);
+  if(C.dir==="out")setTimeout(()=>{if(CALL===C&&C.rc&&C.call===call)cRedial(C)},1500)}
+function cRedial(C){if(CALL!==C||C.dir!=="out"||!C.stream||(C.rd||0)>=6)return false;C.rd=(C.rd||0)+1;
+  if(!PR||PR.destroyed){lp().then(peerUp).catch(()=>{});setTimeout(()=>{if(CALL===C&&C.rc)cRedial(C)},4000);return false}
+  if(PR.disconnected){try{PR.reconnect()}catch(e){}}
+  let call;try{call=PR.call("zcf-"+C.f.toLowerCase(),C.stream,{metadata:{n:ME.name,id:C.id,v:C.v0},sdpTransform:SDPT})}catch(e){}
+  if(!call){setTimeout(()=>{if(CALL===C&&C.rc)cRedial(C)},4000);return false}
+  C.call=call;wireCall(call);
+  clearTimeout(C.rdt);C.rdt=setTimeout(()=>{if(CALL===C&&C.rc&&C.call===call)cRedial(C)},12000);return true}
 function wireVid(call){const C=CALL;C.vcall=call;
   call.on("stream",rs=>{if(CALL===C){remoteStream(C,rs);tuneCall(call);setTimeout(()=>{if(CALL===C){tuneCall(call);tuneCall(C.call)}},2000)}});
   call.on("close",()=>{if(CALL===C&&C.vcall===call)vStop(1)});
   call.on("error",()=>{if(CALL===C&&C.vcall===call)vStop(1)})}
-function goLive(){const C=CALL;if(!C||C.st==="live")return;C.st="live";C.t0=Date.now();if(C.spk===undefined){C.spk=C.vid?1:0;C.vsp=C.vid?1:0}applySpk();stopRing();clearTimeout(C.to);
+function goLive(){const C=CALL;if(!C||C.st==="live")return;C.st="live";C.t0=Date.now();if(C.spk===undefined){C.spk=C.vid?1:0;C.vsp=C.vid?1:0}applySpk();C.ttl=document.title;vWatch(C);try{if(navigator.locks&&!C.lkq){C.lkq=1;navigator.locks.request("zcall",()=>new Promise(r=>{if(CALL!==C)r();else C.lk=r})).catch(()=>{})}}catch(e){}stopRing();clearTimeout(C.to);
   clearInterval(C.tm);C.tm=setInterval(cTick,1000);wake(true);cRender();cPill();sfx("ok");tuneCall(C.call);setTimeout(()=>{if(CALL===C)tuneCall(C.call)},2500);
   try{if(navigator.mediaSession){navigator.mediaSession.metadata=new MediaMetadata({title:cName(C.f),artist:"Panggilan · Zaim’s Games"});navigator.mediaSession.playbackState="playing";try{navigator.mediaSession.setActionHandler("hangup",()=>endCall("end"))}catch(e){}}}catch(e){}}
 async function startCall(f,vid){
@@ -7969,6 +8014,7 @@ function dialNow(C){if(!C||!C.wait||!PR)return;let call;
 function onCall(call){const f=String(call.peer).slice(4).toUpperCase(),id=String((call.metadata&&call.metadata.id)||"").slice(0,5),M=call.metadata||{};
   if(!isFr(f)){try{call.close()}catch(e){}return}
   if(M.vid){const C=CALL;if(C&&C.f===f&&C.id===id&&C.vp&&C.vst){C.vp=0;try{call.answer(C.vst,{sdpTransform:SDPT})}catch(e){}wireVid(call)}else{try{call.close()}catch(e){}}return}
+  if(CALL&&CALL.f===f&&CALL.id===id&&CALL.st==="live"&&CALL.stream){const C=CALL;try{call.answer(C.stream,{sdpTransform:SDPT})}catch(e){return}C.call=call;wireCall(call);return}
   if(CALL){try{call.close()}catch(e){}send(f,{t:"cx",id,r:"busy"}).catch(()=>{});return}
   const v=M.v?1:0;CALL={f,id,dir:"in",call,stream:null,st:"ring",t0:0,mute:0,min:0,vid:v,v0:v,vst:null,fm:"user",vused:v,rcam:1};cEnsure();
   call.on("close",()=>{if(CALL&&CALL.call===call&&CALL.st==="ring")endCall("cancel",1)});
@@ -7978,8 +8024,8 @@ function onCall(call){const f=String(call.peer).slice(4).toUpperCase(),id=String
 async function acceptCall(){const C=CALL;if(!C||C.dir!=="in"||C.st!=="ring")return;askNotif();let st;
   try{st=await mkMedia(C.vid)}catch(e){toast(C.vid?"Izinkan akses kamera & mikrofon untuk menjawab":"Izinkan akses mikrofon untuk menjawab",3200);if(CALL===C)endCall("no");return}
   if(CALL!==C){st.getTracks().forEach(t=>t.stop());return}
-  C.stream=st;if(C.vid)C.vst=st;C.st="conn";stopRing();clearTimeout(C.to);bannerC(0);wireCall(C.call);
-  try{C.call.answer(st,{sdpTransform:SDPT})}catch(e){endCall("err");return}
+  C.stream=st;if(C.vid)C.vst=st;C.st="conn";stopRing();clearTimeout(C.to);bannerC(0);
+  try{C.call.answer(st,{sdpTransform:SDPT})}catch(e){endCall("err");return}wireCall(C.call);
   C.to=setTimeout(()=>{if(CALL===C&&C.st!=="live")endCall("err")},20000);cRender();cPill()}
 // ----- beralih suara ⇄ video (sinyal "cv" lewat data channel, video lewat koneksi media kedua) -----
 async function reqVideo(){const C=CALL;if(!C||C.st!=="live"||C.vid||C.vreq)return;let vs;
@@ -8016,7 +8062,7 @@ function onCv(f,d){const C=CALL;if(!C||C.f!==f||(d.id&&d.id!==C.id))return;
   else if(d.a==="off"){if(C.vid||C.vst){vStop(1);toast(cName(f)+" kembali ke suara",2000)}}
   else if(d.a==="cam"){C.rcam=d.on?1:0;cRender()}}
 function endCall(why,remote){const C=CALL;if(!C)return;CALL=null;
-  clearTimeout(C.to);clearTimeout(C.rct);clearTimeout(C.vqt);clearTimeout(C.hdt);clearInterval(C.tm);clearInterval(C.pt);stopRing();bannerC(0);vReqPop(0);
+  clearTimeout(C.to);clearTimeout(C.rct);clearTimeout(C.rdt);clearTimeout(C.vqt);clearTimeout(C.hdt);clearInterval(C.vwt);try{C.lk&&C.lk()}catch(e){}if(C.ttl!==undefined)document.title=C.ttl;cNote(0);clearInterval(C.tm);clearInterval(C.pt);stopRing();bannerC(0);vReqPop(0);
   try{C.call.close()}catch(e){}try{C.vcall&&C.vcall.close()}catch(e){}
   try{C.stream&&C.stream.getTracks().forEach(t=>t.stop())}catch(e){}try{C.vst&&C.vst.getTracks().forEach(t=>t.stop())}catch(e){}
   const a=$("zva");if(a){a.pause();a.srcObject=null}
@@ -8041,7 +8087,7 @@ function onCx(f,d){const C=CALL;if(!C||C.f!==f||(d.id&&C.id&&d.id!==C.id))return
   if(C.st!=="live"&&C.dir==="out")endCall(r==="no"?"no":r==="busy"?"busy":"end",1);
   else if(C.st!=="live"&&C.dir==="in")endCall("cancel",1);
   else endCall("end",1)}
-window.addEventListener("pagehide",()=>{if(CALL){try{CALL.call.close()}catch(e){}try{CALL.vcall&&CALL.vcall.close()}catch(e){}}});
+window.addEventListener("pagehide",e=>{if(e&&e.persisted)return;if(CALL){try{CALL.call.close()}catch(e){}try{CALL.vcall&&CALL.vcall.close()}catch(e){}}});
 const znvI={home:'<path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',fr:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',chat:'<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>',stat:'<path d="M5 21V11M12 21V4M19 21v-6"/>'};
 var ZNB=null;
 function znfBox(){let b=document.getElementById("znf");if(!b){b=document.createElement("div");b.id="znf";document.body.appendChild(b);znfDrag(b)}return b}
