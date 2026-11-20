@@ -1909,8 +1909,31 @@ html:not(:has(#bru.gfs:has(.un))):not(:has(#bru.gfs:has(.ures))) #gbar[data-g="u
 #zvl .zvsv.bk{transform:none}#zvl .zvsv.off{opacity:.25}
 #zvl.vv .zvbt{position:absolute;left:50%;bottom:0;transform:translateX(-50%);z-index:3;gap:14px;background:rgba(0,0,0,.38)}
 #zvl.vv .zvr button{width:56px;height:56px}
+/* ===== layar telepon gaya iPhone / FaceTime ===== */
+#zvl{background:linear-gradient(180deg,#4a4f5c 0%,#262831 45%,#0d0d10 100%);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",Inter,system-ui,sans-serif}
+#zvl .zvl2{display:none}
+#zvl .zvb0{width:36px;height:36px;background:rgba(120,120,128,.36)}
+#zvl .zvn{font-size:34px;font-weight:600;margin-top:36px;letter-spacing:-.2px}
+#zvl .zvs{font-size:19px;margin-top:6px;color:rgba(255,255,255,.62)}
+#zvl .zvgw{margin-top:auto;width:100%;max-width:420px;padding:0 20px calc(30px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;align-items:center;gap:36px}
+#zvl .zvg{display:flex;flex-wrap:wrap;justify-content:center;gap:26px 38px;max-width:240px}
+#zvl .zvg .zvr button{width:80px;height:80px;background:rgba(235,235,245,.22)}
+#zvl .zvg .zvr{gap:9px;font-size:13px;color:rgba(255,255,255,.92)}
+#zvl .zvg .zvr button.on{background:#fff;color:#000}
+#zvl .zve .zvr button{width:80px;height:80px;background:#ff3b30}
+#zvl .zve .zvr span{display:none}
+/* video call (FaceTime) */
+#zvl.vv .zvbt{gap:16px;padding:18px 16px calc(20px + env(safe-area-inset-bottom,0px));background:rgba(30,30,32,.8);border-radius:28px 28px 0 0}
+#zvl.vv .zvr span{display:none}
+#zvl.vv .zvr button{width:58px;height:58px;background:rgba(120,120,128,.45)}
+#zvl.vv .zvr button.on{background:#fff;color:#000}
+#zvl.vv .zvr button.end{background:#ff3b30;color:#fff}
+#zvl .zvvi .zvn{font-size:17px;font-weight:600;margin-top:0}
+#zvl .zvvi .zvs{font-size:14px;margin-top:1px;color:rgba(255,255,255,.75)}
+#zvl .zvsv{width:104px;height:148px;border:0;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.4)}
+
 /* blur di atas video live = penyebab freeze di HP: matikan saat video call */
-#zvl.vv .zvbt{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(0,0,0,.55)}
+#zvl.vv .zvbt{-webkit-backdrop-filter:none;backdrop-filter:none}
 #zvl.vv .zvvw video{transform:translateZ(0)}
 #zvl.vv .zvvw video.mir{transform:translateZ(0) scaleX(-1)}#zvl .zvvw video.off{opacity:.15}#zvl .zvsv{cursor:pointer}
 /* saat layar telepon penuh, hentikan animasi halaman di belakangnya */
@@ -7725,6 +7748,7 @@ document.addEventListener("visibilitychange",()=>{if(!document.hidden&&CALL&&CAL
 Object.assign(CIC,{
  vd:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="6" width="13" height="12" rx="3"/><path d="M15 10.5l6-3.5v10l-6-3.5z"/></svg>',
  vo:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="6" width="13" height="12" rx="3"/><path d="M15 10.5l6-3.5v10l-6-3.5zM2 2l20 20"/></svg>',
+ spk:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>',
  fl:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/></svg>'});
 let PB=null;try{PB=JSON.parse(LS("zf-pb")||"null")}catch(e){}
 function cAvatar(f){const h=[...f].reduce((a,ch)=>a+ch.charCodeAt(0),0);return'<div class="zvav'+(CALL&&CALL.st!=="live"?" rg":"")+'" style="background:'+ZC[h%ZC.length]+'">'+esc(Array.from(cName(f).trim())[0]||"?").toUpperCase()+'</div>'}
@@ -7741,15 +7765,15 @@ function cRender(){const o=$("zvl"),C=CALL;if(!o)return;
     +'<div class="zvvi"><div class="zvn">'+esc(cName(C.f))+'</div><div class="zvs" id="zvs">'+cStatus()+'</div></div>'
     +'<video id="zvsv" data-c="sw" class="zvsv'+((sw?rOff:C.cam0)?" off":"")+((sw||!mir)?" bk":"")+'" autoplay playsinline muted></video>'
     +'<div class="zvbt">'+btn("chat",HCH,"Pesan")+btn("cam",C.cam0?CIC.vo:CIC.vd,"Kamera",C.cam0)+btn("flip",CIC.fl,"Balik")+mu+end+'</div>'
-  :top+'<div class="zvn">'+esc(cName(C.f))+'</div><div class="zvs" id="zvs">'+cStatus()+'</div>'+cAvatar(C.f)
-    +'<div class="zvbt">'+btn("chat",HCH,"Pesan")+(live?btn("vid",CIC.vd,C.vreq?"Menunggu…":"Video",C.vreq):"")+mu+end+'</div>';
+  :top+'<div class="zvn">'+esc(cName(C.f))+'</div><div class="zvs" id="zvs">'+cStatus()+'</div>'
+    +'<div class="zvgw"><div class="zvg">'+mu+(live?btn("spk",CIC.spk,"Speaker",C.spk):"")+(live?btn("vid",CIC.vd,C.vreq?"Menunggu…":"Video",C.vreq):"")+btn("chat",HCH,"Pesan")+'</div><div class="zve">'+end+'</div></div>';
   o.classList.toggle("vv",V);o.classList.toggle("show",!C.min);attachVid()}
 function attachVid(){const C=CALL;if(!C)return;[["zvrv",C.sw?C.vst:C.rs],["zvsv",C.sw?C.rs:C.vst],["zvpv",C.rs]].forEach(([i,s])=>{const v=$(i);if(v&&s){if(v.srcObject!==s)v.srcObject=s;if(v.paused)v.play().catch(()=>{})}})}
 function cEnsure(){let o=$("zvl");if(o)return;
   o=document.createElement("div");o.id="zvl";document.body.appendChild(o);
   try{new MutationObserver(()=>{document.body.classList.toggle("zcl",o.classList.contains("show"));try{znvSync()}catch(e){}}).observe(o,{attributes:true,attributeFilter:["class"]})}catch(e){}
   o.addEventListener("click",e=>{const b=e.target.closest("[data-c]");if(!b||!CALL)return;const k=b.dataset.c;
-    if(k==="min")cMin(1);else if(k==="mute")cMute();else if(k==="cam")cCam();else if(k==="flip")cFlip();else if(k==="sw"){CALL.sw=!CALL.sw;cRender()}
+    if(k==="min")cMin(1);else if(k==="mute")cMute();else if(k==="cam")cCam();else if(k==="flip")cFlip();else if(k==="spk")cSpk();else if(k==="sw"){CALL.sw=!CALL.sw;cRender()}
     else if(k==="vid"){CALL.vreq?vCancel("",1):reqVideo()}
     else if(k==="end")endCall(CALL.st==="ring"&&CALL.dir==="out"?"cancel":CALL.st==="ring"?"no":"end");
     else if(k==="chat"){const f=CALL.f;cMin(1);open("fr",{a:"chat",f})}});
@@ -7767,6 +7791,13 @@ function cPill(){const C=CALL,p=$("zvp");if(!p)return;const on=!!(C&&C.min);p.st
   if(!on)return;const vv=!!(C.vid&&C.rs);p.classList.toggle("vv",vv);p.setAttribute("aria-label","Kembali ke panggilan");
   p.innerHTML=(vv?'<video id="zvpv" autoplay playsinline muted></video>':CIC.ph)+'<span id="zvpt">'+cStatus()+'</span>';attachVid();pPos()}
 function cTick(){const s=$("zvs"),t=$("zvpt");if(!CALL)return;const x=cStatus();if(s)s.textContent=x;if(t)t.textContent=x}
+// output suara: speaker HP (keras) atau speaker telepon (earpiece); butuh setSinkId + daftar perangkat dari browser
+async function outDev(spk){try{const o=(await navigator.mediaDevices.enumerateDevices()).filter(x=>x.kind==="audiooutput");if(!o.length)return null;
+  if(spk)return o.find(x=>/speaker|loud|pengeras/i.test(x.label))||o.find(x=>x.deviceId==="default")||o[0];
+  return o.find(x=>/ear|handset|receiver|telepon/i.test(x.label)&&!/speaker/i.test(x.label))||null}catch(e){return null}}
+async function applySpk(){const C=CALL,a=$("zva");if(!C||!a||!a.setSinkId)return false;const m=await outDev(!!C.spk);if(!m)return false;try{await a.setSinkId(m.deviceId);return true}catch(e){return false}}
+async function cSpk(){const C=CALL;if(!C)return;C.spk=C.spk?0:1;cRender();const ok=await applySpk();
+  if(!ok&&CALL===C){C.spk=C.spk?0:1;cRender();toast("HP ini tidak bisa mengganti output suara dari browser",2800)}}
 function cMute(){const C=CALL;if(!C||!C.stream)return;C.mute=!C.mute;C.stream.getAudioTracks().forEach(t=>t.enabled=!C.mute);cRender()}
 function cCam(){const C=CALL;if(!C||!C.vst)return;C.cam0=!C.cam0;C.vst.getVideoTracks().forEach(t=>t.enabled=!C.cam0);send(C.f,{t:"cv",id:C.id,a:"cam",on:C.cam0?0:1}).catch(()=>{});cRender()}
 async function cFlip(){const C=CALL;if(!C||!C.vst)return;const fm=C.fm==="environment"?"user":"environment";let ns;
@@ -7801,7 +7832,7 @@ document.addEventListener("visibilitychange",()=>{if(document.hidden||!CALL)retu
 const mkMedia=v=>navigator.mediaDevices.getUserMedia(v?{audio:MICA,video:CAMO.video}:MICO);
 function askNotif(){try{if(window.Notification&&Notification.permission==="default")Notification.requestPermission()}catch(e){}}
 function playRemote(rs){let a=$("zva");if(!a){a=document.createElement("audio");a.id="zva";a.autoplay=true;a.setAttribute("playsinline","");document.body.appendChild(a)}try{if(rs.getAudioTracks().length){a.srcObject=rs;a.play().catch(()=>{})}}catch(e){}}
-function remoteStream(C,rs){if(!rs.getVideoTracks().length)return;C.rs=rs;C.rcam=1;C.vid=1;C.vused=1;cRender();cPill()}
+function remoteStream(C,rs){if(!rs.getVideoTracks().length)return;if(C.st==="live"&&!C.vsp){C.vsp=1;C.spk=1;applySpk()}C.rs=rs;C.rcam=1;C.vid=1;C.vused=1;cRender();cPill()}
 function wireCall(call){const C=CALL;
   call.on("stream",rs=>{if(CALL!==C)return;playRemote(rs);remoteStream(C,rs);goLive()});
   call.on("close",()=>{if(CALL===C&&C.call===call)endCall(C.st==="ring"&&C.dir==="in"?"cancel":"end",1)});
@@ -7814,7 +7845,7 @@ function wireVid(call){const C=CALL;C.vcall=call;
   call.on("stream",rs=>{if(CALL===C){remoteStream(C,rs);tuneCall(call);setTimeout(()=>{if(CALL===C){tuneCall(call);tuneCall(C.call)}},2000)}});
   call.on("close",()=>{if(CALL===C&&C.vcall===call)vStop(1)});
   call.on("error",()=>{if(CALL===C&&C.vcall===call)vStop(1)})}
-function goLive(){const C=CALL;if(!C||C.st==="live")return;C.st="live";C.t0=Date.now();stopRing();clearTimeout(C.to);
+function goLive(){const C=CALL;if(!C||C.st==="live")return;C.st="live";C.t0=Date.now();if(C.spk===undefined){C.spk=C.vid?1:0;C.vsp=C.vid?1:0}applySpk();stopRing();clearTimeout(C.to);
   clearInterval(C.tm);C.tm=setInterval(cTick,1000);wake(true);cRender();cPill();sfx("ok");tuneCall(C.call);setTimeout(()=>{if(CALL===C)tuneCall(C.call)},2500);
   try{if(navigator.mediaSession){navigator.mediaSession.metadata=new MediaMetadata({title:cName(C.f),artist:"Panggilan · Zaim’s Games"});navigator.mediaSession.playbackState="playing";try{navigator.mediaSession.setActionHandler("hangup",()=>endCall("end"))}catch(e){}}}catch(e){}}
 async function startCall(f,vid){
@@ -7884,7 +7915,7 @@ async function vAccept(){const C=CALL;if(!C||C.vid)return;clearTimeout(C.vqt);le
 function vDecline(){const C=CALL;if(!C)return;clearTimeout(C.vqt);send(C.f,{t:"cv",id:C.id,a:"no"}).catch(()=>{})}
 function vStop(remote){const C=CALL;if(!C||(!C.vid&&!C.vst))return;const vc=C.vcall;C.vcall=null;try{vc&&vc.close()}catch(e){}
   if(C.vst){C.vst.getVideoTracks().forEach(t=>{t.stop();if(C.vst===C.stream)C.stream.removeTrack(t)})}
-  C.vst=null;C.rs=null;C.sw=0;C.vid=0;C.cam0=0;C.vreq=0;C.vp=0;C.rcam=1;
+  C.vst=null;C.rs=null;C.sw=0;C.vsp=0;C.vid=0;C.cam0=0;C.vreq=0;C.vp=0;C.rcam=1;
   if(!remote)send(C.f,{t:"cv",id:C.id,a:"off"}).catch(()=>{});cRender();cPill()}
 function onCv(f,d){const C=CALL;if(!C||C.f!==f||(d.id&&d.id!==C.id))return;
   if(d.a==="req"){if(C.st!=="live"||C.vid||C.vreq){send(f,{t:"cv",id:C.id,a:"no"}).catch(()=>{});return}
