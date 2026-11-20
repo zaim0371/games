@@ -1899,7 +1899,7 @@ html:not(:has(#bru.gfs:has(.un))):not(:has(#bru.gfs:has(.ures))) #gbar[data-g="u
 /* layout video call */
 #zvl.vv{background:#000;padding-top:0}
 #zvl .zvvw{position:absolute;inset:0;background:#0b1214}
-#zvl .zvvw video{width:100%;height:100%;object-fit:cover}
+#zvl .zvvw video{width:100%;height:100%;object-fit:contain}
 #zvl .zvph{display:none;position:absolute;inset:0;place-items:center}#zvl .zvph .zvav{margin:0}
 #zvl .zvvw.nocam video{visibility:hidden}#zvl .zvvw.nocam .zvph{display:grid}
 #zvl.vv .zvt{position:relative;z-index:2;margin-top:env(safe-area-inset-top,0px);padding-top:10px}
@@ -1959,7 +1959,15 @@ html:not(:has(#bru.gfs:has(.un))):not(:has(#bru.gfs:has(.ures))) #gbar[data-g="u
 #zvl .zvbr .zvr button.end{background:#ff453a;color:#fff}
 #zvl .zvbr .zvr svg{width:28px;height:28px}
 #zvl.vv .zvvw::after{content:"";position:absolute;left:0;right:0;top:0;height:240px;background:linear-gradient(rgba(0,0,0,.42),transparent);pointer-events:none}
-#zvl.vv .zvsv{left:16px;right:auto;top:auto;bottom:calc(26px + env(safe-area-inset-bottom,0px));width:38vw;max-width:170px;height:auto;aspect-ratio:3/4.4;border-radius:22px}
+#zvl.vv .zvsv{left:16px;right:auto;top:auto;bottom:calc(26px + env(safe-area-inset-bottom,0px));width:38vw;max-width:170px;height:auto;aspect-ratio:auto;object-fit:contain;border-radius:22px}
+#zvl .zvh{transition:opacity .25s,transform .28s}
+#zvl .zvbr{transition:top .3s cubic-bezier(.2,.8,.2,1)}
+#zvl.hdr0 .zvh{opacity:0;transform:translateY(-14px);pointer-events:none}
+#zvl.hdr0 .zvbr{top:calc(16px + env(safe-area-inset-top,0px))}
+#zvl .zvcap{position:absolute;z-index:3;right:20px;bottom:calc(26px + env(safe-area-inset-bottom,0px));width:68px;height:68px;border-radius:50%;border:4px solid #fff;background:none;padding:0;display:grid;place-items:center}
+#zvl .zvcap i{width:52px;height:52px;border-radius:50%;background:#fff;transition:transform .12s}
+#zvl .zvcap:active i{transform:scale(.88)}
+@keyframes zvFl{from{opacity:.85}to{opacity:0}}
 #zvb.zvin{position:fixed;inset:0;z-index:9700;background:#222;color:#fff;display:flex;flex-direction:column;align-items:center;padding:calc(90px + env(safe-area-inset-top,0px)) 24px calc(34px + env(safe-area-inset-bottom,0px));font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",Inter,system-ui,sans-serif;animation:zvIn .25s ease-out}
 #zvb.zvin.out{opacity:0;transition:opacity .25s}
 #zvb .zin{font-size:36px;font-weight:300;text-align:center;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -7810,17 +7818,18 @@ function cRender(){const o=$("zvl"),C=CALL;if(!o)return;
     '<div class="zvvw'+((!sw&&rOff)?" nocam":"")+'"><video id="zvrv" class="'+(sw&&mir?"mir ":"")+(sw&&C.cam0?"off":"")+'" autoplay playsinline muted></video><div class="zvph">'+cAvatar(C.f)+'</div></div>'
     +'<div class="zvh"><span class="zvha" style="background:'+ac+'">'+ini+'</span><div class="zvht"><b>'+nm+'</b><small>'+CIC.vd+'<span id="zvs">'+cStatus()+'</span></small></div><button type="button" class="zvhi" data-c="min" aria-label="Kecilkan">'+CIC.dn+'</button></div>'
     +'<div class="zvbr">'+btn("spk",CIC.spk,"Speaker",C.spk)+btn("cam",C.cam0?CIC.vo:CIC.vd,"Kamera",!C.cam0)+btn("mute",C.mute?CIC.moff:CIC.mic,"Bisukan",C.mute)+btn("flip",CIC.fl,"Balik")+btn("end",CIC.x,lbl,0,"end")+'</div>'
+    +'<button type="button" class="zvcap" data-c="cap" aria-label="Ambil foto"><i></i></button>'
     +'<video id="zvsv" data-c="sw" class="zvsv'+((sw?rOff:C.cam0)?" off":"")+((sw||!mir)?" bk":"")+'" autoplay playsinline muted></video>'
   :'<div class="zvn">'+nm+'</div><div class="zvs" id="zvs">'+cStatus()+'</div>'
     +'<div class="zvg">'+btn("mute",C.mute?CIC.moff:CIC.mic,"bisukan",C.mute)+btn("spk",CIC.spk,"speaker",C.spk,dis)+btn("vid",CIC.vd,C.vreq?"menunggu":"video",C.vreq,dis)+btn("chat",HCH,"pesan")+btn("fr",CIC.ct,"teman")+btn("min",CIC.dn,"kecilkan")+'</div>'
     +'<div class="zve">'+btn("end",CIC.end,lbl,0,"end")+'</div>';
-  o.classList.toggle("vv",V);o.classList.toggle("show",!C.min);attachVid()}
+  o.classList.toggle("vv",V);o.classList.toggle("hdr0",V&&!!C.hid);o.classList.toggle("show",!C.min);attachVid();if(V&&!C.hid&&!C.hdt)cHdrArm()}
 function attachVid(){const C=CALL;if(!C)return;[["zvrv",C.sw?C.vst:C.rs],["zvsv",C.sw?C.rs:C.vst],["zvpv",C.rs]].forEach(([i,s])=>{const v=$(i);if(v&&s){if(v.srcObject!==s)v.srcObject=s;if(v.paused)v.play().catch(()=>{})}})}
 function cEnsure(){let o=$("zvl");if(o)return;
   o=document.createElement("div");o.id="zvl";document.body.appendChild(o);
   try{new MutationObserver(()=>{document.body.classList.toggle("zcl",o.classList.contains("show"));try{znvSync()}catch(e){}}).observe(o,{attributes:true,attributeFilter:["class"]})}catch(e){}
-  o.addEventListener("click",e=>{const b=e.target.closest("[data-c]");if(!b||!CALL)return;const k=b.dataset.c;
-    if(k==="min")cMin(1);else if(k==="mute")cMute();else if(k==="cam")cCam();else if(k==="flip")cFlip();else if(k==="spk")cSpk();else if(k==="fr"){cMin(1);open("fr")}else if(k==="sw"){CALL.sw=!CALL.sw;cRender()}
+  o.addEventListener("click",e=>{if(!CALL)return;const vv=o.classList.contains("vv"),b=e.target.closest("[data-c]");if(vv&&!b){cHdr();return}if(vv&&!CALL.hid)cHdrArm();if(!b)return;const k=b.dataset.c;
+    if(k==="min")cMin(1);else if(k==="mute")cMute();else if(k==="cam")cCam();else if(k==="flip")cFlip();else if(k==="cap")cCap();else if(k==="spk")cSpk();else if(k==="fr"){cMin(1);open("fr")}else if(k==="sw"){CALL.sw=!CALL.sw;cRender()}
     else if(k==="vid"){CALL.vreq?vCancel("",1):reqVideo()}
     else if(k==="end")endCall(CALL.st==="ring"&&CALL.dir==="out"?"cancel":CALL.st==="ring"?"no":"end");
     else if(k==="chat"){const f=CALL.f;cMin(1);open("fr",{a:"chat",f})}});
@@ -7845,13 +7854,41 @@ async function outDev(spk){try{const o=(await navigator.mediaDevices.enumerateDe
 async function applySpk(){const C=CALL,a=$("zva");if(!C||!a||!a.setSinkId)return false;const m=await outDev(!!C.spk);if(!m)return false;try{await a.setSinkId(m.deviceId);return true}catch(e){return false}}
 async function cSpk(){const C=CALL;if(!C)return;C.spk=C.spk?0:1;cRender();const ok=await applySpk();
   if(!ok&&CALL===C){C.spk=C.spk?0:1;cRender();toast("HP ini tidak bisa mengganti output suara dari browser",2800)}}
+// ketuk layar: sembunyikan/tampilkan nama & panah; otomatis sembunyi setelah 3 detik tanpa ketukan
+function cHdrArm(){const C=CALL;if(!C)return;clearTimeout(C.hdt);C.hdt=setTimeout(()=>{C.hdt=0;if(CALL===C&&!C.hid&&C.vid)cHdr(1)},3000)}
+function cHdr(force){const C=CALL,o=$("zvl");if(!C||!o)return;C.hid=force===undefined?!C.hid:!!force;clearTimeout(C.hdt);C.hdt=0;o.classList.toggle("hdr0",!!C.hid);if(!C.hid)cHdrArm()}
+// foto: gabungan video temanmu & kamera kamu, murni gambar (tanpa tombol / teks)
+function cCap(){const C=CALL,A=$("zvrv"),B=$("zvsv");if(!C||!A)return;
+  const dpr=Math.min(2,window.devicePixelRatio||1),k=Math.min(1,1080/(innerWidth*dpr)),sc=dpr*k,W=Math.round(innerWidth*sc),H=Math.round(innerHeight*sc),cv=document.createElement("canvas");cv.width=W;cv.height=H;
+  const x=cv.getContext("2d");x.fillStyle="#000";x.fillRect(0,0,W,H);
+  const dv=(v,X,Y,w,h,r,mir,off)=>{if(!v)return;x.save();x.beginPath();if(x.roundRect)x.roundRect(X,Y,w,h,r);else x.rect(X,Y,w,h);x.clip();x.fillStyle="#000";x.fillRect(X,Y,w,h);
+    if(!off&&v.videoWidth){const vw=v.videoWidth,vh=v.videoHeight,s2=Math.min(w/vw,h/vh),dw=vw*s2,dh=vh*s2,dx=(w-dw)/2,dy=(h-dh)/2;
+      if(mir){x.translate(X+w,Y);x.scale(-1,1);x.drawImage(v,dx,dy,dw,dh)}else x.drawImage(v,X+dx,Y+dy,dw,dh)}
+    x.restore()};
+  dv(A,0,0,W,H,0,A.classList.contains("mir"),A.classList.contains("off")||!!A.closest(".nocam"));
+  if(B){const r=B.getBoundingClientRect();dv(B,r.left*sc,r.top*sc,r.width*sc,r.height*sc,22*sc,!B.classList.contains("bk"),B.classList.contains("off"))}
+  const fl=document.createElement("div");fl.style.cssText="position:fixed;inset:0;background:#fff;z-index:9800;pointer-events:none;animation:zvFl .35s ease-out forwards";document.body.appendChild(fl);setTimeout(()=>fl.remove(),400);
+  try{cv.toBlob(bl=>{if(!bl)return toast("Gagal mengambil foto",2200);const a=document.createElement("a");a.href=URL.createObjectURL(bl);a.download="facetime-"+Date.now()+".jpg";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);toast("Foto tersimpan di Unduhan",2000)},"image/jpeg",.92)}catch(e){toast("Gagal mengambil foto",2200)}}
 function cMute(){const C=CALL;if(!C||!C.stream)return;C.mute=!C.mute;C.stream.getAudioTracks().forEach(t=>t.enabled=!C.mute);cRender()}
 function cCam(){const C=CALL;if(!C||!C.vst)return;C.cam0=!C.cam0;C.vst.getVideoTracks().forEach(t=>t.enabled=!C.cam0);send(C.f,{t:"cv",id:C.id,a:"cam",on:C.cam0?0:1}).catch(()=>{});cRender()}
-async function cFlip(){const C=CALL;if(!C||!C.vst)return;const fm=C.fm==="environment"?"user":"environment";let ns;
-  try{ns=await navigator.mediaDevices.getUserMedia({video:Object.assign({},CAMO.video,{facingMode:{ideal:fm}})})}catch(e){return toast("Kamera lain tidak tersedia",2200)}
-  const nt=ns.getVideoTracks()[0];nt.enabled=!C.cam0;
-  [C.call,C.vcall].forEach(c=>{try{const s=c&&c.peerConnection&&c.peerConnection.getSenders().find(x=>x.track&&x.track.kind==="video");s&&s.replaceTrack(nt)}catch(e){}});
-  C.vst.getVideoTracks().forEach(t=>{t.stop();C.vst.removeTrack(t)});C.vst.addTrack(nt);C.fm=fm;cRender()}
+async function cFlip(){const C=CALL;if(!C||!C.vst||C.flp)return;C.flp=1;
+  const want=C.fm==="environment"?"user":"environment",old=C.vst.getVideoTracks()[0];
+  const get=f=>navigator.mediaDevices.getUserMedia({video:Object.assign({},CAMO.video,{facingMode:f})});
+  if(old)old.stop(); // lepas kamera lama dulu: kebanyakan HP tidak bisa membuka dua kamera sekaligus
+  let ns=null;try{ns=await get({exact:want})}catch(e){try{ns=await get({ideal:want})}catch(e2){}}
+  let ok=false;
+  if(ns){const t0=ns.getVideoTracks()[0],real=(t0.getSettings&&t0.getSettings().facingMode)||want;ok=real===want||!t0.getSettings().facingMode&&true;
+    if(real===(C.fm||"user")&&real!==want)ok=false;
+    if(!ok){t0.stop();ns=null}}
+  if(!ns){try{ns=await get({ideal:C.fm||"user"})}catch(e){}}
+  if(!ns){C.flp=0;if(CALL===C)toast("Kamera tidak bisa dibuka",2400);return}
+  if(CALL!==C){ns.getTracks().forEach(t=>t.stop());return}
+  const nt=ns.getVideoTracks()[0];nt.enabled=!C.cam0;try{nt.contentHint="motion"}catch(_){}
+  const real=(nt.getSettings&&nt.getSettings().facingMode)||(ok?want:C.fm||"user");
+  for(const c of [C.call,C.vcall]){try{const q=c&&c.peerConnection&&c.peerConnection.getSenders().find(x=>x.track&&x.track.kind==="video");if(q)await q.replaceTrack(nt)}catch(e){}}
+  C.vst.getVideoTracks().forEach(t=>{try{C.vst.removeTrack(t)}catch(_){}});C.vst.addTrack(nt);
+  C.fm=real==="environment"?"environment":"user";C.flp=0;attachVid();cRender();
+  if(!ok)toast("Kamera lain tidak tersedia",2200)}
 function bannerC(on){let b=$("zvb");
   if(!on){if(b){b.classList.add("out");setTimeout(()=>{if(b&&b.classList.contains("out"))b.remove()},250)}return}
   if(b)b.remove();const C=CALL;b=document.createElement("div");b.id="zvb";b.className="zvin";
@@ -7864,7 +7901,7 @@ function bannerC(on){let b=$("zvb");
     else if(d==="later"){endCall("no");const t="Aku lagi sibuk, nanti aku telepon balik ya";deliver(f,{t:"m",x:t}).then(()=>addH(f,t,1)).catch(()=>{})}});
   document.body.appendChild(b);try{navigator.vibrate&&navigator.vibrate([200,100,200])}catch(_){}}
 // ----- alur panggilan -----
-const MICA={echoCancellation:true,noiseSuppression:true,autoGainControl:true,channelCount:{ideal:1}},MICO={audio:MICA},CAMO={video:{facingMode:"user",width:{ideal:640},height:{ideal:480},frameRate:{ideal:24}}};
+const MICA={echoCancellation:true,noiseSuppression:true,autoGainControl:true,channelCount:{ideal:1}},MICO={audio:MICA},CAMO={video:{facingMode:"user",width:{ideal:640},frameRate:{ideal:24}}};
 // Opus mono ~32kbps + FEC: suara lebih ringan & tahan paket hilang
 const SDPT=sd=>{try{return String(sd).replace(/(a=fmtp:\d+ [^\r\n]*useinbandfec=1)/g,"$1;maxaveragebitrate=32000;stereo=0;sprop-stereo=0")}catch(e){return sd}};
 // suara diprioritaskan; video dibatasi bitrate & menjaga framerate agar tidak freeze
@@ -7966,7 +8003,7 @@ async function vAccept(){const C=CALL;if(!C||C.vid)return;clearTimeout(C.vqt);le
 function vDecline(){const C=CALL;if(!C)return;clearTimeout(C.vqt);send(C.f,{t:"cv",id:C.id,a:"no"}).catch(()=>{})}
 function vStop(remote){const C=CALL;if(!C||(!C.vid&&!C.vst))return;const vc=C.vcall;C.vcall=null;try{vc&&vc.close()}catch(e){}
   if(C.vst){C.vst.getVideoTracks().forEach(t=>{t.stop();if(C.vst===C.stream)C.stream.removeTrack(t)})}
-  C.vst=null;C.rs=null;C.sw=0;C.vsp=0;C.vid=0;C.cam0=0;C.vreq=0;C.vp=0;C.rcam=1;
+  C.vst=null;C.rs=null;C.sw=0;C.vsp=0;C.hid=0;clearTimeout(C.hdt);C.hdt=0;C.vid=0;C.cam0=0;C.vreq=0;C.vp=0;C.rcam=1;
   if(!remote)send(C.f,{t:"cv",id:C.id,a:"off"}).catch(()=>{});cRender();cPill()}
 function onCv(f,d){const C=CALL;if(!C||C.f!==f||(d.id&&d.id!==C.id))return;
   if(d.a==="req"){if(C.st!=="live"||C.vid||C.vreq){send(f,{t:"cv",id:C.id,a:"no"}).catch(()=>{});return}
@@ -7979,7 +8016,7 @@ function onCv(f,d){const C=CALL;if(!C||C.f!==f||(d.id&&d.id!==C.id))return;
   else if(d.a==="off"){if(C.vid||C.vst){vStop(1);toast(cName(f)+" kembali ke suara",2000)}}
   else if(d.a==="cam"){C.rcam=d.on?1:0;cRender()}}
 function endCall(why,remote){const C=CALL;if(!C)return;CALL=null;
-  clearTimeout(C.to);clearTimeout(C.rct);clearTimeout(C.vqt);clearInterval(C.tm);clearInterval(C.pt);stopRing();bannerC(0);vReqPop(0);
+  clearTimeout(C.to);clearTimeout(C.rct);clearTimeout(C.vqt);clearTimeout(C.hdt);clearInterval(C.tm);clearInterval(C.pt);stopRing();bannerC(0);vReqPop(0);
   try{C.call.close()}catch(e){}try{C.vcall&&C.vcall.close()}catch(e){}
   try{C.stream&&C.stream.getTracks().forEach(t=>t.stop())}catch(e){}try{C.vst&&C.vst.getTracks().forEach(t=>t.stop())}catch(e){}
   const a=$("zva");if(a){a.pause();a.srcObject=null}
