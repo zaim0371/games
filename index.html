@@ -1665,6 +1665,7 @@ body,button,input{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF
 .zfpg{flex:1;height:4px;border-radius:2px;background:rgba(0,0,0,.15);overflow:hidden}.zfpf{display:block;height:100%;width:0;background:#007AFF}.zfau small{flex:none;font-size:12px;opacity:.6;font-variant-numeric:tabular-nums}
 .zfpn{font-size:14px;opacity:.6}
 .zfiv{position:fixed;inset:0;z-index:9600;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center}.zfiv img{max-width:100%;max-height:100%;object-fit:contain}
+.zfivd{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));left:14px;border:0;background:none;color:#fff;font-size:26px;cursor:pointer}
 .zfivx{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:14px;border:0;background:none;color:#fff;font-size:28px;cursor:pointer}
 .zfgm{width:100%;padding:14px;font-size:16px;flex:none}
 .zfg{position:relative;touch-action:pan-y;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;transition:transform .34s cubic-bezier(.2,.9,.25,1)}.zfg.sw{transition:none;will-change:transform}.zfri{transform-origin:50% 50%}.zfg:not(.sw) .zfri{transition:opacity .2s,transform .2s}
@@ -2105,20 +2106,20 @@ body.zcl #vh *,body.zcl #zfp *{animation-play-state:paused!important}
 #hstat{display:grid!important;margin-left:auto;width:38px;height:38px;border-radius:50%;background:#e5e5ea;color:#007aff}#hstat svg{stroke-width:2.4}#hstat:active{transform:scale(.9)}
 #zst .zsh{display:flex;align-items:center;justify-content:space-between}
 #zst .zsx2{flex:none;width:34px;height:34px;border:0;border-radius:50%;background:#e5e5ea;color:#3c3c43;font-size:15px;font-weight:700;cursor:pointer;display:grid;place-items:center;font-family:inherit}
-#zft{position:fixed;inset:0;z-index:8990;display:none;flex-direction:column;background:var(--bg1);padding:calc(14px + env(safe-area-inset-top,0px)) 16px 0}
-#zft.show{display:flex}
-#zft .zsh{flex:none;font-size:30px;font-weight:800;letter-spacing:-.02em;padding:6px 4px 2px}
-#zft .zsu{flex:none;font-size:14px;color:var(--tx2);padding:0 4px 8px}
-#zft .zsb{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 0 calc(24px + env(safe-area-inset-bottom,0px))}
-.znvon #zft .zsb{padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))}
-#zft .zs{margin:14px 4px 7px}
-#zft .zfb1 svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-#zft .zfb1.ftg{background:#34c759;color:#fff;padding:0 12px 0 10px}#zft .zfb1.ic{background:#e6f8ec;color:#1fa850}#zft .zfb1:active{opacity:.7}
-#zft .ftx b{color:#ff3b30}
-#zft .zt em svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;vertical-align:-2px;margin-right:4px}
-#zft .fttm{flex:none;font-size:13px;color:#8e8e93}
-#zft .ftb{display:flex;align-items:center;gap:10px;margin:6px 0 4px;padding:13px 16px;border-radius:14px;background:#34c759;color:#fff;font-weight:600;font-size:15px;cursor:pointer}
-#zft .ftb svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex:none}#zft .ftb span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#zftab{position:fixed;inset:0;z-index:8990;display:none;flex-direction:column;background:var(--bg1);padding:calc(14px + env(safe-area-inset-top,0px)) 16px 0}
+#zftab.show{display:flex}
+#zftab .zsh{flex:none;font-size:30px;font-weight:800;letter-spacing:-.02em;padding:6px 4px 2px}
+#zftab .zsu{flex:none;font-size:14px;color:var(--tx2);padding:0 4px 8px}
+#zftab .zsb{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 0 calc(24px + env(safe-area-inset-bottom,0px))}
+.znvon #zftab .zsb{padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))}
+#zftab .zs{margin:14px 4px 7px}
+#zftab .zfb1 svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+#zftab .zfb1.ftg{background:#34c759;color:#fff;padding:0 12px 0 10px}#zftab .zfb1.ic{background:#e6f8ec;color:#1fa850}#zftab .zfb1:active{opacity:.7}
+#zftab .ftx b{color:#ff3b30}
+#zftab .zt em svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;vertical-align:-2px;margin-right:4px}
+#zftab .fttm{flex:none;font-size:13px;color:#8e8e93}
+#zftab .ftb{display:flex;align-items:center;gap:10px;margin:6px 0 4px;padding:13px 16px;border-radius:14px;background:#34c759;color:#fff;font-weight:600;font-size:15px;cursor:pointer}
+#zftab .ftb svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex:none}#zftab .ftb span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 #zhs{position:fixed;inset:0;z-index:9600;background:rgba(0,0,0,.35);display:flex;align-items:flex-end;justify-content:center}
 .zhc{width:100%;max-width:520px;max-height:80vh;overflow-y:auto;background:#fff;border-radius:24px 24px 0 0;padding:20px 18px calc(18px + env(safe-area-inset-bottom,0px))}
@@ -7217,20 +7218,25 @@ function zin(d){if(!d.k)return null;if(d.k==="yt"){const v=yid(d.v);return v?{k:
   else{const w=Math.round(+d.w),h=Math.round(+d.h);if(w>0&&h>0&&w<=4000&&h<=4000){o.w=w;o.h=h}}
   return o}
 // ----- unggah ke Supabase Storage (bucket zg-chat) -----
+// bucket Supabase bisa membatasi "Allowed MIME types". Isi file tidak diperiksa, jadi bila tipe aslinya ditolak
+// dicoba tipe umum lain (tipe asli tidak dipakai saat unduh; nama file asli dikirim terpisah lewat pesan)
+const ZMIMES=["application/octet-stream","image/jpeg","video/mp4","audio/mpeg","image/png","audio/webm","video/webm","audio/mp4","image/webp","application/pdf","text/plain"];
 async function zup(blob,mime,ext){
-  const path=ME.code+"/"+Date.now()+"-"+mk(6).toLowerCase()+"."+ext;let r;
-  try{r=await fetch(CF.url+"/storage/v1/object/zg-chat/"+path,{method:"POST",headers:{apikey:CF.key,"Content-Type":mime,"x-upsert":"false"},body:blob})}
-  catch(e){const er=new Error("jaringan");er.up=1;throw er}
-  if(!r.ok){let m="";try{const j=await r.json();m=j.message||j.error||""}catch(_){}
-    if(/mime/i.test(m)&&mime!=="application/octet-stream")return zup(blob,"application/octet-stream",ext);
-    const er=new Error(r.status);er.up=1;er.m=m;throw er}
-  return CF.url+"/storage/v1/object/public/zg-chat/"+path}
+  const path=ME.code+"/"+Date.now()+"-"+mk(6).toLowerCase()+"."+ext,list=[mime].concat(ZMIMES).filter((m,i,a)=>m&&a.indexOf(m)===i);let last=null;
+  for(const mt of list){let r;
+    try{r=await fetch(CF.url+"/storage/v1/object/zg-chat/"+path,{method:"POST",headers:{apikey:CF.key,"Content-Type":mt,"x-upsert":"false"},body:blob})}
+    catch(e){const er=new Error("jaringan");er.up=1;throw er}
+    if(r.ok)return CF.url+"/storage/v1/object/public/zg-chat/"+path;
+    let m="";try{const j=await r.json();m=j.message||j.error||""}catch(_){}
+    last=new Error(r.status);last.up=1;last.m=m;
+    if(!(r.status===415||/mime|content.?type|not supported|invalid/i.test(m)))break}
+  throw last}
 async function zsend(f,k,blob,mime,ext,extra){
   PN[f]=(PN[f]||0)+1;if(CH===f)drawChat();
   try{const u=await zup(blob,mime,ext),x=k==="img"?"📷 Foto":k==="vid"?"🎬 Video":k==="file"?"📎 "+((extra&&extra.n)||"File"):"🎤 Suara";
     const M=zmk(f);await deliver(f,Object.assign({t:"m",k,u,x},extra,M));
     const ts=Date.now(),h=hist(f);h.push(Object.assign({me:1,x,t:ts,k,u},extra,M));saveH(f,h);zsv(f,M.i,Object.assign({x,k,u},extra,{r:M.r}),ts);zskMark(f,"m");if(RP&&RP.f===f){RP=null;zrpDraw()}}
-  catch(e){toast(e&&e.up?(/mime/i.test(e.m||"")?"Tipe file ditolak bucket Supabase. Buka Storage > zg-chat > Edit bucket, lalu kosongkan Allowed MIME types":"Gagal mengunggah ke Supabase ("+e.message+(e.m?": "+String(e.m).slice(0,60):"")+")"):dErr(e),6000)}
+  catch(e){toast(e&&e.up?(/mime/i.test(e.m||"")?"Semua tipe file ditolak bucket Supabase. Buka Storage > zg-chat > Edit bucket, lalu kosongkan Allowed MIME types":/size|exceed|too large|payload/i.test((e.m||"")+e.message)?"File melebihi batas ukuran bucket Supabase (cek File size limit di Edit bucket)":"Gagal mengunggah ke Supabase ("+e.message+(e.m?": "+String(e.m).slice(0,60):"")+")"):dErr(e),6000)}
   finally{PN[f]=Math.max(0,(PN[f]||1)-1);if(opn()&&CH===f)drawChat()}}
 function zimg(file){return new Promise((res,rej)=>{const u=URL.createObjectURL(file),im=new Image();
   im.onload=()=>{URL.revokeObjectURL(u);const M=1280,r=Math.min(1,M/Math.max(im.naturalWidth,im.naturalHeight)),w=Math.max(1,Math.round(im.naturalWidth*r)),h=Math.max(1,Math.round(im.naturalHeight*r)),c=document.createElement("canvas");c.width=w;c.height=h;c.getContext("2d").drawImage(im,0,0,w,h);c.toBlob(b=>b?res({b,w,h}):rej(),"image/jpeg",.82)};
@@ -7266,8 +7272,10 @@ async function zsendFile(file){const f=CH;if(!f)return;
   if(file.size>ZMAX)return toast("File terlalu besar (maks. 25 MB)",2600);
   const nm=String(file.name||"File").replace(/[\u0000-\u001f<>"'\\]/g,"").slice(0,80)||"File";
   zsend(f,"file",file,/^(text\/(html|javascript|xml)|application\/(xhtml|javascript|x-httpd))/i.test(file.type||"")?"application/octet-stream":(file.type||"application/octet-stream"),zext(file.name,file.type),{n:nm,z:file.size})}
-function zvview(u){if(!ZOK(u))return;const o=document.createElement("div");o.className="zfiv";o.innerHTML='<video controls autoplay playsinline src="'+u+'" style="max-width:100%;max-height:100%"></video><button type="button" class="zfivx" aria-label="Tutup">✕</button>';
-  o.onclick=e=>{if(e.target.tagName!=="VIDEO"){const v=o.querySelector("video");try{v.pause()}catch(_){}o.remove()}};document.body.appendChild(o)}
+function zvview(u){if(!ZOK(u))return;const o=document.createElement("div");o.className="zfiv";o.innerHTML='<video controls autoplay playsinline src="'+u+'" style="max-width:100%;max-height:100%"></video><button type="button" class="zfivd" aria-label="Unduh">⬇</button><button type="button" class="zfivx" aria-label="Tutup">✕</button>';
+  o.onclick=e=>{if(e.target.closest(".zfivd")){zfdl(u,"video-"+Date.now()+"."+((u.split("?")[0].match(/\.([a-z0-9]+)$/i)||[])[1]||"mp4"));return}if(e.target.tagName!=="VIDEO"){const v=o.querySelector("video");try{v.pause()}catch(_){}o.remove()}};document.body.appendChild(o)}
+function zfic(n){const e=(String(n).match(/\.([A-Za-z0-9]+)$/)||[])[1];const t=String(e||"").toLowerCase();
+  return /^(doc|docx|odt|rtf)$/.test(t)?"📝":/^(xls|xlsx|csv|ods)$/.test(t)?"📊":/^(ppt|pptx|odp)$/.test(t)?"📽️":t==="pdf"?"📕":/^(zip|rar|7z|tar|gz)$/.test(t)?"🗜️":/^(html|htm|js|css|json|py|java|php|xml)$/.test(t)?"🧾":/^(mp3|wav|m4a|ogg)$/.test(t)?"🎵":"📄"}
 async function zfdl(u,n){if(!ZOK(u))return;try{const r=await fetch(u);if(!r.ok)throw 0;const b=await r.blob(),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=n||"file";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000)}catch(e){window.open(u,"_blank","noopener")}}
 // ----- nonton bareng YouTube (tampilan ala viewer Foto iOS) -----
 let ZY=null,YAP=null;
@@ -7379,7 +7387,7 @@ function zyOpen(f,v,jn){zyClose();const nm=DATA.names[f]||"Teman",o=document.cre
    +'<div class="zyf"><button type="button" data-y="shr" aria-label="Bagikan">'+I('<path d="M12 3v12M8 7l4-4 4 4"/><path d="M7 10H5a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1h-2"/>')+'</button><button type="button" data-y="mini" aria-label="Perkecil">'+I('<path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/>')+'</button><button type="button" data-y="hr" aria-label="Kirim hati">'+I('<path d="M12 20.5s-8-4.9-8-11A4.6 4.6 0 0 1 12 6.8a4.6 4.6 0 0 1 8 2.7c0 6.1-8 11-8 11z"/>')+'</button><button type="button" data-y="end" aria-label="Akhiri untuk semua">'+I('<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/>')+'</button></div>';
   const S=ZY={f,v,o,p:null,rdy:0,sup:0,lt:0,lw:Date.now(),iv:0,nm,host:!jn,off:null,rtt:1e9,sm:[],hold:0,act:0,hb:0};
   o.addEventListener("click",async e=>{const b=e.target.closest("[data-y]");if(!b||ZY!==S)return;const k=b.dataset.y;
-    if(k==="back"){ysend({a:"left"});zyClose()}
+    if(k==="back"){ysend({a:"end"});zyClose()}
     else if(k==="end"){ysend({a:"end"});zyClose()}
     else if(k==="big"){S.fs=1;zyLay()}
     else if(k==="hide"){S.hid=1;zyLay()}
@@ -7400,8 +7408,7 @@ function zyInvite(f,v){if($("zyiv"))return;const nm=DATA.names[f]||"Teman",o=doc
 function zytIn(f,d){if(!d||typeof d.a!=="string")return;if(d.tm!==undefined)d.t=+d.tm||0;if(d._ts&&Date.now()-d._ts>(d.a==="open"?120000:20000))return;const nm=DATA.names[f]||"Teman";
   if(d.a==="open"){const v=yid(d.v);if(v&&!ZY)zyInvite(f,v);return}
   const S=ZY;if(!S||S.f!==f)return;
-  if(d.a==="end"){toast(nm+" mengakhiri nonton bareng",2600);zyClose();return}
-  if(d.a==="left"){zyStat(nm+" keluar");return}
+  if(d.a==="end"||d.a==="left"){toast(nm+" menutup nonton bareng",2600);zyClose();return}
   if(d.a==="hr"){zyHeart();return}
   if(d.a==="ping"){ysendP({a:"pong",c:d.c,r:Date.now()});return}
   if(d.a==="pong"){const n=Date.now(),c=+d.c||0,rtt=n-c;if(c&&rtt>=0&&rtt<2500&&+d.r){S.sm=S.sm.concat([{rtt,off:+d.r-(c+n)/2}]).slice(-8);const bs=S.sm.reduce((x,y)=>y.rtt<x.rtt?y:x);S.off=bs.off;S.rtt=bs.rtt}return}
@@ -7467,7 +7474,7 @@ function zrebind(){if(!AU)return;const nb=[...P.querySelectorAll(".zfpl")].find(
 document.addEventListener("error",e=>{const im=e.target;if(!im||im.tagName!=="IMG"||!im.classList.contains("zfim"))return;
   const n=+im.dataset.rt||0;if(n>=2)return;im.dataset.rt=n+1;const u=im.dataset.u||"";if(!u)return;
   setTimeout(()=>{im.src=u+"?r="+Date.now()},700*(n+1))},true);
-function zview(u){if(!ZOK(u))return;const o=document.createElement("div");o.className="zfiv";o.innerHTML='<img alt="Foto" src="'+u+'"><button type="button" class="zfivx" aria-label="Tutup">✕</button>';o.onclick=()=>o.remove();document.body.appendChild(o)}
+function zview(u){if(!ZOK(u))return;const o=document.createElement("div");o.className="zfiv";o.innerHTML='<img alt="Foto" src="'+u+'"><button type="button" class="zfivd" aria-label="Unduh">⬇</button><button type="button" class="zfivx" aria-label="Tutup">✕</button>';o.onclick=e=>{if(e.target.closest(".zfivd")){zfdl(u,"foto-"+Date.now()+".jpg");return}o.remove()};document.body.appendChild(o)}
 // ----- balas (swipe), hapus, dan simpan riwayat chat ke Supabase (tabel zg_chat) -----
 let RP=null,DM={};try{DM=JSON.parse(LS("zf-dm")||"{}")||{}}catch(e){}
 const zleg=i=>typeof i==="string"&&i.length<14&&/^L[0-9a-z]+$/.test(i),zid=x=>typeof x==="string"&&/^[A-Za-z0-9]{8,40}$/.test(x)?x:"",zmid=()=>ME.code+Date.now().toString(36)+mk(4).toLowerCase();
@@ -7574,7 +7581,7 @@ function zbubble(m){const c="zfg "+(m.me?"me":"op"),tm=m.t?"<i>"+zhm(m.t)+"</i>"
   if(m.k==="vid"&&ZOK(m.u)){const ar=m.w>0&&m.h>0?' style="aspect-ratio:'+(+m.w)+"/"+(+m.h)+'"':"";
     return '<div class="'+c+' zfmd"'+d+'>'+ri+q+'<div class="zfvd" data-a="vview" data-u="'+m.u+'"'+ar+'><video class="zfvv" src="'+m.u+'#t=0.1" preload="metadata" muted playsinline></video><span class="zfvp"><svg viewBox="0 0 24 24" width="20" height="20" fill="#fff"><path d="M7 4.5v15l12-7.5z"/></svg></span></div>'+tm+"</div>"}
   if(m.k==="file"&&ZOK(m.u)){const nm=String(m.n||"File");
-    return '<div class="'+c+'"'+d+'>'+ri+q+'<div class="zffl" data-a="fdl" data-u="'+m.u+'" data-n="'+ea(nm)+'"><span class="zffi">📄</span><span class="zffn"><b>'+esc(nm)+'</b><small>'+zfsz(m.z)+'</small></span></div>'+tm+"</div>"}
+    return '<div class="'+c+'"'+d+'>'+ri+q+'<div class="zffl" data-a="fdl" data-u="'+m.u+'" data-n="'+ea(nm)+'"><span class="zffi">'+zfic(nm)+'</span><span class="zffn"><b>'+esc(nm)+'</b><small>'+zfsz(m.z)+'</small></span><button type="button" class="zffd" data-a="fdl" data-u="'+m.u+'" data-n="'+ea(nm)+'" aria-label="Unduh '+ea(nm)+'"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg></button></div>'+tm+"</div>"}
   if(m.k==="aud"&&ZOK(m.u)){const du=Math.max(0,+m.d||0);
     return '<div class="'+c+'"'+d+'>'+ri+q+'<div class="zfau"><button type="button" class="zfpl" data-a="play" data-u="'+m.u+'" data-d="'+du+'" aria-label="Putar">'+ZPL+'</button><div class="zfpg"><span class="zfpf"></span></div><small>'+Math.floor(du/60)+":"+z2(du%60)+"</small></div>"+tm+"</div>"}
   return '<div class="'+c+'"'+d+'>'+ri+(m.g?'<small class="zfgm">🎮 '+esc(m.g)+'</small>':"")+q+esc(m.x)+tm+"</div>"}
@@ -8351,6 +8358,7 @@ function onCv(f,d){const C=CALL;if(!C||C.f!==f||(d.id&&d.id!==C.id))return;
   else if(d.a==="off"){if(C.vid||C.vst){vStop(1);toast(cName(f)+" kembali ke suara",2000)}}
   else if(d.a==="cam"){C.rcam=d.on?1:0;cRender()}}
 function endCall(why,remote){const C=CALL;if(!C)return;CALL=null;
+  if(ZY&&ZY.f===C.f){if(!remote)ysend({a:"end"});zyClose()}
   clearTimeout(C.to);clearTimeout(C.rct);clearTimeout(C.rdt);clearTimeout(C.vqt);clearTimeout(C.hdt);clearInterval(C.vwt);try{document.pictureInPictureElement&&document.exitPictureInPicture()}catch(e){}{const pv=$("zvpip");if(pv){pv.srcObject=null;pv.remove()}}try{C.lk&&C.lk()}catch(e){}if(C.ttl!==undefined)document.title=C.ttl;cNote(0);clearInterval(C.tm);clearInterval(C.pt);stopRing();bannerC(0);vReqPop(0);
   try{C.call.close()}catch(e){}try{C.vcall&&C.vcall.close()}catch(e){}
   try{C.stream&&C.stream.getTracks().forEach(t=>t.stop())}catch(e){}try{C.vst&&C.vst.getTracks().forEach(t=>t.stop())}catch(e){}
@@ -8453,7 +8461,7 @@ function ftHtml(){
 function ftDraw(f){if(!zftOn())return;znvSync();const h=ftHtml();if(!f&&h===ZFTS)return;ZFTS=h;const b=ZFT.querySelector(".zsb"),y=b.scrollTop;b.innerHTML=h;b.scrollTop=y;
   const n=ME?zfrs().filter(c=>DATA.on[c]).length:0;ZFT.querySelector(".zsu").textContent=!ME?"Panggil temanmu langsung dari sini":n?n+" teman sedang online":"Belum ada teman online"}
 function zftShow(){if(zsOn())zsHide();
-  if(!ZFT){ZFT=document.createElement("div");ZFT.id="zft";ZFT.innerHTML='<div class="zsh">FaceTime</div><div class="zsu"></div><div class="zsb"></div>';document.body.insertBefore(ZFT,znv);
+  if(!ZFT){ZFT=document.createElement("div");ZFT.id="zftab";ZFT.innerHTML='<div class="zsh">FaceTime</div><div class="zsu"></div><div class="zsb"></div>';document.body.insertBefore(ZFT,znv);
     ZFT.addEventListener("click",e=>{const b=e.target.closest("[data-k]");if(!b)return;const k=b.dataset.k,f=b.dataset.f;try{navigator.vibrate&&navigator.vibrate(8)}catch(_){}
       if(k==="v")startCall(f,1);else if(k==="p")startCall(f);else if(k==="rv")startCall(f,+b.dataset.v?1:0);else if(k==="ret")cMin(0);else if(k==="fr"){zftHide();open("fr")}})}
   ZFT.classList.add("show");NAV.push("zft",zftHide);ZFTS="";ftDraw(1);clearInterval(ZFTT);ZFTT=setInterval(()=>ftDraw(),1500);znvSync()}
@@ -8726,6 +8734,7 @@ Secrets: VAPID_PUBLIC, VAPID_PRIVATE, VAPID_SUBJECT
 .zfvv{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
 .zfvp{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(0,0,0,.55);display:grid;place-items:center;padding-left:3px;box-sizing:border-box}
 .zffl{display:flex;align-items:center;gap:10px;min-width:170px;max-width:240px;cursor:pointer}
+.zffd{flex:none;width:36px;height:36px;margin-left:auto;border:0;border-radius:50%;background:rgba(0,122,255,.14);color:#007aff;display:grid;place-items:center;padding:0;cursor:pointer}.zffd:active{opacity:.6}
 .zffi{flex:none;width:40px;height:40px;border-radius:10px;background:rgba(120,120,128,.22);display:grid;place-items:center;font-size:22px}
 .zffn{min-width:0;display:flex;flex-direction:column}.zffn b{font-size:15px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.zffn small{font-size:12px;opacity:.7}
 #zpkm{z-index:9700}
@@ -8772,9 +8781,9 @@ Secrets: VAPID_PUBLIC, VAPID_PRIVATE, VAPID_SUBJECT
 #zyt.dk .zycl{right:auto;left:8px;top:auto;bottom:6px;height:32px;flex-direction:row;align-items:center;padding:0;gap:6px;background:none;border:0;box-shadow:none}
 #zyt.dk .zycl video,#zyt.dk .zycl .zyca,#zyt.dk .zycl small{display:none}
 #zyt.dk .zycb button{width:32px;height:32px}
-.zyk{width:230px;max-width:100%;cursor:pointer;border-radius:12px;overflow:hidden;background:rgba(120,120,128,.14);color:inherit}
+.zyk{width:230px;max-width:100%;cursor:pointer;border-radius:12px;overflow:hidden;background:#ececf0;color:#1c1c1e}
 .zykp{position:relative;aspect-ratio:16/9;background:#000}.zykp img{width:100%;height:100%;object-fit:cover;display:block}
-.zykt{display:flex;flex-direction:column;padding:8px 10px 9px}.zykt b{font-size:15px;font-weight:600}.zykt small{font-size:12px;opacity:.7}
+.zykt{display:flex;flex-direction:column;padding:8px 10px 9px}.zykt b{font-size:15px;font-weight:600;color:#1c1c1e}.zykt small{font-size:12px;color:#6c6c70;opacity:1}
 .zycl{position:absolute;z-index:3;right:12px;top:calc(env(safe-area-inset-top,0px) + 56px);display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px;border-radius:18px;background:rgba(247,247,247,.94);box-shadow:0 4px 18px rgba(0,0,0,.18);border:.5px solid #d1d1d6}
 .zycl video{width:84px;height:112px;object-fit:cover;border-radius:12px;background:#000;transform:scaleX(1)}
 .zyca{width:52px;height:52px;border-radius:50%;background:#8e8e93;color:#fff;display:grid;place-items:center;font-size:22px;font-weight:600}
