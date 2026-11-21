@@ -8021,7 +8021,7 @@ async function fplClaim(f,r){if(!ME||!r||FPLB[f])return;const L=plv(fpx(r)).L,c=
 function fhg(r,now){const L=[];if(!fegg(r,now)){const c=fcur(r,now);if(c.full<=85)L.push({k:"",f:c.full})}
   fseed(r).forEach(z=>{const c=fcur({t0:z.t,f0:z.f,xp:z.x,q:z.r},now);if(c.full<=85)L.push({k:z.id,f:c.full})});return L.sort((a,b)=>a.f-b.f)}
 // ----- AKUARIUM layar penuh: ikan berenang bebas, tap untuk jatuhkan pelet, ikan mengejar & memakan -----
-let FRAF=0,FS=null,FPEL=[],FMODE="",FAV="",FRIP=[],FPAR=[],FBG=null,FSH="",FWV=[],FTB=[],FWE=0,FX=[],FC=[],FE=[],FSEL="",FPKH="";
+let FRAF=0,FS=null,FPEL=[],FMODE="",FAV="",FRIP=[],FPAR=[],FBG=null,FSH="",FWV=[],FTB=[],FWE=0,FX=[],FC=[],FE=[],FSEL="",FPKH="",FSELE="";
 const fsnap=(f,r,now)=>({n:r.name||"Ikan",x:Math.floor(fcur(r,now).xp),h:fh(f,r),d:+r.hat>0?Math.max(0,now-(+r.hat)):0}),
   fpr=(x,d,q)=>{const lv=fstage(x,q).i+1;return Math.round((3+lv*lv*3)*(1+Math.min((+d||0)/864e5,14)*.15)*(RAR[+q||0]||RAR[0]).m)},
   fdur=ms=>{const h=Math.floor(ms/36e5);return h>=24?Math.floor(h/24)+" hari":h>=1?h+" jam":Math.max(1,Math.floor(ms/6e4))+" mnt"};
@@ -8140,7 +8140,7 @@ function floop(ts){const t=$("zfkt"),cv=$("zfkcv");if(!t||!cv||!FS){FRAF=0;retur
   {const ex=FS.egg?W/2:FS.x,ey=FS.egg?sy-60:FS.y;for(let i=FWV.length-1;i>=0;i--){const w=FWV[i];w.a+=dt;if(w.a>2.1){FWV.splice(i,1);continue}
     if(!w.hit){const dd=Math.hypot(w.x-ex,w.y-ey);if(fwr(w.a)>=dd){w.hit=1;const a=w.amp*Math.exp(-dd/240);if(a>.07)FS.shk=Math.max(FS.shk||0,Math.min(1,a)*(FRM?.5:1))}}}
     FS.shk=FS.shk>.01?FS.shk*Math.exp(-dt*3):0}
-  {const nw=Date.now(),ar=H-sy;FE.forEach(e=>{let x=W*(.08+.84*e.u);if(FS.egg&&Math.abs(x-W/2)<44)x+=x<W/2?-50:50;x=Math.max(24,Math.min(W-24,x));const y=sy+20+e.v*Math.max(10,Math.min(70,ar-44));fdrawegg2(c,x,y,.36,Math.max(0,Math.min(1,(nw-e.b)/EGH)),T,e)})}
+  {const nw=Date.now(),ar=H-sy;FE.forEach(e=>{let x=W*(.08+.84*e.u);if(FS.egg&&Math.abs(x-W/2)<44)x+=x<W/2?-50:50;x=Math.max(24,Math.min(W-24,x));const y=sy+20+e.v*Math.max(10,Math.min(70,ar-44));fdrawegg2(c,x,y,.36,Math.max(0,Math.min(1,(nw-e.b)/EGH)),T,e);if(e.id===FSELE){const my=y-64+Math.sin(T*4)*2;c.fillStyle="rgba(243,213,138,.95)";c.beginPath();c.moveTo(x-6,my-10);c.lineTo(x+6,my-10);c.lineTo(x,my);c.closePath();c.fill()}})}
   if(FS.egg)fdrawegg(c,FS,W,H,T);
   else{let tx=FS.tx,ty=FS.ty;const chase=!!nr;if(nr){tx=nr.x;ty=nr.y}else{FS.wt-=dt;if(FS.wt<=0||FS.tx==null||Math.hypot(FS.tx-FS.x,FS.ty-FS.y)<16){FS.tx=x0+Math.random()*(x1-x0);FS.ty=y0+Math.random()*(y1-y0);FS.wt=2.5+Math.random()*3.5}tx=FS.tx;ty=FS.ty}
     const dx=tx-FS.x,dy=ty-FS.y,d=Math.hypot(dx,dy)||1,sp=(chase?180:FS.sad?18:46+FS.w*.18)*(d<40&&!chase?d/40:1);
@@ -8160,11 +8160,22 @@ function floop(ts){const t=$("zfkt"),cv=$("zfkcv");if(!t||!cv||!FS){FRAF=0;retur
     if(Math.abs(z.vx)>6)z.dir=z.vx>0?1:-1;z.ph+=dt*(5+Math.hypot(z.vx,z.vy)*.07);z.tilt+=(Math.max(-22,Math.min(22,Math.atan2(z.vy,Math.abs(z.vx)+25)*57.3))-z.tilt)*Math.min(1,dt*5);
     ffish(c,z,T)}
   if(FX.length){const mk=q=>{c.fillStyle="rgba(243,213,138,.95)";c.beginPath();c.moveTo(q.x-6,q.y-q.h*.85-14+Math.sin(T*4)*2);c.lineTo(q.x+6,q.y-q.h*.85-14+Math.sin(T*4)*2);c.lineTo(q.x,q.y-q.h*.85-4+Math.sin(T*4)*2);c.closePath();c.fill()};
-    if(!FSEL){if(!FS.egg)mk(FS)}else{const z=FX.find(q=>q.id===FSEL);if(z)mk(z)}}
+    if(!FSEL){if(!FS.egg&&!FSELE)mk(FS)}else{const z=FX.find(q=>q.id===FSEL);if(z)mk(z)}}
   for(let i=FRIP.length-1;i>=0;i--){const r=FRIP[i];r.r+=90*dt;r.a-=dt*1.2;if(r.a<=0){FRIP.splice(i,1);continue}c.strokeStyle="rgba(255,255,255,"+r.a+")";c.lineWidth=1.6;c.beginPath();c.ellipse(r.x,r.y,r.r,r.r*.35,0,0,6.3);c.stroke()}
   fwdraw(c,dt,T);FBG.bb.forEach(b=>{b.y-=b.v*dt;if(b.y<-8){b.y=H+8;b.x=Math.random()*W}const x=b.x+Math.sin(T*2+b.p)*6;c.strokeStyle="rgba(255,255,255,.45)";c.lineWidth=1.1;c.beginPath();c.arc(x,b.y,b.s,0,6.3);c.stroke()});
   for(let i=FPAR.length-1;i>=0;i--){const p=FPAR[i];p.l-=dt*(p.spark?1.1:1.4);if(p.l<=0){FPAR.splice(i,1);continue}p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=.96;p.vy*=.96;if(p.spark){c.fillStyle="rgba(255,240,180,"+p.l+")";c.beginPath();c.arc(p.x,p.y,p.s*p.l+1,0,6.3);c.fill()}else{c.strokeStyle="rgba(255,255,255,"+p.l*.6+")";c.lineWidth=1;c.beginPath();c.arc(p.x,p.y,p.s,0,6.3);c.stroke()}}
   const v=c.createRadialGradient(W/2,H*.5,Math.min(W,H)*.4,W/2,H*.5,Math.max(W,H)*.78);v.addColorStop(0,"rgba(5,20,50,0)");v.addColorStop(1,"rgba(5,20,50,.35)");c.fillStyle=v;c.fillRect(0,0,W,H)}
+async function fpotion(L){const f=FPF,r=FSM[f];if(!r||FB)return;L=Math.max(1,Math.min(6,L|0));const P=10*L,ms=30*L*6e4,now=Date.now();
+  if(zcn()<P)return toast("Koin belum cukup 🪙",1800);
+  const se=FSELE?fegs(r).find(o=>o.id===FSELE):null,eg=se?null:fegg(r,now);if(!se&&(!eg||eg.hatch))return toast("Tidak ada telur yang bisa dipercepat",2000);
+  if(!await confirmX("Ramuan Lv "+L,"Percepat menetas "+30*L+" menit seharga "+P+" koin?","Pakai ("+P+" koin)"))return;
+  if(zcn()<P)return toast("Koin belum cukup 🪙",1800);
+  FB=1;let ok=0;
+  try{if(se){const u=await fcas(f,raw=>{const e=raw.find(o=>o.k==="eg"&&o.id===se.id);if(!e||Date.now()>=(+e.b||0)+EGH)return 0;e.b=(+e.b||0)-ms;return{raw}});ok=!!(u&&u.res)}
+    else{const u=await api("zg_fish?pair=eq."+zpk(f)+"&egg_t=eq."+r.egg_t+"&hat=eq.0",{m:"PATCH",p:"return=representation",b:{egg_t:(+r.egg_t)-ms}});if(u.length){FSM[f]=u[0];ok=1}}
+    if(ok){zcoin(-P);try{sfx("ok")}catch(e){}toast("🧪 Telur dipercepat "+30*L+" menit",2400)}else toast("Gagal, coba lagi",2200)}
+  catch(e){toast(fmiss(e),3600)}
+  FB=0;if(FSH==="pot"){FSH="";fsheet("pot")}fpaint()}
 function fsheet(k){const s=$("zfksh");if(!s)return;FSH=FSH===k?"":k;document.querySelectorAll("#zfk [data-k=food],#zfk [data-k=coll],#zfk [data-k=set]").forEach(b=>b.classList.toggle("act",!!FSH&&b.dataset.k===FSH));
   if(!FSH){s.className="zfk-sh";return}const r=FSM[FPF];let h="";
   if(FSH==="food")h='<div class="zfk-fgrid">'+(iv=>FOODS.map((o,i)=>'<button type="button" class="zfk-fc'+(i===FD?" on":"")+(iv[i]>0?"":" z")+'" data-k="fd" data-i="'+i+'"><em>'+iv[i]+'</em><i class="ic">'+o.e+'</i><b>'+o.n+'</b></button>').join(""))(zinv())+'</div>';
@@ -8172,7 +8183,7 @@ function fsheet(k){const s=$("zfksh");if(!s)return;FSH=FSH===k?"":k;document.que
     sd=fseed(r).map(z=>{const c=fcur({t0:z.t,f0:z.f,xp:z.x,q:z.r},now);return{n:z.n,x:Math.floor(c.xp),h:fhue(z.id),d:Math.max(0,now-(+z.b||now)),q:+z.r||0,key:"s"+z.id,fu:c.full}}),
     cl0=fcoll(r).map((o,i)=>Object.assign({},o,{key:String(i)})).reverse();
     const nf=(eg?0:1)+sd.length+cl0.length,
-      rowH=o=>{const on=(o.e||o.key==="c")?!FSEL:o.key==="s"+FSEL;
+      rowH=o=>{const on=(o.e||o.key==="c")?(!FSEL&&!FSELE):o.key==="s"+FSEL;
         const pk=(o.key==="c"||String(o.key)[0]==="s")?' data-k="csel" data-i="'+o.key+'"':'';
         if(o.e)return'<div class="zfk-row'+(on?" on":"")+'"'+pk+'><span class="zfk-th">🥚</span><div class="zfk-nb"><b>Telur</b><small class="zfk-m">'+(eg&&eg.left>0?"Menetas "+etimeS(eg.left)+" lagi":"Belum menetas")+'</small></div></div>';
         const st=fstage(o.x,o.q),pc=o.fu==null?null:Math.round(o.fu);
@@ -8180,10 +8191,15 @@ function fsheet(k){const s=$("zfksh");if(!s)return;FSH=FSH===k?"":k;document.que
           +'<small class="zfk-m">'+(o.q?'<u style="text-decoration:none;color:'+RAR[o.q].c+'">'+RAR[o.q].n+'</u> · ':'')+st.name+' · Lv '+(st.i+1)+(o.d?' · '+fdur(o.d):'')+'</small>'
           +'<em class="zfk-hg">'+(pc==null?'<span>💤 Disimpan</span>':'<span class="zfk-hv">🍤 <i class="'+(o.fu<30?"lo":"")+'"><u style="width:'+pc+'%"></u></i> '+pc+'% '+(o.fu<=85?'lapar':'kenyang')+'</span>')+'<span class="zfk-xp">⭐ '+o.x+' XP</span></em></div>'
           +'<button type="button" class="zfk-sell" data-k="sell" data-i="'+o.key+'">🪙 '+fpr(o.x,o.d,o.q)+'</button></div>'};
-    const ex=fegs(r).map(o=>({xe:1,m:o.m?1:0,q:Math.max(0,Math.min(4,+o.r||0)),left:Math.max(0,(+o.b||0)+EGH-now)})).sort((a,b)=>a.left-b.left),
-      eggH=o=>'<div class="zfk-row"><span class="zfk-th">🥚</span><div class="zfk-nb"><b>'+(o.m?'Telur Acak':'Telur '+RAR[o.q].n)+'</b><small class="zfk-m">'+(!o.m&&o.q?'<u style="text-decoration:none;color:'+RAR[o.q].c+'">'+RAR[o.q].n+'</u> · ':'')+'Menetas '+etimeS(o.left)+' lagi</small></div></div>',
+    const ex=fegs(r).map(o=>({xe:1,id:o.id,m:o.m?1:0,q:Math.max(0,Math.min(4,+o.r||0)),left:Math.max(0,(+o.b||0)+EGH-now)})).sort((a,b)=>a.left-b.left),
+      eggH=o=>'<div class="zfk-row'+(FSELE===o.id?" on":"")+'" data-k="csel" data-i="e'+o.id+'"><span class="zfk-th">🥚</span><div class="zfk-nb"><b>'+(o.m?'Telur Acak':'Telur '+RAR[o.q].n)+'</b><small class="zfk-m">'+(!o.m&&o.q?'<u style="text-decoration:none;color:'+RAR[o.q].c+'">'+RAR[o.q].n+'</u> · ':'')+'Menetas '+etimeS(o.left)+' lagi</small></div></div>',
       ne=(eg?1:0)+ex.length;
     h='<div class="zfk-lh"><b>Koleksi</b><span>'+nf+' ikan'+(ne?' · '+ne+' telur':'')+'</span></div><div class="zfk-list">'+[cur].concat(sd,cl0).map(rowH).join("")+ex.map(eggH).join("")+'</div>'}
+  else if(FSH==="pot"&&r){const now=Date.now(),se=FSELE?fegs(r).find(o=>o.id===FSELE):null,eg=se?null:fegg(r,now),left=se?Math.max(0,(+se.b||0)+EGH-now):(eg?eg.left:0);
+    h='<div class="zfk-lh"><b>🧪 Ramuan percepat</b><span>sisa '+etimeS(left)+'</span></div><div class="zfk-list">';
+    if(!se&&!eg)h+='<div class="zfk-row"><div class="zfk-nb"><b>Tidak ada telur</b></div></div>';
+    else for(let L=1;L<=6;L++){if(L>1&&left<=30*(L-1)*6e4)break;h+='<button type="button" class="zfk-row" data-k="pot" data-i="'+L+'"><span class="zfk-th">🧪</span><div class="zfk-nb"><b>Ramuan Lv '+L+'</b><small class="zfk-m">Percepat menetas '+30*L+' menit</small></div><span class="zfk-sell">🪙 '+10*L+'</span></button>'}
+    h+='</div>'}
   else h='<button type="button" class="zfk-row dng" data-k="rs"><span class="zfk-th">🥚</span><b>Reset XP</b><small>Mulai dari telur</small></button>';
   s.innerHTML=h;s.className="zfk-sh show"}
 async function freset(){const f=FPF,r=FSM[f];if(!r)return;if(!await confirmX("Reset XP","Ikan sekarang masuk koleksi, lalu mulai lagi dari telur baru.","Reset",true))return;
@@ -8231,25 +8247,30 @@ function fpaint(){const o=$("zfk");if(!o)return;const f=FPF,r=FSM[f],g=n=>$(n);
     if(FAV!==av){FAV=av;g("zfkc").innerHTML=av}};
   if(eg){if(FMODE!=="e"){FMODE="e";if(FS)FS.egg=1}if(FS)FS.p=eg.p}
   else{const c0=fcur(r,now),st0=fstage(c0.xp),w0=Math.round(120*st0.sc);if(FMODE==="e")fburst();if(FMODE!=="f"){FMODE="f";if(FS)FS.egg=0}if(FS){FS.w=w0;FS.h=w0*.6;FS.sad=c0.full<=0;FS.fl=c0.full>85;FS.hue=fh(f,r)}}
+  {const se=FSELE?fegs(r).find(o=>o.id===FSELE):null;if(FSELE&&!se)FSELE="";
+    if(se){const left=Math.max(0,(+se.b||0)+EGH-now),q=Math.max(0,Math.min(4,+se.r||0));g("zfklv").textContent="🥚";g("zfkxl").textContent="⏳ "+etimeS(left);g("zfkb2").style.width=Math.round((1-left/EGH)*100)+"%";
+      g("zfkhl").textContent="🧪 Ramuan percepat";g("zfkb1").style.width="0%";g("zfkb1").className="gr";g("zfkn").textContent=se.m?"Telur Acak":"Telur "+RAR[q].n;g("zfks").textContent=se.m?"":RAR[q].n;g("zfks").style.color=!se.m&&q?RAR[q].c:"";
+      fb.className="zfk-fd";g("zfkfi").textContent="🧪";g("zfkfi").className="";ring((1-left/EGH)*100,"#e8c15a");if(FAV!==av){FAV=av;g("zfkc").innerHTML=av}return}}
   if(sd){const c=fcur({t0:sd.t,f0:sd.f,xp:sd.x,q:sd.r},now);hud(c,fstage(c.xp,sd.r),sd.n);return}
   if(eg){g("zfklv").textContent="🥚";g("zfkxl").textContent="⏳ "+etimeS(eg.left);g("zfkb2").style.width=Math.round((1-eg.left/EH)*100)+"%";
     g("zfkhl").textContent="🎮 "+eg.pl+"/"+EN;g("zfkb1").style.width=Math.round(eg.pl/EN*100)+"%";g("zfkb1").className="gr";
-    g("zfkn").textContent="Telur";g("zfks").textContent="";g("zfks").style.color="";fb.className="zfk-fd"+(fhg(r,now).length?"":" off");g("zfkfi").textContent="🥚";g("zfkfi").className="";ring((1-eg.left/EH)*100,"#e8c15a");
+    g("zfkn").textContent="Telur";g("zfks").textContent="";g("zfks").style.color="";fb.className="zfk-fd";g("zfkfi").textContent="🧪";g("zfkfi").className="";ring((1-eg.left/EH)*100,"#e8c15a");
     if(FAV!==av){FAV=av;g("zfkc").innerHTML=av}return}
   const c=fcur(r,now);hud(c,fstage(c.xp),r.name||"Ikan")}
-function fclose(){const o=$("zfk");if(o)o.remove();clearInterval(FT);clearInterval(FPO);cancelAnimationFrame(FRAF);FRAF=0;FS=null;FPEL=[];FRIP=[];FPAR=[];FBG=null;FMODE="";FAV="";FPK="";FSH="";FWV=[];FTB=[];FWE=0;FX=[];FC=[];FE=[];FSEL="";FPKH=""}
-async function fopen(){if($("zfk")||!CH||!ME)return;const f=CH;FPF=f;FPK="";FMODE="";FAV="";FPEL=[];FRIP=[];FPAR=[];FBG=null;FSH="";FWV=[];FTB=[];FWE=0;FX=[];FC=[];FE=[];FSEL="";FPKH="";LS("zf-lastf",f);
+function fclose(){const o=$("zfk");if(o)o.remove();clearInterval(FT);clearInterval(FPO);cancelAnimationFrame(FRAF);FRAF=0;FS=null;FPEL=[];FRIP=[];FPAR=[];FBG=null;FMODE="";FAV="";FPK="";FSH="";FWV=[];FTB=[];FWE=0;FX=[];FC=[];FE=[];FSEL="";FPKH="";FSELE=""}
+async function fopen(){if($("zfk")||!CH||!ME)return;const f=CH;FPF=f;FPK="";FMODE="";FAV="";FPEL=[];FRIP=[];FPAR=[];FBG=null;FSH="";FWV=[];FTB=[];FWE=0;FX=[];FC=[];FE=[];FSEL="";FPKH="";FSELE="";LS("zf-lastf",f);
   const o=document.createElement("div");o.id="zfk";o.className="zfk";
   o.innerHTML='<div class="zfk-t" id="zfkt"><canvas id="zfkcv"></canvas></div>'
    +'<div class="zfk-hud"><button type="button" class="zfk-x" data-k="x" aria-label="Tutup">✕</button><div class="zfk-card"><div class="zfk-lv"><b id="zfklv">1</b></div><div class="zfk-bars"><div class="zfk-hb"><span id="zfkxl">XP 0</span><div class="bar"><i class="xp" id="zfkb2"></i></div></div><div class="zfk-hb"><span id="zfkhl">🍤</span><div class="bar"><i id="zfkb1"></i></div></div></div></div><button type="button" class="zfk-x" data-k="set" aria-label="Pengaturan"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button></div>'
    +'<button type="button" class="zfk-nm" data-k="nm" aria-label="Ganti nama ikan"><b id="zfkn">Ikan</b><small id="zfks"></small></button><div class="zfk-av" id="zfkc"></div><button type="button" class="zfk-cl" id="zfkcl" data-k="clm" aria-label="Saldo koin, ketuk untuk ambil koin hasil kolam">🪙 '+zcn()+'</button><div class="zfk-pk" id="zfkpk"></div><div class="zfk-sh" id="zfksh"></div>'
    +'<nav class="zfk-tab"><button type="button" data-k="shop" aria-label="Toko"><i>🛒</i><span>Toko</span></button><button type="button" data-k="food" aria-label="Jenis makanan"><i id="zfkfd">🟤</i><span>Makanan</span></button><button type="button" class="zfk-fd" data-k="feed" id="zfkf" aria-label="Kasih makan"><span id="zfkfi">🍤</span></button><button type="button" data-k="coll" aria-label="Koleksi ikan"><i>🐟</i><span>Koleksi</span></button></nav>';
   const t0=Date.now();o.addEventListener("click",e=>{if(Date.now()-t0<450)return;const k=e.target.closest("[data-k]"),a=k&&k.dataset.k,t=e.target.closest("#zfkt");
-    if(a==="x")return fclose();if(a==="shop"){if(FSH)fsheet(FSH);return zspShow()}if(a==="nm")return frename();if(a==="feed"){if(FSH)fsheet(FSH);return fgive(Math.random()*70+15)}if(a==="no")return;if(a==="plv")return fplInfo();if(a==="clm")return zpcClaim();
-    if(a==="food"||a==="coll"||a==="set")return fsheet(a);if(a==="rs")return freset();if(a==="sell")return fsell(k.dataset.i);if(a==="pick"){FSEL=k.dataset.i==="m"?"":k.dataset.i;fpaint();return}
-    if(a==="csel"){const i=k.dataset.i;FSEL=i==="c"?"":i.slice(1);if(FSH)fsheet(FSH);fpaint();return}
+    if(a==="x")return fclose();if(a==="shop"){if(FSH)fsheet(FSH);return zspShow()}if(a==="nm")return frename();if(a==="feed"){if(FSELE||(FMODE==="e"&&!FSEL)){if(FSH!=="pot")fsheet("pot");else fsheet("pot");return}if(FSH)fsheet(FSH);return fgive(Math.random()*70+15)}if(a==="no")return;if(a==="plv")return fplInfo();if(a==="clm")return zpcClaim();
+    if(a==="food"||a==="coll"||a==="set")return fsheet(a);if(a==="rs")return freset();if(a==="sell")return fsell(k.dataset.i);if(a==="pick"){FSELE="";FSEL=k.dataset.i==="m"?"":k.dataset.i;fpaint();return}
+    if(a==="csel"){const i=k.dataset.i;if(i[0]==="e"){FSELE=i.slice(1);FSEL=""}else{FSELE="";FSEL=i==="c"?"":i.slice(1)}if(FSH)fsheet(FSH);fpaint();return}
+    if(a==="pot")return fpotion(+k.dataset.i);
     if(a==="fd"){FD=+k.dataset.i;LS("zf-food",String(FD));fsheet(FSH);FSH="food";fsheet("food");fpaint();return}
-    if(t){if(FSH)return fsheet(FSH);const r=t.getBoundingClientRect(),hid=fhit(e.clientX-r.left,e.clientY-r.top);if(hid!==null){FSEL=hid;fpaint();ftap(e.clientX-r.left,e.clientY-r.top,1);return}ftap(e.clientX-r.left,e.clientY-r.top);fgive((e.clientX-r.left)/r.width*100,1)}});
+    if(t){if(FSH)return fsheet(FSH);const r=t.getBoundingClientRect(),hid=fhit(e.clientX-r.left,e.clientY-r.top);if(hid!==null){FSELE="";FSEL=hid;fpaint();ftap(e.clientX-r.left,e.clientY-r.top,1);return}ftap(e.clientX-r.left,e.clientY-r.top);fgive((e.clientX-r.left)/r.width*100,1)}});
   document.body.appendChild(o);FS={x:0,y:0,vx:0,vy:0,dir:1,w:80,h:48,init:0,wt:0,egg:0,sad:0,hue:200,p:0,ph:0,tilt:0};fpaint();FRAF=requestAnimationFrame(floop);
   await fload(f);if(!FSM[f]&&FERR)toast(FERR,3600);fpaint();
   FT=setInterval(()=>{if(!$("zfk"))clearInterval(FT);else fpaint()},1000);
