@@ -8011,8 +8011,8 @@ function fplInfo(){const r=FSM[FPF];if(!r)return;const x=fpx(r),v=plv(x);toast("
 async function fplReward(f,l){const q=Math.random();let m="";
   if(q<.4){const n=20+Math.floor(Math.random()*31);zcoin(n);m="🪙 "+n+" koin"}
   else if(q<.7){const i=Math.floor(Math.random()*FOODS.length),n=2+Math.floor(Math.random()*3);zinvAdd(i,n);m=FOODS[i].e+" "+FOODS[i].n+" ×"+n}
-  else if(q<.85){let ok=0;try{const id=FNEW(),now=Date.now(),rq=zroll();const u=await fcas(f,raw=>{if(raw.filter(o=>o.k==="sd"||o.k==="eg").length>=FZMAX)return 0;raw.push({k:"eg",id,b:now,r:rq,m:1});return{raw}});ok=u&&u.res?1:0}catch(e){}
-    if(ok)m="🥚 telur misterius (menetas 1 jam di kolam)";else{zcoin(30);m="🪙 30 koin (kolam penuh, telur diganti koin)"}}
+  else if(q<.85){let ok=0;try{const id=FNEW(),now=Date.now(),rq=zroll();const u=await fcas(f,raw=>{raw.push({k:"eg",id,b:now,r:rq,m:1});return{raw}});ok=u&&u.res?1:0}catch(e){}
+    if(ok)m="🥚 telur misterius (menetas 1 jam di kolam)";else{zcoin(30);m="🪙 30 koin (telur tidak bisa ditaruh, diganti koin)"}}
   else{await fpAdd(f,25);m="⭐ +25 XP level"}
   zcoin(10);try{sfx("ok")}catch(e){}toast("🎉 Level "+l+"! Hadiah: "+m+" + 🪙 10 koin bonus",4800)}
 async function fplClaim(f,r){if(!ME||!r||FPLB[f])return;const L=plv(fpx(r)).L,c=parseInt(LS(fplK(f)))||1;if(L<=c)return;
@@ -8261,14 +8261,14 @@ function fpaint(){const o=$("zfk");if(!o)return;const f=FPF,r=FSM[f],g=n=>$(n);
     if(FAV!==av){FAV=av;g("zfkc").innerHTML=av}return}
   const c=fcur(r,now);hud(c,fstage(c.xp),r.name||"Ikan")}
 function fclose(){const o=$("zfk");if(o)o.remove();clearInterval(FT);clearInterval(FPO);cancelAnimationFrame(FRAF);FRAF=0;FS=null;FPEL=[];FRIP=[];FPAR=[];FBG=null;FMODE="";FAV="";FPK="";FSH="";FWV=[];FTB=[];FWE=0;FX=[];FC=[];FE=[];FSEL="";FPKH="";FSELE=""}
-async function fopen(){if($("zfk")||!CH||!ME)return;const f=CH;FPF=f;FPK="";FMODE="";FAV="";FPEL=[];FRIP=[];FPAR=[];FBG=null;FSH="";FWV=[];FTB=[];FWE=0;FX=[];FC=[];FE=[];FSEL="";FPKH="";FSELE="";LS("zf-lastf",f);
+async function fopen(fr){const f=fr||CH;if($("zfk")||!f||!ME)return;FPF=f;FPK="";FMODE="";FAV="";FPEL=[];FRIP=[];FPAR=[];FBG=null;FSH="";FWV=[];FTB=[];FWE=0;FX=[];FC=[];FE=[];FSEL="";FPKH="";FSELE="";LS("zf-lastf",f);
   const o=document.createElement("div");o.id="zfk";o.className="zfk";
   o.innerHTML='<div class="zfk-t" id="zfkt"><canvas id="zfkcv"></canvas></div>'
    +'<div class="zfk-hud"><button type="button" class="zfk-x" data-k="x" aria-label="Tutup">✕</button><div class="zfk-card"><div class="zfk-lv"><b id="zfklv">1</b></div><div class="zfk-bars"><div class="zfk-hb"><span id="zfkxl">XP 0</span><div class="bar"><i class="xp" id="zfkb2"></i></div></div><div class="zfk-hb"><span id="zfkhl">🍤</span><div class="bar"><i id="zfkb1"></i></div></div></div></div><button type="button" class="zfk-x" data-k="set" aria-label="Pengaturan"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button></div>'
    +'<button type="button" class="zfk-nm" data-k="nm" aria-label="Ganti nama ikan"><b id="zfkn">Ikan</b><small id="zfks"></small></button><div class="zfk-av" id="zfkc"></div><button type="button" class="zfk-cl" id="zfkcl" data-k="clm" aria-label="Saldo koin, ketuk untuk ambil koin hasil kolam">🪙 '+zcn()+'</button><div class="zfk-pk" id="zfkpk"></div><div class="zfk-sh" id="zfksh"></div>'
    +'<nav class="zfk-tab"><button type="button" data-k="shop" aria-label="Toko"><i>🛒</i><span>Toko</span></button><button type="button" data-k="food" aria-label="Jenis makanan"><i id="zfkfd">🟤</i><span>Makanan</span></button><button type="button" class="zfk-fd" data-k="feed" id="zfkf" aria-label="Kasih makan"><span id="zfkfi">🍤</span></button><button type="button" data-k="coll" aria-label="Koleksi ikan"><i>🐟</i><span>Koleksi</span></button></nav>';
   const t0=Date.now();o.addEventListener("keydown",e=>{const el=e.target;if((e.key==="Enter"||e.key===" ")&&el&&el.matches&&el.matches(".zfk-row[data-k]")){e.preventDefault();el.click()}});o.addEventListener("click",e=>{if(Date.now()-t0<450)return;const k=e.target.closest("[data-k]"),a=k&&k.dataset.k,t=e.target.closest("#zfkt");
-    if(a==="x")return fclose();if(a==="shop"){if(FSH)fsheet(FSH);return zspShow()}if(a==="nm")return frename();if(a==="feed"){if(FSELE||(FMODE==="e"&&!FSEL)){if(FSH!=="pot")fsheet("pot");else fsheet("pot");return}if(FSH)fsheet(FSH);return fgive(Math.random()*70+15)}if(a==="no")return;if(a==="plv")return fplInfo();if(a==="clm")return zpcClaim();
+    if(a==="x")return zaqLeave();if(a==="shop"){if(FSH)fsheet(FSH);return zspShow()}if(a==="nm")return frename();if(a==="feed"){if(FSELE||(FMODE==="e"&&!FSEL)){if(FSH!=="pot")fsheet("pot");else fsheet("pot");return}if(FSH)fsheet(FSH);return fgive(Math.random()*70+15)}if(a==="no")return;if(a==="plv")return fplInfo();if(a==="clm")return zpcClaim();
     if(a==="food"||a==="coll"||a==="set")return fsheet(a);if(a==="rs")return freset();if(a==="adm")return fadmin();if(a==="sell")return fsell(k.dataset.i);if(a==="pick"){FSELE="";FSEL=k.dataset.i==="m"?"":k.dataset.i;fpaint();return}
     if(a==="csel"){const i=k.dataset.i;if(i[0]==="e"){FSELE=i.slice(1);FSEL=""}else{FSELE="";FSEL=i==="c"?"":i.slice(1)}if(FSH)fsheet(FSH);fpaint();return}
     if(a==="pot")return fpotion(+k.dataset.i);
@@ -8278,6 +8278,124 @@ async function fopen(){if($("zfk")||!CH||!ME)return;const f=CH;FPF=f;FPK="";FMOD
   await fload(f);if(!FSM[f]&&FERR)toast(FERR,3600);fpaint();
   FT=setInterval(()=>{if(!$("zfk"))clearInterval(FT);else fpaint()},1000);
   FPO=setInterval(()=>{if(!$("zfk"))clearInterval(FPO);else fload(f).then(fpaint)},6000)}
+// ----- HUB AKUARIUM: vas aquarium, tambah/hapus, pindah ikan, animasi laut. Satu aquarium = satu teman (pasangan ikan). Daftar disimpan di zf-aq. -----
+(()=>{if(document.getElementById("zaqcss"))return;const st=document.createElement("style");st.id="zaqcss";st.textContent=`
+.zaq{position:fixed;inset:0;z-index:100001;background:linear-gradient(#0f2a52,#122f58 45%,#0b2142);color:#fff;font-family:Inter,system-ui,sans-serif;display:flex;flex-direction:column;overflow:hidden;animation:zfsi .25s both;-webkit-tap-highlight-color:transparent}
+.zaq:before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% -10%,rgba(120,200,255,.3),transparent 60%);pointer-events:none}
+.zaq-bub{position:absolute;inset:0;pointer-events:none;overflow:hidden}.zaq-bub i{position:absolute;bottom:-20px;border-radius:50%;border:1.5px solid rgba(255,255,255,.35);animation:zaqb linear infinite}
+@keyframes zaqb{to{transform:translateY(-110vh) translateX(14px)}}
+.zaq-h{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 12px) 14px 10px}
+.zaq-ti{flex:1;min-width:0}.zaq-ti b{display:block;font-size:22px}.zaq-ti small{opacity:.65;font-size:12.5px}
+.zaq-x{width:44px;height:44px;border:0;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;font-size:15px;cursor:pointer}
+.zaq-co{font-weight:700;font-size:14px;background:rgba(255,255,255,.14);padding:9px 13px;border-radius:999px}
+.zaq-g{position:relative;flex:1;overflow:auto;display:grid;grid-template-columns:repeat(2,1fr);gap:14px;padding:6px 14px calc(env(safe-area-inset-bottom,0px) + 28px);align-content:start}
+.zaq-c{position:relative;border-radius:24px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);padding:12px 8px 12px;text-align:center;cursor:pointer;color:#fff;font-family:inherit;transition:transform .15s,background .2s}
+.zaq-c.in{animation:zaqin .5s both}.zaq-c:active{transform:scale(.97);background:rgba(255,255,255,.14)}
+@keyframes zaqin{from{opacity:0;transform:translateY(22px) scale(.94)}}
+.zaq-c>b{display:block;font-size:15px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.zaq-c>small{opacity:.7;font-size:12px}
+.zaq-d{position:absolute;top:8px;right:8px;z-index:2;width:30px;height:30px;border:0;border-radius:50%;background:rgba(0,0,0,.28);color:#fff;font-size:12px;cursor:pointer;opacity:.85}
+.zaq-hg{position:absolute;top:10px;left:10px;z-index:2;font-size:15px;animation:zaqp 1.4s ease-in-out infinite}@keyframes zaqp{50%{transform:scale(1.25)}}
+.zaq-v{position:relative;width:78%;margin:0 auto;aspect-ratio:6/7}.zaq-v svg{width:100%;height:100%;display:block;overflow:visible}
+.zaq-w{animation:zaqwv 2.6s linear infinite}@keyframes zaqwv{to{transform:translateX(-60px)}}
+.zaq-f{position:absolute;width:30%;animation:zaqsw var(--d) ease-in-out infinite alternate;pointer-events:none}.zaq-f img{width:100%;height:auto;display:block}
+@keyframes zaqsw{from{transform:translate(-20px,-4px)}to{transform:translate(22px,5px)}}
+.zaq-e{position:absolute;left:50%;bottom:9%;transform:translateX(-50%);font-size:24px}
+.zaq-add{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:190px;border:2px dashed rgba(255,255,255,.35);background:transparent}
+.zaq-add i{font-style:normal;width:58px;height:58px;border-radius:50%;background:rgba(10,132,255,.9);display:grid;place-items:center;font-size:32px;line-height:1}
+.zaq-sc{position:absolute;inset:0;background:rgba(0,0,0,.4);animation:zfsi .2s both}
+.zaq-s{position:absolute;left:0;right:0;bottom:0;max-height:80%;overflow:auto;background:rgba(14,38,76,.97);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-radius:28px 28px 0 0;padding:16px 14px calc(env(safe-area-inset-bottom,0px) + 16px);animation:zaqs .32s cubic-bezier(.2,.8,.2,1) both;box-shadow:0 -10px 40px rgba(0,0,0,.35)}
+@keyframes zaqs{from{transform:translateY(100%)}}
+.zaq-s1{display:flex;align-items:baseline;gap:10px;margin:0 0 12px}.zaq-s1 b{font-size:19px;flex:1}.zaq-s1 small{opacity:.65}
+.zaq-bk{border:0;background:rgba(255,255,255,.14);color:#fff;border-radius:50%;width:34px;height:34px;font-size:18px;cursor:pointer;align-self:center}
+.zaq-r{display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;margin:0 0 8px;border:0;border-radius:18px;background:rgba(255,255,255,.09);color:#fff;font-family:inherit;text-align:left}
+button.zaq-r{cursor:pointer}.zaq-th{flex:none;width:62px}.zaq-th img{width:100%;height:auto;display:block}
+.zaq-nb{flex:1;min-width:0}.zaq-nb b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.zaq-nb small{opacity:.72;font-size:12px}.zaq-nb u{text-decoration:none}
+.zaq-b{border:0;border-radius:14px;padding:10px 14px;background:#0a84ff;color:#fff;font:700 13.5px inherit;font-family:inherit;cursor:pointer}.zaq-b.g{background:rgba(255,255,255,.18)}
+.zaq-b.big{width:100%;margin-top:6px;padding:14px;font-size:15px;border-radius:18px;background:linear-gradient(#2aa8ff,#0a6fe0)}
+.zaq-em{opacity:.7;text-align:center;margin:18px 6px;font-size:14px;line-height:1.5}
+.zsea{position:fixed;inset:0;z-index:100009;overflow:hidden;pointer-events:auto}
+.zsw{position:absolute;inset:0;transform:translateY(108%);animation:zsrise 1.4s cubic-bezier(.45,.05,.3,1) both}
+@keyframes zsrise{0%{transform:translateY(108%)}42%,54%{transform:translateY(0)}100%{transform:translateY(108%)}}
+.zsbody{position:absolute;inset:0;background:linear-gradient(#58c4ff,#1479d6 45%,#0a2f66)}
+.zsv{position:absolute;left:0;top:-47px;width:200%;height:50px;fill:#58c4ff;animation:zswv 1s linear infinite}@keyframes zswv{to{transform:translateX(-50%)}}
+.zsb{position:absolute;bottom:-30px;width:var(--s);height:var(--s);border-radius:50%;border:2px solid rgba(255,255,255,.75);background:rgba(255,255,255,.2);animation:zsbub 1s ease-in var(--t) both}@keyframes zsbub{to{transform:translateY(-105vh)}}
+.zsf{position:absolute;left:-16%;font-size:36px;animation:zsfs 1.1s linear .1s both}@keyframes zsfs{to{left:112%}}
+.zsf.r{left:auto;right:-16%;transform:scaleX(-1);animation-name:zsfr}@keyframes zsfr{to{right:112%}}
+@media (prefers-reduced-motion:reduce){.zsw,.zaq-w,.zaq-f,.zaq-hg{animation:none}.zsw{display:none}}
+`;document.head.appendChild(st)})();
+const ZAQK="zf-aq";let ZAQS="",ZAQF="",ZAQM=null,ZAQBUSY=0,ZAQT=0,ZAQ1=1;
+function zaqList(){const fr=zpondList();let a=null;try{a=JSON.parse(LS(ZAQK)||"null")}catch(e){}if(!Array.isArray(a)){a=fr.slice();LS(ZAQK,JSON.stringify(a))}return a.filter(c=>fr.includes(c))}
+const zaqSave=a=>LS(ZAQK,JSON.stringify(a)),zaqName=f=>DATA.names[f]||f,zaqN=(r,now)=>r?(fegg(r,now)?0:1)+fseed(r).length+fcoll(r).length:0,
+  zaqEg=(r,now)=>r?fegs(r).length+(fegg(r,now)?1:0):0;
+function zaqFish(f,r,now){const a=[];if(!r)return a;if(!fegg(r,now)){const s=fsnap(f,r,now);a.push({key:"c",n:s.n,x:s.x,h:s.h,q:0})}
+  fseed(r).forEach(z=>{const c=fcur({t0:z.t,f0:z.f,xp:z.x,q:z.r},now);a.push({key:"s"+z.id,n:z.n,x:Math.floor(c.xp),h:fhue(z.id),q:+z.r||0})});
+  fcoll(r).forEach((o,i)=>a.push({key:String(i),n:o.n||"Ikan",x:+o.x||0,h:+o.h||0,q:+o.q||0}));return a}
+async function zaqLoad(){if(!ME)return;try{const L=await api("zg_fish?pair=like.*"+ME.code+"*");L.forEach(r=>{const p=String(r.pair).split("-"),f=p[0]===ME.code?p[1]:p[0];if(f&&(p[0]===ME.code||p[1]===ME.code)&&isFr(f))FSM[f]=r})}catch(e){}}
+function zaqSea(){return new Promise(res=>{if(matchMedia("(prefers-reduced-motion:reduce)").matches)return res();const o=document.createElement("div");o.className="zsea";let b="";
+  for(let i=0;i<18;i++)b+='<i class="zsb" style="left:'+(Math.random()*96).toFixed(1)+'%;--s:'+(6+Math.random()*18|0)+'px;--t:'+(Math.random()*.3).toFixed(2)+'s"></i>';
+  let w="M0 30Q75 0 150 30";for(let i=0;i<7;i++)w+="T"+(300+i*150)+" 30";
+  o.innerHTML='<div class="zsw"><svg class="zsv" viewBox="0 0 1200 60" preserveAspectRatio="none"><path d="'+w+'V60H0Z"/></svg><div class="zsbody"></div>'+b+'<span class="zsf" style="top:30%">🐠</span><span class="zsf r" style="top:52%">🐟</span><span class="zsf" style="top:72%">🦀</span></div>';
+  document.body.appendChild(o);try{navigator.vibrate&&navigator.vibrate(15)}catch(e){}setTimeout(res,600);setTimeout(()=>o.remove(),1450)})}
+function zaqVase(f,i,r,now){const n=zaqN(r,now),lv=Math.min(.86,.36+n*.06),wy=Math.round(128-lv*104),fs=zaqFish(f,r,now).slice(0,3),J="M26 12h68a6 6 0 0 1 6 6v94a16 16 0 0 1-16 16H36a16 16 0 0 1-16-16V18a6 6 0 0 1 6-6z";
+  const svg='<svg viewBox="0 0 120 140" aria-hidden="true"><defs><clipPath id="zqc'+i+'"><path d="'+J+'"/></clipPath><linearGradient id="zqg'+i+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6fd0ff" stop-opacity=".85"/><stop offset="1" stop-color="#0a66c2" stop-opacity=".95"/></linearGradient></defs>'
+    +'<g clip-path="url(#zqc'+i+')"><g class="zaq-w"><path d="M-60 '+wy+'q15 -7 30 0'+"t30 0".repeat(13)+'V150H-60Z" fill="url(#zqg'+i+')"/></g><rect x="0" y="118" width="120" height="30" fill="#e8c98a"/><path d="M34 122q-7-14 0-28M41 122q5-12-2-22M84 122q6-16 0-30" stroke="#3fcf7a" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="64" cy="121" r="4" fill="#d9b57e"/></g>'
+    +'<path d="'+J+'" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.6)" stroke-width="2.5"/><path d="M31 26v62" stroke="rgba(255,255,255,.4)" stroke-width="3.5" stroke-linecap="round"/><rect x="22" y="6" width="76" height="8" rx="4" fill="rgba(255,255,255,.35)"/></svg>';
+  const fh=fs.map((o,k)=>'<span class="zaq-f" style="left:'+(18+k*20)+'%;top:'+Math.min(76,Math.round(wy/140*100)+9+k*10)+'%;--d:'+(1.6+k*.5+(i%3)*.3).toFixed(1)+'s">'+fsvg(o.h)+'</span>').join("");
+  return svg+fh+(n?"":'<span class="zaq-e">🥚</span>')}
+function zaqCard(f,i,now,an){const r=FSM[f],n=zaqN(r,now),ne=zaqEg(r,now);
+  const hg=r&&((!fegg(r,now)&&fcur(r,now).full<30)||fseed(r).some(z=>fcur({t0:z.t,f0:z.f,xp:z.x,q:z.r},now).full<30));
+  return'<div class="zaq-c'+(an?" in":"")+'" data-a="v" data-f="'+esc(f)+'" role="button" tabindex="0" style="animation-delay:'+i*70+'ms"><button type="button" class="zaq-d" data-a="del" data-f="'+esc(f)+'" aria-label="Hapus aquarium">✕</button>'+(hg?'<span class="zaq-hg" title="Ada ikan lapar">🍤</span>':'')
+    +'<div class="zaq-v">'+zaqVase(f,i,r,now)+'</div><b>'+esc(zaqName(f))+'</b><small>'+(r?n+" ikan"+(ne?" · "+ne+" 🥚":""):"Memuat…")+'</small></div>'}
+function zaqPaint(){const g=$("zaqg");if(!g)return;const now=Date.now(),L=zaqList(),an=ZAQ1;ZAQ1=0;
+  g.innerHTML=L.map((f,i)=>zaqCard(f,i,now,an)).join("")+'<button type="button" class="zaq-c zaq-add'+(an?" in":"")+'" data-a="add" style="animation-delay:'+L.length*70+'ms"><i>＋</i><b>Aquarium baru</b></button>';
+  const t=$("zaqt");if(t)t.textContent=L.length+" aquarium · "+L.reduce((s,f)=>s+zaqN(FSM[f],now),0)+" ikan";const c=$("zaqco");if(c)c.textContent="🪙 "+zcn();zaqSheet()}
+function zaqSheet(){const s=$("zaqsh");if(!s)return;const now=Date.now(),L=zaqList(),sc='<div class="zaq-sc" data-a="sc"></div>';
+  if(ZAQS==="m"&&ZAQM){const it=zaqFish(ZAQM.f,FSM[ZAQM.f],now).find(o=>o.key===ZAQM.key),T=L.filter(c=>c!==ZAQM.f);
+    s.innerHTML=sc+'<div class="zaq-s"><div class="zaq-s1"><button type="button" class="zaq-bk" data-a="mb" aria-label="Kembali">‹</button><b>Pindahkan '+esc(it?it.n:"ikan")+' ke…</b></div>'+(T.length?T.map(c=>{const r=FSM[c];return'<button type="button" class="zaq-r" data-a="mt" data-f="'+esc(c)+'"><span class="zaq-th" style="width:auto;font-size:30px">🫙</span><span class="zaq-nb"><b>'+esc(zaqName(c))+'</b><small>'+zaqN(r,now)+' ikan</small></span><span class="zaq-b">Pindah</span></button>'}).join(""):'<p class="zaq-em">Belum ada aquarium lain. Tambah dulu lewat tombol ＋ lalu pindahkan ikannya.</p>')+(it&&it.key==="c"?'<p class="zaq-em" style="margin-top:4px;font-size:12.5px">Ikan utama masuk ke koleksi aquarium tujuan, lalu aquarium ini kembali ke telur baru.</p>':'')+'</div>'}
+  else if(ZAQS==="a"){const C=zpondList().filter(c=>!L.includes(c));
+    s.innerHTML=sc+'<div class="zaq-s"><div class="zaq-s1"><b>Aquarium baru bareng…</b></div>'+(C.length?C.map(c=>'<button type="button" class="zaq-r" data-a="pa" data-f="'+esc(c)+'"><span class="zaq-th" style="width:auto;font-size:30px">🫙</span><span class="zaq-nb"><b>'+esc(zaqName(c))+'</b><small>'+(DATA.on[c]?"Online":"Offline")+'</small></span><span class="zaq-b">Buat</span></button>').join(""):'<p class="zaq-em">'+(zpondList().length?"Semua temanmu sudah punya aquarium di daftar ini.":"Belum ada teman. Tambah teman dulu lewat tab Teman.")+'</p>')+'</div>'}
+  else if(ZAQS==="d"&&ZAQF){const f=ZAQF,r=FSM[f],fs=zaqFish(f,r,now),ne=zaqEg(r,now);
+    s.innerHTML=sc+'<div class="zaq-s"><div class="zaq-s1"><b>'+esc(zaqName(f))+'</b><small>'+fs.length+" ikan"+(ne?" · "+ne+" 🥚":"")+'</small></div>'
+      +(fs.length?fs.map(o=>{const st=fstage(o.x,o.q);return'<div class="zaq-r"><span class="zaq-th">'+fsvg(o.h)+'</span><div class="zaq-nb"><b>'+esc(o.n)+'</b><small>'+(o.q?'<u style="color:'+RAR[o.q].c+'">'+RAR[o.q].n+'</u> · ':'')+st.name+' · Lv '+(st.i+1)+' · ⭐ '+o.x+'</small></div><button type="button" class="zaq-b g" data-a="mv" data-k="'+esc(o.key)+'">⇄ Pindah</button></div>'}).join(""):'<p class="zaq-em">'+(r?"Belum ada ikan di sini, telurnya masih menetas 🥚":"Memuat…")+'</p>')
+      +'<button type="button" class="zaq-b big" data-a="in" data-f="'+esc(f)+'">🌊 Masuk aquarium</button></div>'}
+  else s.innerHTML=""}
+function zaqClick(e){const b=e.target.closest("[data-a]");if(!b||ZAQBUSY)return;const a=b.dataset.a,f=b.dataset.f;
+  if(a==="x")return zaqHide();if(a==="del")return zaqDel(f);if(a==="v"){ZAQS="d";ZAQF=f;return zaqPaint()}if(a==="add"){ZAQS="a";return zaqPaint()}
+  if(a==="sc"){ZAQS="";ZAQM=null;return zaqSheet()}if(a==="in")return zaqEnter(f);if(a==="mv"){ZAQM={f:ZAQF,key:b.dataset.k};ZAQS="m";return zaqSheet()}
+  if(a==="mb"){ZAQM=null;ZAQS="d";return zaqSheet()}if(a==="mt"&&ZAQM)return zaqMove(ZAQM.f,ZAQM.key,f);if(a==="pa")return zaqAdd(f)}
+function zaqHide(){const o=$("zaq");if(o)o.remove();clearInterval(ZAQT);NAV.close("zaq")}
+async function zaqOpen(quick){if(!ME||$("zaq")||$("zfk")||ZAQBUSY)return;if(!quick){ZAQBUSY=1;await zaqSea();ZAQBUSY=0;if($("zaq")||$("zfk"))return}
+  let bb="";for(let i=0;i<12;i++)bb+='<i style="left:'+(Math.random()*96).toFixed(1)+'%;width:'+(6+Math.random()*12|0)+'px;height:'+(6+Math.random()*12|0)+'px;animation-duration:'+(9+Math.random()*10).toFixed(1)+'s;animation-delay:-'+(Math.random()*12).toFixed(1)+'s"></i>';
+  const o=document.createElement("div");o.id="zaq";o.className="zaq";
+  o.innerHTML='<div class="zaq-bub">'+bb+'</div><div class="zaq-h"><button type="button" class="zaq-x" data-a="x" aria-label="Tutup">✕</button><div class="zaq-ti"><b>Aquarium</b><small id="zaqt"></small></div><span class="zaq-co" id="zaqco"></span></div><div class="zaq-g" id="zaqg"></div><div id="zaqsh"></div>';
+  o.addEventListener("click",zaqClick);o.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches&&e.target.matches(".zaq-c[data-a=v]")){e.preventDefault();e.target.click()}});
+  document.body.appendChild(o);ZAQS="";ZAQF="";ZAQM=null;ZAQ1=1;NAV.push("zaq",zaqHide);zaqPaint();zaqLoad().then(zaqPaint);
+  clearInterval(ZAQT);ZAQT=setInterval(()=>{if(!$("zaq"))return clearInterval(ZAQT);if(!ZAQBUSY)zaqLoad().then(zaqPaint)},7000)}
+addEventListener("keydown",e=>{if(e.key!=="Escape"||!$("zaq")||$("zfk")||ZAQBUSY)return;if(ZAQS){ZAQS="";ZAQM=null;zaqSheet()}else zaqHide()});
+async function zaqEnter(f){if(ZAQBUSY)return;ZAQBUSY=1;await zaqSea();zaqHide();ZAQBUSY=0;fopen(f)}
+async function zaqLeave(){if(ZAQBUSY)return;ZAQBUSY=1;await zaqSea();fclose();ZAQBUSY=0;zaqOpen(true)}
+async function zaqAdd(f){const a=zaqList();if(!a.includes(f)){a.push(f);zaqSave(a)}ZAQS="";zaqPaint();await fload(f);try{sfx("ok")}catch(e){}toast("🌊 Aquarium baru bareng "+zaqName(f),2400);zaqPaint()}
+async function zaqDel(f){if(!await confirmX("Hapus aquarium","Aquarium bareng "+zaqName(f)+" beserta semua ikan di dalamnya akan hilang untuk kalian berdua. Tidak bisa dibatalkan.","Hapus",true))return;
+  try{await api("zg_fish?pair=eq."+zpk(f),{m:"DELETE",p:"return=minimal"})}catch(e){return toast(fmiss(e),3000)}
+  delete FSM[f];zaqSave(zaqList().filter(c=>c!==f));if(ZAQF===f){ZAQF="";ZAQS=""}toast("🗑️ Aquarium dihapus",1800);zaqPaint()}
+async function zaqMove(f,key,d){if(ZAQBUSY||!f||!d||f===d)return;const r=FSM[f],now=Date.now();key=String(key);if(!r)return;let o,kind;
+  if(key==="c"){if(fegg(r,now))return;o=fsnap(f,r,now);kind="c"}
+  else if(key[0]==="s"){const s=fseed(r).find(z=>z.id===key.slice(1));if(!s)return;o=Object.assign({},s);kind="s"}
+  else{const c=fcoll(r)[+key];if(!c)return;o=Object.assign({},c);kind="l"}
+  ZAQBUSY=1;toast("🌊 Memindahkan…",1200);
+  try{if(!FSM[d]&&!await fload(d)){toast(FERR||"Gagal terhubung ke aquarium tujuan",2600);ZAQBUSY=0;return}
+    const sj=JSON.stringify(o),u1=await fcas(d,raw=>{if(kind==="s"&&raw.some(z=>z.k==="sd"&&z.id===o.id))return 0;raw.push(o);return{raw}});
+    if(!u1){toast("Gagal memindahkan, coba lagi",2400);ZAQBUSY=0;return}
+    const u2=await fcas(f,(raw,row)=>{let b;
+      if(kind==="c"){if(fegg(row,Date.now()))return 0;b={name:"Ikan",xp:0,f0:60,t0:Date.now(),egg_t:Date.now(),ep:0,ep_ts:0,hat:0,lastby:"",last_ts:0}}
+      else if(kind==="s"){const i=raw.findIndex(z=>z.k==="sd"&&z.id===o.id);if(i<0)return 0;raw.splice(i,1)}
+      else{const i=raw.findIndex(z=>!z.k&&JSON.stringify(z)===sj);if(i<0)return 0;raw.splice(i,1)}
+      return{raw,b,g:kind==="c"?"&t0=eq."+row.t0:""}});
+    if(!u2){await fcas(d,raw=>{const i=raw.findIndex(z=>kind==="s"?(z.k==="sd"&&z.id===o.id):(!z.k&&JSON.stringify(z)===sj));if(i<0)return 0;raw.splice(i,1);return{raw}});
+      await zaqLoad();toast("Ikan sudah berubah, coba lagi",2400)}
+    else{try{sfx("ok")}catch(e){}toast("🐟 "+(o.n||"Ikan")+" pindah ke aquarium "+zaqName(d),2600)}}
+  catch(e){toast(fmiss(e),3000)}
+  ZAQBUSY=0;ZAQM=null;ZAQS="d";ZAQF=f;await zaqLoad();zaqPaint()}
 function fdot(){if(!FAB||!CH)return;const r=FSM[CH];FAB.classList.toggle("sad",!!r&&!fegg(r,Date.now())&&fcur(r,Date.now()).full<30)}
 function fabInit(){if(FAB||!document.body)return;const b=FAB=document.createElement("button");b.type="button";b.id="zfkfab";b.className="zfkfab";b.setAttribute("aria-label","Akuarium ikan (geser untuk memindah)");b.style.display="none";document.body.appendChild(b);
   const cl=(x,y)=>[Math.min(Math.max(x,6),innerWidth-64),Math.min(Math.max(y,70),innerHeight-140)],
@@ -8287,9 +8405,9 @@ function fabInit(){if(FAB||!document.body)return;const b=FAB=document.createElem
   let d=null;
   b.addEventListener("pointerdown",e=>{if(e.pointerType==="mouse"&&e.button)return;const r=b.getBoundingClientRect();d={ox:e.clientX-r.left,oy:e.clientY-r.top,sx:e.clientX,sy:e.clientY,mv:0};try{b.setPointerCapture(e.pointerId)}catch(_){}});
   b.addEventListener("pointermove",e=>{if(!d)return;if(!d.mv&&Math.hypot(e.clientX-d.sx,e.clientY-d.sy)>6){d.mv=1;b.classList.add("drag")}if(d.mv){const p=put(e.clientX-d.ox,e.clientY-d.oy);d.x=p[0];d.y=p[1]}});
-  const up=e=>{if(!d)return;const o=d;d=null;b.classList.remove("drag");if(o.mv){sp=[o.x/innerWidth,o.y/innerHeight];LS("zf-fabp",JSON.stringify(sp))}else if(e.type==="pointerup")fopen()};
+  const up=e=>{if(!d)return;const o=d;d=null;b.classList.remove("drag");if(o.mv){sp=[o.x/innerWidth,o.y/innerHeight];LS("zf-fabp",JSON.stringify(sp))}else if(e.type==="pointerup")zaqOpen()};
   b.addEventListener("pointerup",up);b.addEventListener("pointercancel",up);b.addEventListener("contextmenu",e=>e.preventDefault());
-  b.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();fopen()}})}
+  b.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();zaqOpen()}})}
 setInterval(()=>{try{const on=!!(ME&&opn()&&CH&&isFr(CH));if(!FAB){if(!on)return;fabInit()}if(!FAB)return;FAB.style.display=on?"":"none";if(!on)return;
   const rr=FSM[CH],ge=rr?fegg(rr,Date.now()):null,kd=ge&&!ge.hatch?"e":"f";if(ge&&ge.hatch)ehat(CH);
   if(FAB.dataset.f!==CH||FAB.dataset.k!==kd){const nw=FAB.dataset.f!==CH;FAB.dataset.f=CH;FAB.dataset.k=kd;FAB.classList.toggle("egg",kd==="e");FAB.innerHTML=(kd==="e"?esvg(ge.p):fsvg(fh(CH,rr)))+'<i class="zfkdot"></i>';if(nw)fload(CH).then(fdot)}fdot()}catch(e){}},500);
@@ -8724,7 +8842,7 @@ function znMsg(f,x){const n=DATA.names[f]||f;x=String(x||"").slice(0,140);let o=
   o.c++;const el=o.el;el.querySelector("b").textContent=n+(o.c>1?" ("+o.c+" pesan)":"");el.querySelector(".nx span").textContent=x;
   clearTimeout(o.tm);const tick=()=>{if(el.dataset.hold){o.tm=setTimeout(tick,900);return}znOut(el)};o.tm=setTimeout(tick,4800)}
 
-// ----- KOIN & TOKO: koin dari jual ikan, main bareng (1/game), call (1/menit). Makanan terbatas, beli di toko -----
+// ----- KOIN & TOKO -----
 const ZFP=[3,6,4],ZBP=20;var ZSP=null;
 window.zcoin=(n,w)=>{n=Math.round(n)||0;const v=Math.max(0,(+LS("zf-coin")||0)+n);LS("zf-coin",String(v));if(n>0&&w)try{toast("🪙 +"+n+" koin · "+w,1800)}catch(e){}try{if(zspOn())zspDraw()}catch(e){}try{if($("zfk"))zpcPaint()}catch(e){}return v};
 const zcn=()=>+LS("zf-coin")||0;
@@ -8744,18 +8862,19 @@ async function fadmin(){const f=FPF;if(!zadmin()||!f)return;
 function zinv(){try{const a=JSON.parse(LS("zf-inv")||"null");if(Array.isArray(a)&&a.length===3)return a.map(v=>Math.max(0,+v||0))}catch(e){}const d=[5,0,0];LS("zf-inv",JSON.stringify(d));return d}
 function zinvAdd(i,d){const a=zinv();a[i]=Math.max(0,a[i]+d);LS("zf-inv",JSON.stringify(a));try{if($("zfk"))fpaint();if($("zfk")&&FSH==="food"){FSH="";fsheet("food")}}catch(e){}return a[i]}
 const zspOn=()=>!!(ZSP&&ZSP.classList.contains("show"));
-async function fpatch(f,b,cl){const url="zg_fish?pair=eq."+zpk(f),k=JSON.stringify(cl.slice(-200));let u;
+async function fpatch(f,b,cl){const url="zg_fish?pair=eq."+zpk(f),k=JSON.stringify(cl);let u;
   try{u=await api(url,{m:"PATCH",p:"return=representation",b:Object.assign({coll:k},b)})}catch(e){u=await api(url,{m:"PATCH",p:"return=representation",b});LS(fcl(zpk(f)),k)}
   return u[0]||null}
-const FZMAX=1e9,CLM={},FNEW=()=>Math.random().toString(36).slice(2,8)+Date.now().toString(36).slice(-3);
+const CLM={},FNEW=()=>Math.random().toString(36).slice(2,8)+Date.now().toString(36).slice(-3);
 // Tulis ke zg_fish dengan "compare-and-swap" (versi di depan kolom coll) supaya dua HP yang menulis bersamaan tidak saling timpa.
 // coll berisi: koleksi ikan, {k:"sd"} bibit yang hidup di kolam, {k:"pay"} koin bagi hasil untuk teman. fn(raw,row) -> {raw,b?,g?} | 0 (batal). Hasil: {row,res} | 0 | null (gagal/bentrok)
 async function fcas(f,fn,tries){const k=zpk(f);
-  for(let n=0;n<(tries||4);n++){
+  for(let n=0;n<(tries||10);n++){
+    if(n)await new Promise(z=>setTimeout(z,80+Math.random()*220));
     const r=(await api("zg_fish?pair=eq."+k))[0];if(!r)return null;
     const res=fn(fraw(r).slice(),r);if(!res)return 0;
     const sp=res.raw.filter(o=>o.k),cl=res.raw.filter(o=>!o.k),v=fver(r),
-      str=JSON.stringify([{k:"rv",v:(v<0?0:v)+1}].concat(sp,cl.slice(-60))),
+      str=JSON.stringify([{k:"rv",v:(v<0?0:v)+1}].concat(sp,cl)),
       guard=v>=0?"&coll=like."+encodeURIComponent('[{"k":"rv","v":'+v+'}')+"*":"&coll=eq."+encodeURIComponent(r.coll||"[]");
     const u=await api("zg_fish?pair=eq."+k+guard+(res.g||""),{m:"PATCH",p:"return=representation",b:Object.assign({coll:str},res.b||{})});
     if(u.length){FSM[f]=u[0];return{row:u[0],res}}}
@@ -8793,13 +8912,12 @@ function zroll(){let x=Math.random()*100,a=0;for(let i=0;i<RAR.length;i++){a+=RA
 async function zbibit(q){const rnd=q===5,P=rnd?ZRP:RAR[q].p,f=zpond();if(!f)return toast("Pilih dulu kolam teman untuk menaruh telur",2800);
   if(zcn()<P)return toast("Koin belum cukup 🪙",1800);
   const r=FSM[f]||await fload(f);if(!r)return toast(FERR||"Gagal terhubung ke akuarium",2600);
-  if(fseed(r).length+fegs(r).length>=FZMAX)return toast("Kolam penuh, maksimal "+FZMAX+" ikan 🐟",2600);
   const nm=DATA.names[f]||f,nmq=rnd?"Telur Acak":"Telur "+RAR[q].n;
   if(!await confirmX("Beli "+nmq.toLowerCase(),(rnd?"Rarity-nya rahasia sampai menetas. ":"")+"Telur ditaruh di pasir kolam "+nm+" dan menetas jadi ikan dalam 1 jam. Dirawat berdua.","Beli ("+P+" koin)"))return;
   if(zcn()<P)return toast("Koin belum cukup 🪙",1800);
   const id=FNEW(),now=Date.now(),rq=rnd?zroll():q;
-  try{const u=await fcas(f,raw=>{if(raw.filter(o=>o.k==="sd"||o.k==="eg").length>=FZMAX)return 0;const e={k:"eg",id,b:now,r:rq};if(rnd)e.m=1;raw.push(e);return{raw}});
-    if(u===0)return toast("Kolam penuh, maksimal "+FZMAX+" ikan",2400);if(!u)return toast("Gagal, coba lagi",2400);
+  try{const u=await fcas(f,raw=>{const e={k:"eg",id,b:now,r:rq};if(rnd)e.m=1;raw.push(e);return{raw}});
+    if(!u)return toast("Gagal, coba lagi",2400);
     zcoin(-P);zstInc("bought");try{sfx("ok")}catch(e){}toast("🥚 "+nmq+" ditaruh di kolam "+nm+", menetas 1 jam lagi",2800);if($("zfk")&&FPF===f)fpaint()}
   catch(e){toast(fmiss(e),3600)}zspDraw()}
 function zspBuy(t,i,f){if(t==="a")return zachClaim(i);if(t==="p"){ZPF=f;LS("zf-lastf",f);return zspDraw()}if(t==="b")return zbibit(i);const p=ZFP[i];if(zcn()<p)return toast("Koin belum cukup 🪙",1800);
